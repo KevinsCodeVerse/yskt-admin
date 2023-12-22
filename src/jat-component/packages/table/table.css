@@ -1,0 +1,119 @@
+/* 默认-微软雅黑 */
+/* 下拉框backgroundColor */
+/* hoverGray */
+/* 禁止 */
+/* 错误颜色--borderColor */
+/* 错误颜色--hover borderColor */
+/* 主体字体大小 */
+/* 主体字体大小 */
+/* 表格背景 */
+/* 斑马纹 */
+/* hover */
+/* 聚焦颜色 */
+.jat_table .el-table {
+  font-size: 14px;
+  color: #333333;
+}
+.jat_table .el-table thead {
+  font-weight: normal;
+  color: #cccccc;
+}
+.jat_table .el-table th.el-table__cell > .cell {
+  height: 38px;
+  line-height: 38px;
+}
+.jat_table .el-table .sort-caret.ascending {
+  border-bottom-color: #a2a4ad;
+}
+.jat_table .el-table .sort-caret.descending {
+  border-top-color: #a2a4ad;
+}
+.jat_table .el-table .ascending .sort-caret.ascending {
+  border-bottom-color: #167cf3;
+}
+.jat_table .el-table .descending .sort-caret.descending {
+  border-top-color: #167cf3;
+}
+.jat_table .el-table,
+.jat_table .el-table__expanded-cell {
+  background-color: #fff;
+}
+.jat_table .el-table--border::after,
+.jat_table .el-table--group::after,
+.jat_table .el-table::before {
+  background-color: transparent;
+}
+.jat_table .el-table tr {
+  background-color: #fff;
+}
+.jat_table .el-table td,
+.jat_table .el-table th.is-leaf {
+  border-bottom: 1px solid #d5d5d5;
+}
+.jat_table .el-table--small th {
+  padding: 0;
+}
+.jat_table .el-table--small td {
+  padding: 12px 0;
+}
+.jat_table .el-table .cell {
+  line-height: 18px;
+}
+.jat_table .el-table .cell,
+.jat_table .el-table th div,
+.jat_table .el-table--border td:first-child .cell,
+.jat_table .el-table--border th:first-child .cell {
+  padding-left: 8px;
+}
+.jat_table .el-table .cell,
+.jat_table .el-table th div {
+  padding-right: 8px;
+}
+.jat_table .el-table--striped .el-table__body tr.el-table__row--striped td {
+  background: #fafbfc;
+}
+.jat_table .el-table--border,
+.jat_table .el-table--group {
+  border: 1px solid #d5d5d5;
+}
+.jat_table .el-table--border td,
+.jat_table .el-table--border th,
+.jat_table .el-table__body-wrapper .el-table--border.is-scrolling-left ~ .el-table__fixed {
+  border-right: 1px solid #d5d5d5;
+}
+.jat_table .el-checkbox {
+  font-size: 14px;
+  font-weight: normal;
+  color: #333333;
+}
+.jat_table .el-table__body tr.hover-row.current-row > td,
+.jat_table .el-table__body tr.hover-row.el-table__row--striped.current-row > td,
+.jat_table .el-table__body tr.hover-row.el-table__row--striped > td,
+.jat_table .el-table__body tr.hover-row > td {
+  font-weight: 500;
+  color: #167cf3;
+}
+.jat_table .el-table--enable-row-hover .el-table__body tr:hover > td {
+  font-weight: 500;
+  color: #167cf3;
+}
+.jat_table .el-table__fixed-right::before,
+.jat_table .el-table__fixed::before {
+  background-color: transparent;
+}
+.jat_table .el-table--border th.gutter:last-of-type {
+  border-color: #d5d5d5;
+}
+.jat_table .el-table__fixed-right-patch {
+  background-color: #fff;
+}
+.jat_table .el-table--border th,
+.jat_table .el-table__fixed-right-patch {
+  border-color: #d5d5d5;
+}
+.jat_table .el-table__body tr.hover-row.current-row > td.el-table__cell,
+.jat_table .el-table__body tr.hover-row.el-table__row--striped.current-row > td.el-table__cell,
+.jat_table .el-table__body tr.hover-row.el-table__row--striped > td.el-table__cell,
+.jat_table .el-table__body tr.hover-row > td.el-table__cell {
+  background: #ebf3ff;
+}
