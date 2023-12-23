@@ -190,8 +190,9 @@ export default {
       }
     },
     handleAddInterface(node) {
+        console.log(node);
       this.addInterfaceVisible = true;
-      this.interfaceData.parentId = node.id;
+      this.interfaceData.parentId = node.data.id;
     },
     handleSubmitInterface() {
       this.$refs.intefaceRef.validate((valid) => {
