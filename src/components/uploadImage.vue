@@ -76,7 +76,7 @@ export default {
       import("element-ui/packages/image/src/image-viewer.vue"),
   },
   created() {
-    // this.initImagePrev()
+    this.initImagePrev()
   },
   mounted() {},
   methods: {
@@ -174,8 +174,26 @@ export default {
         console.log(error);
       }
     },
+    initImagePrev() {
+      if(Array.isArray(this.fileValue)) {
+        this.fileList = this.fileValue
+      } else {
+        if(this.fileValue && typeof this.fileValue === "string") {
+          this.fileList = [
+            {
+              url: this.fileValue,
+              name: "image01"
+            }
+          ]
+        }
+      }
+    }
   },
-  watch: {},
+  watch: {
+    fileValue() {
+      this.initImagePrev()
+    }
+  },
 };
 </script>
 

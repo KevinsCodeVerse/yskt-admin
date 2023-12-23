@@ -93,7 +93,8 @@
 <script>
 import tinymceEdit from "@/components/tinymceEdit.vue";
 import uploadImage from "@/components/uploadImage.vue";
-import { getData, editPlatformParams } from "./api";
+import { getData } from "./api";
+import request from "../../../../utils/request";
 export default {
   components: { uploadImage, tinymceEdit },
   data() {
@@ -113,9 +114,17 @@ export default {
       const res = await getData();
       this.formData = res.data.result;
     },
-    async submitForm() {
-      const res = await editPlatformParams(this.formData);
-      console.log(res);
+    submitForm() {
+      request.post({
+        url: "system/sysParam/editPlatformParams",
+        params: {
+          paramObjs: JSON.stringify(this.formData),
+        },
+        success: (res) => {
+          this.$message.success(res)
+          this.getInfo()
+        },
+      });
     },
   },
 };

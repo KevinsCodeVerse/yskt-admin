@@ -216,7 +216,10 @@ export default {
       if (typeof data !== "undefined" && data !== null) {
         if (data.time) {
           return getDate(data.time)
-        } else if (JSON.stringify(data) === "{}") {
+        }  else if(data && typeof data === "number" ) {
+          return getDate(data)
+        }
+        else if (JSON.stringify(data) === "{}") {
           return "--"
         }
         return data
