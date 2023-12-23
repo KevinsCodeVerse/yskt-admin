@@ -145,7 +145,7 @@ export default {
         menuName: "",
         requestUrl: "",
       };
-      this.$refs.roleRef && this.$refs.roleRef.clearValidate()
+      this.$refs.intefaceRef && this.$refs.intefaceRef.clearValidate()
       this.addInterfaceVisible = false;
     },
     getRoleTree() {
