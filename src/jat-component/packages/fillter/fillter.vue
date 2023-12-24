@@ -50,6 +50,8 @@
           style="width: 100%;"
             v-else-if="opt.type === 'cascader'"
             size="small"
+            :placeholder="opt.label"
+            clearable
             v-model="FilterData[opt.value]"
             :options="opt.options"
             :props="opt.props"

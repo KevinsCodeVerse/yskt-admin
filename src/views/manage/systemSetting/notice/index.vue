@@ -18,15 +18,11 @@
       @current-page-change="currentPageChange"
       @size-page-change="sizePageChange"
     >
-      <div slot="image" slot-scope="scope">
-        <el-image
-          v-if="scope.row.image"
-          style="width: 50px"
-          :src="scope.row.image"
-          :preview-src-list="[scope.row.image]"
+      <div slot="noticeDate" slot-scope="scope">
+        <span
+          >{{ getDate(scope.row.stratTime, "yyyy-MM-dd") }} 至
+          {{ getDate(scope.row.endTime, "yyyy-MM-dd") }}</span
         >
-        </el-image>
-        <span v-else></span>
       </div>
     </BasicTable>
     <add-dialog @success="handleSuccess" ref="addDialog"></add-dialog>
@@ -37,61 +33,39 @@
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 import addDialog from "./addDialog.vue";
-import { listToTree } from "../../../../utils/tools";
+import { getDate } from "../../../../utils/tools";
 export default {
-  name: "adverstPage",
+  name: "noticePage",
   components: { BasicTable, addDialog },
   data() {
     return {
+      getDate: getDate,
       categoryOptions: [],
       filterOptions: {
         column: [
           {
             type: "input",
-            label: "新闻名称",
+            label: "公告名称",
             value: "name",
-          },
-          {
-            type: "cascader",
-            label: "新闻分类",
-            value: "categoryId",
-            options: [],
-            props: {
-              value: "id",
-              label: "name",
-              emitPath: false
-            }
           },
         ],
       },
 
       filterData: {
-        categoryId: "",
-        name: "",
+        name: ""
       },
       table: {
         columns: [
           {
             id: 1,
             prop: "name",
-            label: "新闻名称",
+            label: "公告名称",
           },
           {
             id: 2,
-            prop: "advertiseCategoryId",
-            label: "新闻分类",
-            render: (row) => {
-              return this.categoryOptions.find(
-                (item) => item.id == row.categoryId
-              )["name"];
-            },
-          },
-
-          {
-            id: 3,
-            prop: "image",
-            label: "新闻图片",
-            renderName: "image",
+            prop: "noticeDate",
+            label: "公告时间",
+            renderName: "noticeDate",
           },
           {
             id: 4,
@@ -99,7 +73,7 @@ export default {
             label: "排序",
           },
           {
-            id: 5,
+            id: 6,
             prop: "createTime",
             label: "创建时间",
             type: "date",
@@ -131,7 +105,7 @@ export default {
       headerOperates: [
         {
           key: "el-icon-plus",
-          name: "添加新闻",
+          name: "添加公告",
           action: () => {
             this.$refs.addDialog.open();
           },
@@ -141,7 +115,6 @@ export default {
   },
   created() {
     this.getList();
-    this.getCategoryList();
   },
   methods: {
     searchFilter() {
@@ -150,7 +123,7 @@ export default {
     },
     getList() {
       request.post({
-        url: "/system/sysNews/list",
+        url: "/system/sysNotice/list",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,
@@ -162,31 +135,19 @@ export default {
         },
       });
     },
-    getCategoryList() {
-      request.post({
-        url: "/system/sysNewsCategory/listNoPage",
-        params: {
-          ...this.addData,
-        },
-        success: (res) => {
-          this.categoryOptions = res;
-          this.filterOptions.column[1].options = listToTree(res);
-        },
-      });
-    },
     handleSuccess() {
       this.getList();
     },
 
     handleDelete(row) {
-      this.$confirm("此操作将会删除该新闻, 是否继续?", "提示", {
+      this.$confirm("此操作将会删除该公告, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
           request.post({
-            url: "/system/sysNews/remove",
+            url: "/system/sysNotice/remove",
             params: {
               id: row.id,
             },

@@ -5,9 +5,9 @@
  * @param {String} dateStr 时间毫秒数
  * @returns 格式化后的时间
  */
-export function getDate(dateStr) {
+export function getDate(dateStr, formate) {
   if (!dateStr) return ""
-  return formatDate(dateStr, "yyyy-MM-dd HH:mm:ss")
+  return formatDate(dateStr, formate ? formate : "yyyy-MM-dd HH:mm:ss")
 }
 /**
  * 格式化时间

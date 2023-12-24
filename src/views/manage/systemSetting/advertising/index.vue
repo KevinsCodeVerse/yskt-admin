@@ -72,9 +72,14 @@ export default {
             prop: "advertiseCategoryId",
             label: "广告位置",
             render: (row) => {
-              return this.filterOptions.column[0].options.find(
-                (item) => item.id == row.advertiseCategoryId
-              )["name"];
+              return (
+                this.filterOptions.column[0].options.find(
+                  (item) => item.id == row.advertiseCategoryId
+                ) &&
+                this.filterOptions.column[0].options.find(
+                  (item) => item.id == row.advertiseCategoryId
+                )["name"]
+              );
             },
           },
           {

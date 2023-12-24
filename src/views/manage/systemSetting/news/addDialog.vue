@@ -16,19 +16,6 @@
         label-width="90px"
       >
         <el-form-item label="新闻分类" prop="categoryId">
-          <!-- <jat-select
-            v-model="addData.categoryId"
-            placeholder="请选择新闻分类"
-            clearable
-          >
-            <el-option
-              v-for="item in categoryOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            >
-            </el-option>
-          </jat-select> -->
           <el-cascader
             style="width: 100%;"
             size="small"
