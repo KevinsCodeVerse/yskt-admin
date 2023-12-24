@@ -16,7 +16,7 @@
         v-for="opt in option.column"
         :class="{
           'position-relative': opt.type === 'time',
-          'text-align-left': opt.align === 'left'
+          'text-align-left': opt.align === 'left',
         }"
         :key="opt.value"
       >
@@ -45,6 +45,17 @@
             >
             </el-option>
           </jat-select>
+          <!-- select -->
+          <el-cascader
+          style="width: 100%;"
+            v-else-if="opt.type === 'cascader'"
+            size="small"
+            :placeholder="opt.label"
+            clearable
+            v-model="FilterData[opt.value]"
+            :options="opt.options"
+            :props="opt.props"
+          ></el-cascader>
           <!-- 时间：开始时间、结束时间时 -->
           <div v-else-if="opt.type === 'time'">
             <el-date-picker
@@ -130,7 +141,7 @@ export default {
         disabledDate: (date) =>
           date > new Date() ||
           (this.FilterData.jssj &&
-            date.getTime() > new Date(this.FilterData.jssj).getTime())
+            date.getTime() > new Date(this.FilterData.jssj).getTime()),
       },
       jssjPickerOptions: {
         // 结束时间 时间选择器配置
@@ -138,84 +149,84 @@ export default {
           date > new Date() ||
           (this.FilterData.kssj &&
             date.getTime() <
-              new Date(this.FilterData.kssj).getTime() - 86400000)
+              new Date(this.FilterData.kssj).getTime() - 86400000),
       },
       PickerOptions: {
         // 开始时间 时间选择器配置
-        disabledDate: (date) => date > new Date()
+        disabledDate: (date) => date > new Date(),
       },
-      FilterCollapse: false // 筛选条件是否收缩
-    }
+      FilterCollapse: false, // 筛选条件是否收缩
+    };
   },
   props: {
     option: {
       type: Object,
-      default: () => new Object()
+      default: () => new Object(),
     },
     value: {
       type: Object,
-      default: () => new Object()
+      default: () => new Object(),
     },
     header_tab: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
   created() {
-    this.FilterData = this.value
+    this.FilterData = this.value;
   },
   methods: {
     // 下拉框改变
     changeSelect(val, item) {
       if (item.changeFunc) {
-        this.$emit("changeFilter", val)
+        this.$emit("changeFilter", val);
       }
     },
     /**
      * @description 开始时间 改变
      */
     handleKSSJChange(date) {
-      let jssj = this.FilterData.jssj
+      let jssj = this.FilterData.jssj;
       if (jssj && new Date(jssj) < date) {
-        this.FilterData.jssj = ""
+        this.FilterData.jssj = "";
       }
     },
     searchFilter() {
-      this.$emit("searchFilter")
+      this.$emit("searchFilter");
     },
     /**
      * @description 清空筛选项
      */
     clearFilter() {
       if (!(this.option.isClearAll === false)) {
-        this.FilterData = {}
+        this.FilterData = {};
       }
-      this.$emit("clearFilter")
+      this.$emit("clearFilter");
     },
     /**
      * @description 根据筛选项筛选数据
      */
     getTableByFilterData() {
-      this.$emit("getTableByFilterData", { ...this.FilterData })
+      this.$emit("getTableByFilterData", { ...this.FilterData });
     },
 
     handleTabSelect(tab) {
       this.header_tab.forEach((item) => {
-        item.isChecked = item.id === tab.id
-      })
-      this.$emit("tabChecked", tab)
-    }
+        item.isChecked = item.id === tab.id;
+      });
+      this.$emit("tabChecked", tab);
+    },
   },
   watch: {
     value: {
       handler(newValue) {
-        this.FilterData = newValue
-        this.$emit("input", newValue)
+        this.FilterData = newValue;
+        this.$emit("input", newValue);
       },
-      deep: true
-    }
-  }
-}
+      deep: true,
+    },
+  },
+};
 </script>
 <style lang="less" scoped>
 .searchBtn {

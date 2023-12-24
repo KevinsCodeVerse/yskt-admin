@@ -5,9 +5,9 @@
  * @param {String} dateStr 时间毫秒数
  * @returns 格式化后的时间
  */
-export function getDate(dateStr) {
+export function getDate(dateStr, formate) {
   if (!dateStr) return ""
-  return formatDate(dateStr, "yyyy-MM-dd HH:mm:ss")
+  return formatDate(dateStr, formate ? formate : "yyyy-MM-dd HH:mm:ss")
 }
 /**
  * 格式化时间
@@ -312,4 +312,21 @@ export function renderHeaderWidth(name, width, item) {
  */
 export function showFileType(fileName) {
   return fileName.indexOf(".pdf") != -1 ? "application/pdf" : "image"
+}
+
+
+export function listToTree(list) {
+  let info = list.reduce(
+    (map, node) => ((map[node.id] = node), (node.children = undefined), map),
+    {}
+  );
+  return list.filter((node) => {
+    if(info[node.parentId]) {
+      if(!info[node.parentId].children) {
+        info[node.parentId].children = []
+      }
+      info[node.parentId].children.push(node);
+    }
+    return node.parentId == -1;
+  });
 }

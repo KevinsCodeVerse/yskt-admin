@@ -137,13 +137,13 @@ export default {
       const isImg = ["image/png", "image/jpg", "image/jpeg"].includes(
         file.type
       );
-      const isLtM = file.size / 1024 / 1024 < 1;
+      const isLtM = file.size / 1024 / 1024 < 5;
       if (!isImg) {
         this.$message.warning("只能上传jpg/png文件");
         return false;
       }
       if (!isLtM) {
-        this.$message.warning("大小不能超过1M");
+        this.$message.warning("大小不能超过5M");
         return false;
       }
       this.handleUpload(file);
@@ -185,6 +185,8 @@ export default {
               name: "image01"
             }
           ]
+        } else {
+          this.fileList =  []
         }
       }
     }
