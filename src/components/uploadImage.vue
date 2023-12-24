@@ -185,6 +185,8 @@ export default {
               name: "image01"
             }
           ]
+        } else {
+          this.fileList =  []
         }
       }
     }

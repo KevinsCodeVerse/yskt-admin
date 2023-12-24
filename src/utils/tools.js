@@ -313,3 +313,20 @@ export function renderHeaderWidth(name, width, item) {
 export function showFileType(fileName) {
   return fileName.indexOf(".pdf") != -1 ? "application/pdf" : "image"
 }
+
+
+export function listToTree(list) {
+  let info = list.reduce(
+    (map, node) => ((map[node.id] = node), (node.children = undefined), map),
+    {}
+  );
+  return list.filter((node) => {
+    if(info[node.parentId]) {
+      if(!info[node.parentId].children) {
+        info[node.parentId].children = []
+      }
+      info[node.parentId].children.push(node);
+    }
+    return node.parentId == -1;
+  });
+}
