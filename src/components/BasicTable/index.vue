@@ -16,11 +16,13 @@
         class="basicTable"
         :class="{ absolute: isTableAbsolute }"
         :data="data"
+        border
+        stripe
         :highlightCurrentRow="true"
         :headerCellStyle="{
           background: '#EBEFF4',
           fontWeight: '600',
-          color: '#333333'
+          color: '#333333',
         }"
         :loading="loading"
         v-bind="$attrs"
@@ -97,7 +99,7 @@
             (row, column, cellValue, index) => {
               return c.render
                 ? c.render(row, column, cellValue, index)
-                : cellValue
+                : cellValue;
             }
           "
         >
@@ -132,128 +134,127 @@
 </template>
 
 <script>
-import { getDate } from "@/utils/tools"
-import HeaderOperate from "./HeaderOperate.vue"
-import ListOperate from "./ListOperate.vue"
+import { getDate } from "@/utils/tools";
+import HeaderOperate from "./HeaderOperate.vue";
+import ListOperate from "./ListOperate.vue";
 export default {
   name: "TaskTable",
   components: {
     ListOperate,
-    HeaderOperate
+    HeaderOperate,
   },
   props: {
     columns: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     data: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     total: {
       type: Number,
-      default: 0
+      default: 0,
     },
     selectable: {
       type: Function,
       default: () => {
-        return true
-      }
+        return true;
+      },
     },
     operates: {
       type: [Array, Function],
-      default: null
+      default: null,
     },
     headerOperates: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     tableTitle: {
       type: String,
-      default: "列表"
+      default: "列表",
     },
     selectType: {
       type: String,
-      default: "none"
+      default: "none",
     },
     singleKey: {
       type: String,
-      default: ""
+      default: "",
     },
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     hasPage: {
-      default: true
+      default: true,
     },
     isTableAbsolute: {
-      default: false
+      default: false,
     },
     operateWidth: {
-      default: "200px"
+      default: "200px",
     },
     isShowTableHead: {
       type: Boolean,
-      default: true
+      default: true,
     },
     hasCard: {
       type: Boolean,
-      default: true
+      default: true,
     },
     hasSort: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   data() {
     return {
-      curRow: ""
-    }
+      curRow: "",
+    };
   },
   methods: {
     formdatetime(data) {
       if (typeof data !== "undefined" && data !== null) {
         if (data.time) {
-          return getDate(data.time)
-        }  else if(data && typeof data === "number" ) {
-          return getDate(data)
+          return getDate(data.time);
+        } else if (data && typeof data === "number") {
+          return getDate(data);
+        } else if (JSON.stringify(data) === "{}") {
+          return "--";
         }
-        else if (JSON.stringify(data) === "{}") {
-          return "--"
-        }
-        return data
+        return data;
       } else {
-        return "--"
+        return "--";
       }
     },
     onCurrentChange(curPage) {
-      this.$emit("current-page-change", curPage)
+      this.$emit("current-page-change", curPage);
     },
     onSizeChange(curSize) {
-      this.$emit("size-page-change", curSize)
+      this.$emit("size-page-change", curSize);
     },
     onSelectionChange(selection) {
-      this.$emit("selection-change", selection)
+      this.$emit("selection-change", selection);
     },
     onSingleSelectionChange(selection) {
       if (selection) {
-        this.curRow = selection[this.singleKey]
-        this.$emit("single-selection-change", selection)
+        this.curRow = selection[this.singleKey];
+        this.$emit("single-selection-change", selection);
       }
     },
     clearSingleSelection() {
-      this.curRow = ""
+      this.curRow = "";
     },
-    showOperates: function (val) {
+    showOperates: function(val) {
       if (Array.isArray(this.operates)) {
-        return this.operates
+        return this.operates;
       }
-      return this.operates(val)
-    }
+      return this.operates(val);
+    },
   },
-  watch: {}
-}
+  watch: {},
+};
 </script>
 
 <style lang="less" scoped>

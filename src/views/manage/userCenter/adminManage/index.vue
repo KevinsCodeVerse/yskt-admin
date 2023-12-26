@@ -51,6 +51,7 @@
       </div>
     </BasicTable>
     <add-dialog @success="handleSuccess" ref="addDialog"></add-dialog>
+    <detailDrawer ref="drawer"></detailDrawer>
   </div>
 </template>
 
@@ -59,12 +60,15 @@ import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 import addDialog from "./addDialog.vue";
 import { listToTree } from "../../../../utils/tools";
+import detailDrawer from "./detailDrawer.vue";
+
 export default {
   name: "adminManagePage",
-  components: { BasicTable, addDialog },
+  components: { BasicTable, addDialog, detailDrawer },
   data() {
     return {
       supervisorAdOptions: [],
+      departmentList: [],
       remoteLoading: false,
       filterOptions: {
         column: [
@@ -153,7 +157,7 @@ export default {
         columns: [
           {
             id: 1,
-            prop: "username",
+            prop: "account",
             label: "用户名",
           },
           {
@@ -168,7 +172,7 @@ export default {
           },
           {
             id: 5,
-            prop: "weChat",
+            prop: "wechat",
             label: "微信",
           },
           {
@@ -178,14 +182,24 @@ export default {
           },
           {
             id: 7,
-            prop: "department",
+            prop: "departmentId",
             label: "所属部门",
+            render: (row) => {
+              const deparment = this.departmentList.find(
+                (item) => item.departmentId == row.id
+              );
+              if (deparment) {
+                return deparment.name;
+              } else {
+                return "";
+              }
+            },
           },
           {
             id: 8,
             prop: "createTime",
-            label: "创建时间",
-            type: "date"
+            label: "注册时间",
+            type: "date",
           },
         ],
         pageSize: 10,
@@ -194,22 +208,22 @@ export default {
         total: 0,
       },
       operates: [
-        // {
-        //   key: "edit",
-        //   title: "编辑",
-        //   btnStyle: "yellow",
-        //   action: (o, row) => {
-        //     this.$refs.addDialog.edit(row);
-        //   },
-        // },
-        // {
-        //   key: "delete",
-        //   title: "删除",
-        //   btnStyle: "red",
-        //   action: (o, row) => {
-        //     this.handleDelete(row);
-        //   },
-        // },
+        {
+          key: "edit",
+          title: "编辑",
+          btnStyle: "yellow",
+          action: (o, row) => {
+            this.$refs.addDialog.edit(row);
+          },
+        },
+        {
+          key: "detail",
+          title: "详情",
+          btnStyle: "green",
+          action: (o, row) => {
+            this.$refs.drawer.open(row);
+          },
+        },
       ],
       headerOperates: [
         {
@@ -232,15 +246,21 @@ export default {
       this.getList();
     },
     getList() {
-      const { registerTime, ...rest} = this.filterData
+      const { registerTime, ...rest } = this.filterData;
       request.post({
         url: "/admin/adInfo/adList",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,
           ...rest,
-          startTime: registerTime && registerTime.length > 0 && registerTime[0],
-          endTime: registerTime && registerTime.length > 0 && registerTime[1]
+          startTime:
+            registerTime && registerTime.length > 0 ? registerTime[0] : "",
+          endTime:
+            registerTime && registerTime.length > 0
+              ? this.$moment(registerTime[1])
+                  .add(1, "days")
+                  .format("YYYY-MM-DD")
+              : "",
         },
         success: (res) => {
           this.table.data = res.list;
@@ -255,6 +275,7 @@ export default {
           ...this.addData,
         },
         success: (res) => {
+          this.departmentList = res;
           this.filterOptions.column[3].options = listToTree(res);
         },
       });
@@ -263,8 +284,8 @@ export default {
       this.getList();
     },
     remoteMethod(search) {
-      if(!search) {
-        return
+      if (!search) {
+        return;
       }
       this.remoteLoading = true;
       request.post({

@@ -27,6 +27,7 @@
             size="small"
             placeholder="请选择父级名称"
             clearable
+            :disabled="parentIdDisable"
             v-model="addData.parentId"
             :options="departmentOptions"
             :props="{
@@ -80,6 +81,7 @@ export default {
       addModifyVisible: false,
       addInterfaceVisible: false,
       remoteLoading: false,
+      parentIdDisable: false,
       dialogTitle: "",
       departmentOptions: [
         {
@@ -101,7 +103,7 @@ export default {
           { required: true, message: "请选择父级名称", trigger: "blur" },
         ],
         sort: [
-        { required: true, message: "请输入排序", trigger: "blur" },
+          { required: true, message: "请输入排序", trigger: "blur" },
           {
             type: "number",
             message: "请输入整数",
@@ -127,6 +129,7 @@ export default {
       ];
       if (item) {
         this.addData.parentId = item.id;
+        this.parentIdDisable = true;
       }
       // this.remoteMethod()
     },
@@ -138,6 +141,7 @@ export default {
         },
         ...data,
       ];
+      this.parentIdDisable = true;
       this.addData = {
         id,
         name,
@@ -166,21 +170,25 @@ export default {
         supervisorAdId: "",
         id: "",
       };
+      this.parentIdDisable = false;
     },
     remoteMethod(search) {
-      this.remoteLoading = true
+      if (!search) {
+        return;
+      }
+      this.remoteLoading = true;
       request.post({
         url: "/admin/adInfo/queryAdminByNameOrPhone",
         params: {
           search,
         },
         success: (res) => {
-          this.remoteLoading = false
+          this.remoteLoading = false;
           this.supervisorAdOptions = res;
         },
         catch: () => {
-          this.remoteLoading = false
-        }
+          this.remoteLoading = false;
+        },
       });
     },
 
@@ -208,9 +216,7 @@ export default {
                 this.close();
                 this.$emit("success");
               },
-              catch: () => {
-                
-              }
+              catch: () => {},
             });
           }
         }
