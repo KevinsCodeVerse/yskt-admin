@@ -16,10 +16,11 @@
 			</div>
 			<div class="header_right">
 				<div style="cursor: pointer;" @click="openDrawer">
-					<i class="icon-tools"></i>
+					<i class="el-icon-s-tools" style="color: #0482D1;"></i>
+					<span>设置</span>
 				</div>
 				<div>
-					<span style="color: #0482D1;">欢迎您，{{name}}</span>
+					<span style="color: #0482D1;">欢迎您，鹏飞超管</span>
 				</div>
 			</div>
 		</div>

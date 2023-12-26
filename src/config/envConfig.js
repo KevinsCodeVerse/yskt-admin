@@ -8,7 +8,7 @@ const proxyConfig = {
 	//开发环境
 	dev: {
 		// 服务url
-		serviceUrl: 'http://127.0.0.1:9000',
+		serviceUrl: 'https://pengfkt.com/api/',
 
 		// websocket url
 		wsUrl: '/ws/webSocketServer',
@@ -31,7 +31,7 @@ const proxyConfig = {
 		// 是否显示菜单管理操作按钮
 		isShowMenuOpertionBtn: false,
 
-		api: '/api',
+		api: '/apiV2',
 	}
 }
 

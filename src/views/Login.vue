@@ -2,7 +2,12 @@
 	<div id="login">
 		<div v-if="!$store.state.isPhone" class="back_img">
 			<div class="shade">
-				<div class="title">鹏飞课堂智能后台管理系统</div>
+
+				<div class="title" style="display: flex;align-items: center;justify-content: center;">
+					<el-image style="width: 55px; height: 55px" :src="require('@/assets/svg/pf.png')" :fit="fit">
+					</el-image>
+					<span style="margin-left: 10px;">鹏飞课堂智能后台管理系统</span>
+				</div>
 			</div>
 		</div>
 		<div class="form">
@@ -97,8 +102,8 @@
 				this.params.password = pfpwd
 				console.log("记住:", this.remember);
 				console.log("记住2:", pfremeber);
-				if (pfremeber) {					
-				this.remember = true
+				if (pfremeber) {
+					this.remember = true
 				}
 			}
 		},

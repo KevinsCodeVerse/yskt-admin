@@ -6,7 +6,7 @@
 			:background-color="nBackground" :text-color="nColor" :active-text-color="nActiveColor" :collapse="!$store.state.navOpen" router
 			:default-openeds="openeds">
 				<el-menu-item index="-1" disabled>
-					<img src="@/assets/svg/shuye.png" alt="" height="20px" style="margin-right: 10px;">
+					<img src="@/assets/svg/pfunText.png" alt="" height="20px" style="margin-right: 10px;">
 					<span slot="title">鹏飞智能后台管理系统</span>
 				</el-menu-item>
 				<el-scrollbar style="height: 100%; width: 100%;">
