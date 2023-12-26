@@ -31,13 +31,15 @@ placeholder... */
       @visible-change="handleVisibleChange"
       :popper-class="
         popperClass +
-        ' ' +
-        'jat-select-popover' +
-        [popperAppendToBody ? '' : ' ']
+          ' ' +
+          'jat-select-popover' +
+          [popperAppendToBody ? '' : ' ']
       "
       :popper-append-to-body="popperAppendToBody"
       v-model="input"
       :placeholder="placeholder"
+      v-bind="$attrs"
+      v-on="$listeners"
     >
       <slot></slot>
     </el-select>
@@ -54,7 +56,7 @@ export default {
      */
     popperClass: {
       type: String,
-      default: ""
+      default: "",
     },
     /**
      * @description 是否将弹出框插入至 body 元素。
@@ -62,32 +64,32 @@ export default {
      */
     popperAppendToBody: {
       type: Boolean,
-      default: true
+      default: true,
     },
     /** @description 	输入框尺寸 */
     size: {
       type: String,
       default: "mini",
       validator(value) {
-        return ["medium", "small", "mini"].includes(value)
-      }
+        return ["medium", "small", "mini"].includes(value);
+      },
     },
     readonly: Boolean,
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     placeholder: {
       type: [String, Number],
-      default: "请选择"
+      default: "请选择",
     },
     validateEvent: {
       type: Boolean,
-      default: true
+      default: true,
     },
     clearable: {
       type: Boolean,
-      default: false
+      default: false,
     },
     multiple: Boolean,
     collapseTags: Boolean,
@@ -96,64 +98,64 @@ export default {
     width: String,
     nodata: {
       type: Boolean,
-      default: false
+      default: false,
     },
     allowcreate: {
       type: Boolean,
-      default: false
+      default: false,
     },
     filterable: {
       type: Boolean,
-      default: false
+      default: false,
     },
     defaultfirstoption: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
-      input: ""
-    }
+      input: "",
+    };
   },
   watch: {
     value: {
       deep: true,
       handler(newValue) {
-        this.input = newValue
-      }
-    }
+        this.input = newValue;
+      },
+    },
   },
   model: {
     event: "input",
-    prop: "value"
+    prop: "value",
   },
   components: {},
   created() {
-    this.input = this.value
+    this.input = this.value;
   },
   mounted() {},
   methods: {
     classSet() {
-      if (this.nodata) return "nodata"
+      if (this.nodata) return "nodata";
     },
     handleChange(item) {
-      this.$emit("change", item)
+      this.$emit("change", item);
     },
     handleInput(item) {
-      this.$emit("input", item)
+      this.$emit("input", item);
     },
     handleFocus(item) {
-      this.$emit("focus", item)
+      this.$emit("focus", item);
     },
     handleBlur(item) {
-      this.$emit("blur", item)
+      this.$emit("blur", item);
     },
     handleVisibleChange(item) {
-      this.$emit("visible-change", item)
-    }
-  }
-}
+      this.$emit("visible-change", item);
+    },
+  },
+};
 </script>
 
 <style lang="less">

@@ -47,7 +47,7 @@
           </jat-select>
           <!-- select -->
           <el-cascader
-          style="width: 100%;"
+            :style="{ width: inputWidth }"
             v-else-if="opt.type === 'cascader'"
             size="small"
             :placeholder="opt.label"
@@ -86,6 +86,7 @@
           <!-- 时间：开始时间、结束时间时 -->
           <div v-else-if="opt.type === 'timeAll'">
             <el-date-picker
+              :style="{width: inputWidth}"
               v-model="FilterData[opt.value]"
               type="daterange"
               size="small"
@@ -112,6 +113,9 @@
               ></jat-input>
             </div>
           </div>
+          <div v-else-if="opt.type === 'slot'">
+            <slot :name="opt.slotName"></slot>
+          </div>
         </slot>
       </div>
       <!-- <div
@@ -125,6 +129,7 @@
         <span class="resetBtn" @click="clearFilter" type="info">重置</span>
       </div>
     </div>
+
   </div>
 </template>
 <script>

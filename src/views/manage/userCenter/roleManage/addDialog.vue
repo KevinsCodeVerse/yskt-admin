@@ -96,7 +96,9 @@ export default {
         id: "",
       },
       roleRule: {
-        roleName: [{ required: true, message: "请输入角色名称", trigger: "blur" }],
+        roleName: [
+          { required: true, message: "请输入角色名称", trigger: "blur" },
+        ],
       },
       interfaceRules: {
         menuName: [
@@ -109,6 +111,12 @@ export default {
       defaultProps: {
         children: "children",
         label: "label",
+        disabled: (data, node) => {
+          if (node.level === 3 && data.status) {
+            return data.status == -1
+          }
+          return false;
+        },
       },
       menuList: [],
       interfaceData: {
@@ -136,8 +144,12 @@ export default {
       if (this.$refs.tree) {
         this.$refs.tree.setCheckedKeys([]);
       }
-      this.$refs.roleRef && this.$refs.roleRef.clearValidate()
+      this.$refs.roleRef && this.$refs.roleRef.clearValidate();
       this.addModifyVisible = false;
+      this.addData = {
+        roleName: "",
+        id: "",
+      }
     },
     closeInterface() {
       this.interfaceData = {
@@ -145,7 +157,7 @@ export default {
         menuName: "",
         requestUrl: "",
       };
-      this.$refs.intefaceRef && this.$refs.intefaceRef.clearValidate()
+      this.$refs.intefaceRef && this.$refs.intefaceRef.clearValidate();
       this.addInterfaceVisible = false;
     },
     getRoleTree() {
@@ -190,7 +202,7 @@ export default {
       }
     },
     handleAddInterface(node) {
-        console.log(node);
+      console.log(node);
       this.addInterfaceVisible = true;
       this.interfaceData.parentId = node.data.id;
     },
