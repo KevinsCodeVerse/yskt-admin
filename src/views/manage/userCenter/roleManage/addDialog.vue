@@ -74,6 +74,9 @@
         <el-form-item label="接口路径:" prop="requestUrl">
           <jat-input v-model="interfaceData.requestUrl"></jat-input>
         </el-form-item>
+		<el-form-item label="接口状态:" >
+		  <jat-input v-model="interfaceData.status"></jat-input>
+		</el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <jat-button plain @click="closeInterface">取 消</jat-button>
@@ -123,6 +126,7 @@ export default {
         parentId: "",
         menuName: "",
         requestUrl: "",
+		status:0
       },
     };
   },
@@ -156,6 +160,7 @@ export default {
         parentId: "",
         menuName: "",
         requestUrl: "",
+		status:0
       };
       this.$refs.intefaceRef && this.$refs.intefaceRef.clearValidate();
       this.addInterfaceVisible = false;
