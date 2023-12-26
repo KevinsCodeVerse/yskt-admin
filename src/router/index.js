@@ -34,7 +34,7 @@ var publicUrl = [
 ]
 
 var router = new Router({
-	mode: "history",
+	mode: "hash",
 	base: "/",
 	// 公共路径
 	routes: [{
