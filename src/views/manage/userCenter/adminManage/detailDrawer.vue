@@ -40,28 +40,28 @@
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            <i class="el-icon-mobile-phone"></i>
+            <svg-icon icon-class="qq"></svg-icon>
             QQ
           </template>
           {{ info.wechat }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            <i class="el-icon-mobile-phone"></i>
+            <svg-icon icon-class="gender"></svg-icon>
             性别
           </template>
           {{ info.gender }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            <i class="el-icon-mobile-phone"></i>
+            <svg-icon icon-class="department"></svg-icon>
             部门
           </template>
           {{ info.departmentId }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            <i class="el-icon-mobile-phone"></i>
+            <svg-icon icon-class="department"></svg-icon>
             可查看部门
           </template>
           {{ info.departments }}
@@ -72,7 +72,7 @@
             <i class="el-icon-tickets"></i>
             用户状态
           </template>
-          <el-tag size="small">{{ info.status }}</el-tag>
+          <el-tag size="small">{{ info.adStatus }}</el-tag>
         </el-descriptions-item>
       </el-descriptions>
     </el-drawer>
@@ -104,12 +104,25 @@ export default {
         account: "pfk7642",
         status: 0,
       },
+      statusDic: {
+        0: "正常",
+        1: "冻结",
+        2: "禁用",
+      },
     };
   },
 
   methods: {
-    open(data) {
-      this.info = data;
+    open(data, deparmentList) {
+      const { departmentId, gender, adStatus, ...rest } = data;
+      const department = deparmentList.find((item) => item.id === departmentId);
+      console.log(department);
+      this.info = {
+        departmentId: department ? department.name : "",
+        gender: gender == 1 ? "男" : "女",
+        adStatus: this.statusDic[adStatus],
+        ...rest,
+      };
       this.drawer = true;
     },
     close() {

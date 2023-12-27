@@ -1,4 +1,4 @@
-<!-- 广告管理 -->
+<!-- 角色管理 -->
 <template>
   <div class="middle-container">
     <jat-fillter
@@ -37,6 +37,7 @@
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 import addDialog from "./addDialog.vue";
+import { listToTree } from "../../../../utils/tools";
 export default {
   name: "adverstPage",
   components: { BasicTable, addDialog },
@@ -46,51 +47,44 @@ export default {
       filterOptions: {
         column: [
           {
-            type: "select",
-            label: "广告位置",
-            value: "categoryId",
-            options: [],
-            labelKey: "name",
-            valueKey: "id",
+            type: "input",
+            label: "客户名称",
+            value: "name",
           },
           {
             type: "input",
-            label: "广告名称",
-            value: "name",
+            label: "客户区域",
+            value: "region",
           },
+          {
+            type: "input",
+            label: "所属人",
+            value: "parentAdId",
+          }
         ],
       },
 
       filterData: {
-        categoryId: "",
         name: "",
+        region: "",
+        parentAdId: ""
       },
       table: {
         columns: [
           {
             id: 1,
-            prop: "advertiseCategoryId",
-            label: "广告位置",
-            render: (row) => {
-              return (
-                this.filterOptions.column[0].options.find(
-                  (item) => item.id == row.advertiseCategoryId
-                ) &&
-                this.filterOptions.column[0].options.find(
-                  (item) => item.id == row.advertiseCategoryId
-                )["name"]
-              );
-            },
+            prop: "name",
+            label: "新闻名称",
           },
           {
             id: 2,
-            prop: "name",
-            label: "广告名称",
+            prop: "advertiseCategoryId",
+            label: "新闻分类"
           },
           {
             id: 3,
             prop: "image",
-            label: "广告图片",
+            label: "新闻图片",
             renderName: "image",
           },
           {
@@ -100,11 +94,6 @@ export default {
           },
           {
             id: 5,
-            prop: "adName",
-            label: "创建人",
-          },
-          {
-            id: 6,
             prop: "createTime",
             label: "创建时间",
             type: "date",
@@ -121,7 +110,6 @@ export default {
           title: "编辑",
           btnStyle: "yellow",
           action: (o, row) => {
-            console.log(row);
             this.$refs.addDialog.edit(row);
           },
         },
@@ -137,7 +125,7 @@ export default {
       headerOperates: [
         {
           key: "el-icon-plus",
-          name: "添加广告",
+          name: "添加客户",
           action: () => {
             this.$refs.addDialog.open();
           },
@@ -156,7 +144,7 @@ export default {
     },
     getList() {
       request.post({
-        url: "/system/sysAdvertise/list",
+        url: "/admin/adCustomer/list",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,
@@ -170,10 +158,13 @@ export default {
     },
     getCategoryList() {
       request.post({
-        url: "/system/sysAdvertise/getAllAdvertisingSpace",
-        params: {},
+        url: "/system/sysNewsCategory/listNoPage",
+        params: {
+          ...this.addData,
+        },
         success: (res) => {
-          this.filterOptions.column[0].options = res;
+          this.categoryOptions = res;
+          this.filterOptions.column[1].options = listToTree(res);
         },
       });
     },
@@ -182,14 +173,14 @@ export default {
     },
 
     handleDelete(row) {
-      this.$confirm("此操作将会删除该广告, 是否继续?", "提示", {
+      this.$confirm("此操作将会删除该新闻, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
           request.post({
-            url: "/system/sysAdvertise/remove",
+            url: "/system/sysNews/remove",
             params: {
               id: row.id,
             },

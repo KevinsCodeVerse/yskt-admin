@@ -1,4 +1,4 @@
-<!-- 角色管理 -->
+<!-- 会员管理 -->
 <template>
   <div class="middle-container">
     <jat-fillter
@@ -51,7 +51,6 @@
       </div>
     </BasicTable>
     <add-dialog @success="handleSuccess" ref="addDialog"></add-dialog>
-    <detailDrawer ref="drawer"></detailDrawer>
   </div>
 </template>
 
@@ -60,11 +59,10 @@ import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 import addDialog from "./addDialog.vue";
 import { listToTree } from "../../../../utils/tools";
-import detailDrawer from "./detailDrawer.vue";
 
 export default {
-  name: "adminManagePage",
-  components: { BasicTable, addDialog, detailDrawer },
+  name: "formalVipPage",
+  components: { BasicTable, addDialog },
   data() {
     return {
       supervisorAdOptions: [],
@@ -228,7 +226,7 @@ export default {
       headerOperates: [
         {
           key: "el-icon-plus",
-          name: "添加管理员",
+          name: "添加会员",
           action: () => {
             this.$refs.addDialog.open();
           },
@@ -248,7 +246,7 @@ export default {
     getList() {
       const { registerTime, ...rest } = this.filterData;
       request.post({
-        url: "/admin/adInfo/adList",
+        url: "/admin/adInfo/vipList",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,

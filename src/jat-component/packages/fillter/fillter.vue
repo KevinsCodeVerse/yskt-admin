@@ -26,6 +26,7 @@
             v-if="opt.type === 'input' || !opt.type"
             v-model.trim="FilterData[opt.value]"
             :placeholder="opt.label"
+            clearable
             :width="inputWidth"
           ></jat-input>
           <!-- select -->
