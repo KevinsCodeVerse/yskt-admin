@@ -68,6 +68,16 @@ export function validEmail(email) {
 }
 
 /**
+ * @param {string} phone
+ * @returns {Boolean}
+ */
+export function validPhone(phone) {
+  const reg = /^1[3-9][0-9]{9}$/
+  return reg.test(phone)
+}
+
+
+/**
  * @param {string} str
  * @returns {Boolean}
  */

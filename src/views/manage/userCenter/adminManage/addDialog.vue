@@ -15,10 +15,16 @@
         label-position="right"
         label-width="90px"
       >
-        <el-form-item label="用户账号:">
-          <span class="warm_box"
+        <el-form-item label="用户账号:" prop="account">
+          <span v-if="!addData.id" class="warm_box"
             ><i class="el-icon-info"></i>系统将自动生成用户名</span
           >
+          <jat-input
+            v-else
+            disabled
+            v-model="addData.account"
+            placeholder="请输入用户账号"
+          ></jat-input>
         </el-form-item>
         <el-form-item label="角色权限:" prop="roleIds">
           <el-checkbox-group v-model="addData.roleIds">
@@ -52,7 +58,7 @@
             placeholder="请输入微信"
           ></jat-input>
         </el-form-item>
-        <el-form-item label="用户密码:" prop="password">
+        <el-form-item v-if="!addData.id" label="用户密码:" prop="password">
           <jat-input
             v-model="addData.password"
             placeholder="请输入用户密码，不填系统将会生成随机密码（以短信的方式通知密码给后台账号持有人）"
@@ -106,7 +112,8 @@ import uploadImage from "@/components/uploadImage.vue";
 import request from "../../../../utils/request";
 import tinymceEdit from "@/components/tinymceEdit.vue";
 import { listToTree } from "../../../../utils/tools";
-import rsa from '@/utils/rsa'
+import rsa from "@/utils/rsa";
+import { validPhone } from "@/utils/validate";
 export default {
   components: { uploadImage, tinymceEdit },
   data() {
@@ -136,7 +143,19 @@ export default {
       adminRule: {
         gender: [{ required: true, message: "请选择性别", trigger: "blur" }],
         name: [{ required: true, message: "请输入真实姓名", trigger: "blur" }],
-        phone: [{ required: true, message: "请输入联系电话", trigger: "blur" }],
+        phone: [
+          { required: true, message: "请输入联系电话", trigger: "blur" },
+          {
+            validator: (rule, value, callback) => {
+              if (validPhone(value)) {
+                callback();
+              } else {
+                callback(new Error("联系电话格式不正确"));
+              }
+            },
+            trigger: "blur",
+          },
+        ],
         departmentId: [
           { required: true, message: "请选择部门", trigger: "blur" },
         ],
@@ -157,35 +176,42 @@ export default {
       this.getRolesOptions();
       this.addModifyVisible = true;
     },
-    // edit({
-    //   id,
-    //   name,
-    //   categoryId,
-    //   href,
-    //   image,
-    //   sort,
-    //   content,
-    //   seoTitle,
-    //   seoKey,
-    //   seoContent,
-    //   remark,
-    // }) {
-    //   this.dialogTitle = "编辑新闻";
-    //   this.addModifyVisible = true;
-    //   this.addData = {
-    //     id,
-    //     name,
-    //     categoryId,
-    //     href,
-    //     image,
-    //     sort,
-    //     content,
-    //     seoTitle,
-    //     seoKey,
-    //     seoContent,
-    //     remark,
-    //   };
-    // },
+    edit({
+      roleIds,
+      name,
+      phone,
+      qq,
+      wechat: wechatNum,
+      password,
+      gender,
+      departmentId,
+      status,
+      account,
+      canSeeDepartment,
+      id,
+    }) {
+      this.dialogTitle = "编辑管理员";
+      this.addData = {
+        roleIds: roleIds ? JSON.parse(roleIds) : [],
+        name,
+        phone,
+        qq,
+        wechatNum,
+        password,
+        gender,
+        departmentId,
+        status,
+        account,
+        canSeeDepartment: canSeeDepartment ? JSON.parse(canSeeDepartment) : [],
+        id,
+      };
+      this.getcanSeeDepartmentList();
+      this.getRolesOptions();
+      this.addModifyVisible = true;
+      setTimeout(() => {
+        this.$refs.departmentRef.setCheckedKeys(this.addData.canSeeDepartment);
+      }, 100);
+    },
     close() {
       this.$refs.adminRef && this.$refs.adminRef.clearValidate();
       this.$refs.departmentRef.setCheckedKeys([]);
@@ -217,13 +243,13 @@ export default {
     },
     getRolesOptions() {
       request.post({
-        url: "/admin/adRole/list",
+        url: "/admin/adRole/listNoPage",
         params: {
           pageNo: 1,
           pageSize: 50,
         },
         success: (res) => {
-          this.rolesOptions = res.list;
+          this.rolesOptions = res;
         },
       });
     },
@@ -257,7 +283,7 @@ export default {
                 canSeeDepartment: canSeeDepartment
                   ? JSON.stringify(canSeeDepartment)
                   : undefined,
-                password: rsa.encryptByPublicKey(password),
+                password: password ? rsa.encryptByPublicKey(password) : "",
                 roleIds: JSON.stringify(roleIds),
               },
               success: (res) => {
@@ -280,6 +306,6 @@ export default {
 }
 .el-form {
   height: 520px;
-  overflow:scroll;
+  overflow: scroll;
 }
 </style>
