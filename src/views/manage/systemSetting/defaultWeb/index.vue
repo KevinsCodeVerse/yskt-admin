@@ -1,6 +1,6 @@
 <!-- 网站设置 -->
 <template>
-  <div class="webPage">
+  <div class="webPage" v-loading="loading">
     <el-form
       ref="webSet"
       label-position="right"
@@ -32,57 +32,6 @@
         ></jat-input>
         <jat-input v-else v-model="item.value"></jat-input>
       </el-form-item>
-      <!-- <el-form-item label="公司全称" prop="gsqc">
-        <jat-input v-model="webData.gsqc"></jat-input>
-      </el-form-item>
-      <el-form-item label="营业执照" prop="yyzz">
-        <jat-input v-model="webData.yyzz"></jat-input>
-      </el-form-item>
-      <el-form-item label="经营许可证号" prop="jyxkzh">
-        <jat-input v-model="webData.jyxkzh"></jat-input>
-      </el-form-item>
-      <el-form-item label="营业执照照片" prop="yyzzzp">
-        <upload-image v-model="webData.yyzzzp"></upload-image>
-      </el-form-item>
-      <el-form-item label="经营许可证图片" prop="jyxkzhtp">
-        <upload-image v-model="webData.jyxkzhtp"></upload-image>
-      </el-form-item>
-
-      <el-form-item label="联系人" prop="lxr">
-        <jat-input v-model="webData.lxr"></jat-input>
-      </el-form-item>
-
-      <el-form-item label="联系人手机号码" prop="lxrsjhm">
-        <jat-input v-model="webData.lxrsjhm"></jat-input>
-      </el-form-item>
-
-      <el-form-item label="SEO标题" prop="seobt">
-        <jat-input v-model="webData.seobt"></jat-input>
-      </el-form-item>
-
-      <el-form-item label="SEO关键词" prop="seogjc">
-        <jat-input v-model="webData.seogjc"></jat-input>
-      </el-form-item>
-
-      <el-form-item label="微信二维码" prop="wxewm">
-        <upload-image v-model="webData.wxewm"></upload-image>
-      </el-form-item>
-
-      <el-form-item label="SEO描述" prop="seoms">
-        <jat-input
-          type="textarea"
-          :rows="10"
-          v-model="webData.seoms"
-        ></jat-input>
-      </el-form-item>
-
-      <el-form-item label="打印头部：" prop="dytb">
-        <tinymceEdit v-model="webData.dytb"></tinymceEdit>
-      </el-form-item>
-
-      <el-form-item label="打印尾部：" prop="dywb">
-        <tinymceEdit id="dywb" v-model="webData.dywb"></tinymceEdit>
-      </el-form-item> -->
     </el-form>
     <div @click="submitForm" class="bottom_submit">
       <jat-button>保存</jat-button>
@@ -99,6 +48,7 @@ export default {
   components: { uploadImage, tinymceEdit },
   data() {
     return {
+      loading: false,
       webData: {},
       webRules: {},
       formData: [],
@@ -110,9 +60,20 @@ export default {
   },
 
   methods: {
-    async getInfo() {
-      const res = await getData();
-      this.formData = res.data.result;
+    getInfo() {
+      this.loading = true;
+      request.post({
+        url: "/system/sysParam/platformParams",
+        params: {
+        },
+        success: (res) => {
+          this.formData = res;
+          this.loading = false;
+        },
+        catch: () => {
+          this.loading = false;
+        },
+      });
     },
     submitForm() {
       request.post({
@@ -121,8 +82,8 @@ export default {
           paramObjs: JSON.stringify(this.formData),
         },
         success: (res) => {
-          this.$message.success(res)
-          this.getInfo()
+          this.$message.success(res);
+          this.getInfo();
         },
       });
     },

@@ -1,6 +1,6 @@
 <!-- 非会员管理 -->
 <template>
-  <div class="middle-container">
+  <div class="middle-container" v-loading="loading">
     <jat-fillter
       :option="filterOptions"
       v-model="filterData"
@@ -9,12 +9,13 @@
     >
       <span slot="parentId">
         <el-select
+        style="width: 100%;"
           v-model="filterData.parentId"
           filterable
           remote
           size="small"
           clearable
-          placeholder="添加人"
+          placeholder="添加人(可根据名称或手机号进行搜索)"
           :remote-method="remoteMethod"
           :loading="remoteLoading"
         >
@@ -31,7 +32,6 @@
     <BasicTable
       :columns="table.columns"
       :headerOperates="headerOperates"
-      :operates="operates"
       :data="table.data"
       :pageSize="table.pageSize"
       :currentPage="table.currentPage"
@@ -68,6 +68,7 @@ export default {
       supervisorAdOptions: [],
       departmentList: [],
       remoteLoading: false,
+      loading: false,
       filterOptions: {
         column: [
           {
@@ -95,18 +96,18 @@ export default {
               },
             ],
           },
-          {
-            type: "cascader",
-            label: "部门",
-            value: "departmentId",
-            options: [],
-            props: {
-              value: "id",
-              label: "name",
-              emitPath: false,
-              checkStrictly: true,
-            },
-          },
+          // {
+          //   type: "cascader",
+          //   label: "部门",
+          //   value: "departmentId",
+          //   options: [],
+          //   props: {
+          //     value: "id",
+          //     label: "name",
+          //     emitPath: false,
+          //     checkStrictly: true,
+          //   },
+          // },
           {
             type: "slot",
             slotName: "parentId",
@@ -179,28 +180,13 @@ export default {
             label: "联系电话",
           },
           {
-            id: 7,
-            prop: "departmentId",
-            label: "所属部门",
-            render: (row) => {
-              const deparment = this.departmentList.find(
-                (item) => item.id == row.departmentId
-              );
-              if (deparment) {
-                return deparment.name;
-              } else {
-                return "";
-              }
-            },
-          },
-          {
             id: 8,
             prop: "createTime",
             label: "注册时间",
             type: "date",
           },
         ],
-        pageSize: 10,
+        pageSize: 20,
         currentPage: 1,
         data: [],
         total: 0,
@@ -238,6 +224,7 @@ export default {
     },
     getList() {
       const { registerTime, ...rest } = this.filterData;
+      this.loading = true
       request.post({
         url: "/admin/adInfo/vipList",
         params: {
@@ -256,7 +243,11 @@ export default {
         success: (res) => {
           this.table.data = res.list;
           this.table.total = res.total;
+          this.loading = false
         },
+        catch: () => {
+          this.loading = false
+        }
       });
     },
     getDepartmentList() {

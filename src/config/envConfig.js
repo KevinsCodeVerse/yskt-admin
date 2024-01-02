@@ -15,7 +15,7 @@ const proxyConfig = {
 
 		// 是否显示菜单管理操作按钮
 		isShowMenuOpertionBtn: true,
-
+		qiniuDomain: "http://qiniu.pengfkt.com/",
 		api: '/api'
 	},
 
@@ -30,7 +30,7 @@ const proxyConfig = {
 
 		// 是否显示菜单管理操作按钮
 		isShowMenuOpertionBtn: false,
-
+		qiniuDomain: "http://qiniu.pengfkt.com/",
 		api: '/apiV2',
 	}
 }

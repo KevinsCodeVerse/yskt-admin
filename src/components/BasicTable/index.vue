@@ -106,14 +106,26 @@
           <template slot-scope="{ row, column, $index }">
             <slot v-if="c.renderName" :name="c.renderName" :row="row" />
             <span v-else-if="c.type === 'date'">
-              {{ formdatetime(row[c.prop]) }}
+              {{ formdatetime(row[c.prop], c.formate) }}
             </span>
-            <span v-else>
-              {{
-                c.render
-                  ? c.render(row, column, row[c.prop], $index)
-                  : row[c.prop]
-              }}
+            <span
+              v-else
+              :style="{ color: c.colorRener ? c.colorRener(row) : undefined }"
+            >
+              <el-tag v-if="c.statusType" :type="c.statusType(row)">
+                {{
+                  c.render
+                    ? c.render(row, column, row[c.prop], $index)
+                    : row[c.prop]
+                }}
+              </el-tag>
+              <span v-else>
+                {{
+                  c.render
+                    ? c.render(row, column, row[c.prop], $index)
+                    : row[c.prop]
+                }}
+              </span>
             </span>
           </template>
         </el-table-column>
@@ -214,12 +226,12 @@ export default {
     };
   },
   methods: {
-    formdatetime(data) {
+    formdatetime(data, formate) {
       if (typeof data !== "undefined" && data !== null) {
         if (data.time) {
-          return getDate(data.time);
+          return getDate(data.time, formate ? formate : "");
         } else if (data && typeof data === "number") {
-          return getDate(data);
+          return getDate(data, formate ? formate : "");
         } else if (JSON.stringify(data) === "{}") {
           return "--";
         }

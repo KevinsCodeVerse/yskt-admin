@@ -1,12 +1,34 @@
 <!-- 角色管理 -->
 <template>
-  <div class="middle-container">
+  <div class="middle-container" v-loading="loading">
     <jat-fillter
       :option="filterOptions"
       v-model="filterData"
       @searchFilter="searchFilter"
       @clearFilter="clearFilter"
-    ></jat-fillter>
+    >
+    <span slot="parentAdId">
+        <el-select
+          style="width: 100%;"
+          v-model="filterData.parentAdId"
+          filterable
+          remote
+          size="small"
+          clearable
+          placeholder="所属人(输入名称或者手机号)"
+          :remote-method="remoteMethod"
+          :loading="remoteLoading"
+        >
+          <el-option
+            v-for="item in supervisorAdOptions"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+      </span>
+  </jat-fillter>
     <BasicTable
       :columns="table.columns"
       :headerOperates="headerOperates"
@@ -43,6 +65,9 @@ export default {
   components: { BasicTable, addDialog },
   data() {
     return {
+      loading: false,
+      remoteLoading: false,
+      supervisorAdOptions: [],
       categoryOptions: [],
       filterOptions: {
         column: [
@@ -57,9 +82,8 @@ export default {
             value: "region",
           },
           {
-            type: "input",
-            label: "所属人",
-            value: "parentAdId",
+            type: "slot",
+            slotName: "parentAdId",
           }
         ],
       },
@@ -69,37 +93,90 @@ export default {
         region: "",
         parentAdId: ""
       },
+       // 工资水平1：三千以下 2：三千到五千 3：五千到一万 4：一万到三万 5：三万以上
+       wageLevelOptions: [
+        {
+          label: "三千以下",
+          value: 1,
+        },
+        {
+          label: "三千到五千",
+          value: 2,
+        },
+        {
+          label: "五千到一万",
+          value: 3,
+        },
+        {
+          label: "一万到三万",
+          value: 4,
+        },
+        {
+          label: "三万以上",
+          value: 5,
+        },
+      ],
       table: {
         columns: [
           {
             id: 1,
             prop: "name",
-            label: "新闻名称",
+            label: "客户名称",
           },
           {
             id: 2,
-            prop: "advertiseCategoryId",
-            label: "新闻分类"
+            prop: "parentName",
+            label: "所属人"
           },
           {
             id: 3,
-            prop: "image",
-            label: "新闻图片",
-            renderName: "image",
+            prop: "phone",
+            label: "联系电话"
           },
           {
             id: 4,
-            prop: "sort",
-            label: "排序",
+            prop: "idCard",
+            label: "证件号码"
           },
           {
             id: 5,
+            prop: "birthday",
+            label: "生日",
+            type: "date",
+            formate: "yyyy-MM-dd"
+          },
+          {
+            id: 6,
+            prop: "region",
+            label: "所属区域",
+          },
+          {
+            id: 7,
+            prop: "homeAddress",
+            label: "家庭住址",
+          },
+          {
+            id: 8,
+            prop: "wageLevel",
+            label: "工资水平",
+            render: (row) => {
+             const item =  this.wageLevelOptions.find(item => item .value == row.wageLevel)
+             return item ? item.label : ""
+            }
+          },
+          {
+            id: 9,
+            prop: "company",
+            label: "单位",
+          },
+          {
+            id: 10,
             prop: "createTime",
             label: "创建时间",
             type: "date",
           },
         ],
-        pageSize: 10,
+        pageSize: 20,
         currentPage: 1,
         data: [],
         total: 0,
@@ -110,6 +187,7 @@ export default {
           title: "编辑",
           btnStyle: "yellow",
           action: (o, row) => {
+            console.log(row);
             this.$refs.addDialog.edit(row);
           },
         },
@@ -143,6 +221,7 @@ export default {
       this.getList();
     },
     getList() {
+      this.loading = true
       request.post({
         url: "/admin/adCustomer/list",
         params: {
@@ -153,7 +232,11 @@ export default {
         success: (res) => {
           this.table.data = res.list;
           this.table.total = res.total;
+          this.loading = false
         },
+        catch: () => {
+          this.loading = false
+        }
       });
     },
     getCategoryList() {
@@ -173,14 +256,14 @@ export default {
     },
 
     handleDelete(row) {
-      this.$confirm("此操作将会删除该新闻, 是否继续?", "提示", {
+      this.$confirm("此操作将会删除该客户, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
           request.post({
-            url: "/system/sysNews/remove",
+            url: "/admin/adCustomer/remove",
             params: {
               id: row.id,
             },
@@ -213,6 +296,25 @@ export default {
       this.table.currentPage = 1;
       this.table.pageSize = size;
       this.getList();
+    },
+    remoteMethod(search) {
+      if (!search) {
+        return;
+      }
+      this.remoteLoading = true;
+      request.post({
+        url: "/admin/adInfo/queryAdminByNameOrPhone",
+        params: {
+          search,
+        },
+        success: (res) => {
+          this.remoteLoading = false;
+          this.supervisorAdOptions = res;
+        },
+        catch: () => {
+          this.remoteLoading = false;
+        },
+      });
     },
   },
 };

@@ -1,6 +1,6 @@
 <!-- 角色管理 -->
 <template>
-  <div class="middle-container">
+  <div class="middle-container" v-loading="loading">
     <jat-fillter
       :option="filterOptions"
       v-model="filterData"
@@ -33,6 +33,7 @@
       :headerOperates="headerOperates"
       :operates="operates"
       :data="table.data"
+      operateWidth="120px"
       :pageSize="table.pageSize"
       :currentPage="table.currentPage"
       :total="table.total"
@@ -70,6 +71,7 @@ export default {
       supervisorAdOptions: [],
       departmentList: [],
       remoteLoading: false,
+      loading: false,
       filterOptions: {
         column: [
           {
@@ -153,6 +155,11 @@ export default {
         status: "",
         registerTime: [],
       },
+      statusDic: {
+        0: { label: "正常", type: "success" },
+        1: { label: "冻结", type: "warning" },
+        2: { label: "禁用", type: "danger" },
+      },
       table: {
         columns: [
           {
@@ -197,12 +204,33 @@ export default {
           },
           {
             id: 8,
+            prop: "roles",
+            label: "所属角色",
+          },
+          {
+            id: 9,
+            prop: "departments",
+            label: "可查看课堂",
+          },
+          {
+            id: 11,
+            prop: "status",
+            label: "状态",
+            render: (row) => {
+              return this.statusDic[row.status].label;
+            },
+            statusType: (row) => {
+              return this.statusDic[row.status].type;
+            },
+          },
+          {
+            id: 10,
             prop: "createTime",
             label: "注册时间",
             type: "date",
           },
         ],
-        pageSize: 10,
+        pageSize: 20,
         currentPage: 1,
         data: [],
         total: 0,
@@ -247,6 +275,7 @@ export default {
     },
     getList() {
       const { registerTime, ...rest } = this.filterData;
+      this.loading = true;
       request.post({
         url: "/admin/adInfo/adList",
         params: {
@@ -263,9 +292,13 @@ export default {
               : "",
         },
         success: (res) => {
+          this.loading = false
           this.table.data = res.list;
           this.table.total = res.total;
         },
+        catch: () => {
+          this.loading = false
+        }
       });
     },
     getDepartmentList() {

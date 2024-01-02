@@ -16,18 +16,22 @@
         label-width="140px"
       >
         <el-form-item label="客户名称:" prop="name">
-          <jat-input v-model="addData.name" placeholder="客户名称"></jat-input>
-        </el-form-item>
-        <el-form-item label="联系人:" prop="name">
-          <jat-input v-model="addData.name" placeholder="联系人"></jat-input>
+          <jat-input
+            v-model="addData.name"
+            placeholder="请输入客户名称"
+          ></jat-input>
         </el-form-item>
         <el-form-item label="联系电话:" prop="phone">
-          <jat-input v-model="addData.phone" placeholder="联系电话"></jat-input>
+          <jat-input
+            v-model="addData.phone"
+            placeholder="请输入联系电话"
+          ></jat-input>
         </el-form-item>
         <el-form-item label="证件类型:" prop="idCardType">
           <jat-select
             v-model="addData.idCardType"
             placeholder="请选择证件类型"
+            @change="handleIdCardTypeChange"
             clearable
             filterable
           >
@@ -46,9 +50,9 @@
             placeholder="请输入证件号码"
           ></jat-input>
         </el-form-item>
-        <el-form-item label="生日:" prop="birthday">
+        <el-form-item label="生日:" prop="birthdayParam">
           <jat-input
-            v-model="addData.birthday"
+            v-model="addData.birthdayParam"
             placeholder="请输入生日"
           ></jat-input>
         </el-form-item>
@@ -105,23 +109,7 @@
             placeholder="请输入客户备注/客户意向"
           ></jat-input>
         </el-form-item>
-        <el-form-item label="所有者:" prop="parentAdId">
-          <jat-select
-            v-model="addData.wageLevel"
-            placeholder="请选择所有者"
-            key-id="id"
-            clearable
-            filterable
-          >
-            <el-option
-              v-for="item in parentAdIdOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </jat-select>
-        </el-form-item>
+
         <el-form-item label="紧急联系人信息:" prop="urgentPerson">
           <jat-input
             type="textarea"
@@ -130,8 +118,29 @@
             placeholder="请输入紧急联系人信息"
           ></jat-input>
         </el-form-item>
-        <el-form-item style="width: 100%" label="附件:" prop="attachment"> 
-          <uploadFile v-model="addData.attachment"></uploadFile>
+        <el-form-item label="所有者:" prop="parentAdId">
+          <el-select
+            style="width: 100%;"
+            size="small"
+            clearable
+            v-model="addData.parentAdId"
+            filterable
+            remote
+            placeholder="默认为登录账户，为空的话为公共账户"
+            :remote-method="remoteMethod"
+            :loading="remoteLoading"
+          >
+            <el-option
+              v-for="item in parentAdIdOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="附件:" prop="attachment">
+          <uploadFile :limit="1" v-model="addData.attachment"></uploadFile>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -143,21 +152,26 @@
 </template>
 
 <script>
-import uploadFile from "../../../../components/uploadFile.vue";
-import request from "../../../../utils/request";
+import uploadFile from "@/components/uploadFile.vue";
+import request from "@/utils/request";
+import { getIdCardInfo, validIdCard } from "@/utils/idCardValid";
+import { validPhone } from "@/utils/validate";
+import { getDate } from '@/utils/tools';
 
 export default {
   components: { uploadFile },
   data() {
     return {
       addModifyVisible: false,
+      remoteLoading: false,
       dialogTitle: "",
       addData: {
+        id: "",
         name: "",
         phone: "",
         idCardType: "",
         idCard: "",
-        birthday: "",
+        birthdayParam: "",
         gender: "",
         region: "",
         homeAddress: "",
@@ -167,7 +181,6 @@ export default {
         parentAdId: "",
         urgentPerson: "",
         attachment: [],
-        
       },
       parentAdIdOptions: [],
       // 1身份证 2军人证 3护照 4学生证 5港澳通行证 6其他
@@ -221,22 +234,41 @@ export default {
         },
       ],
       clientRule: {
-        categoryId: [
-          { required: true, message: "请选择新闻分类", trigger: "blur" },
-        ],
-        name: [{ required: true, message: "请输入新闻名称", trigger: "blur" }],
-        sort: [
-          { required: true, message: "请输入排序", trigger: "blur" },
+        name: [{ required: true, message: "请输入客户名称", trigger: "blur" }],
+        idCard: [
           {
-            type: "number",
-            message: "请输入整数",
+            validator: (rule, value, callback) => {
+              if (this.addData.idCardType == 1 && value) {
+                if (validIdCard(value)) {
+                  this.addData.birthdayParam = getIdCardInfo(value, "birthDate");
+                  this.addData.gender = getIdCardInfo(value, "sex");
+                  callback();
+                } else {
+                  callback(new Error("身份证号格式不正确"));
+                }
+              }
+            },
+            trigger: "blur",
+          },
+        ],
+        phone: [
+          { required: true, message: "请输入联系电话", trigger: "blur" },
+          {
+            validator: (rule, value, callback) => {
+              return validPhone(value)
+                ? callback()
+                : callback(new Error("联系电话格式不正确"));
+            },
+            trigger: "blur",
           },
         ],
       },
     };
   },
 
-  mounted() {},
+  mounted() {
+    this.getCurrentUser();
+  },
 
   methods: {
     open() {
@@ -247,60 +279,89 @@ export default {
     edit({
       id,
       name,
-      categoryId,
-      href,
-      image,
-      sort,
-      content,
-      seoTitle,
-      seoKey,
-      seoContent,
+      phone,
+      idCardType,
+      idCard,
+      birthday,
+      gender,
+      region,
+      homeAddress,
+      wageLevel,
+      company,
       remark,
+      parentAdId,
+      urgentPerson,
+      attachment,
     }) {
       this.dialogTitle = "编辑客户";
       this.addModifyVisible = true;
+      let fileName = ""
+      if(attachment) {
+        const arrName = attachment.split("/")
+        fileName  = arrName[arrName.length -1]
+      }
+    
       this.addData = {
         id,
         name,
-        categoryId,
-        href,
-        image,
-        sort,
-        content,
-        seoTitle,
-        seoKey,
-        seoContent,
+        phone,
+        idCardType,
+        idCard,
+        birthdayParam: getDate(birthday, "yyyy-MM-dd"),
+        gender,
+        region,
+        homeAddress,
+        wageLevel,
+        company,
         remark,
+        parentAdId,
+        urgentPerson,
+        attachment: [{ id: 1, name: fileName, url: attachment }],
       };
     },
     close() {
       this.$refs.clientRef && this.$refs.clientRef.clearValidate();
       this.addData = {
-        categoryId: "",
         name: "",
-        image: "",
-        href: "",
-        content: "",
-        sort: undefined,
-        seoTitle: "",
-        seoKey: "",
-        seoContent: "",
+        phone: "",
+        idCardType: "",
+        idCard: "",
+        birthdayParam: "",
+        gender: "",
+        region: "",
+        homeAddress: "",
+        wageLevel: "",
+        company: "",
         remark: "",
-        id: "",
+        parentAdId: "",
+        urgentPerson: "",
+        attachment: [],
       };
       this.addModifyVisible = false;
+    },
+    getCurrentUser() {
+      this.parentAdIdOptions = [
+        {
+          id: sessionStorage.getItem("id") ? parseInt(sessionStorage.getItem("id")) : "",
+          name: sessionStorage.getItem("userName"),
+        },
+      ];
+      this.addData.parentAdId = sessionStorage.getItem("id");
     },
 
     handleSubmit() {
       this.$refs.clientRef.validate((valid) => {
-        const { categoryId, ...rest } = this.addData;
+        const { attachment, ...rest } = this.addData;
+
         if (valid) {
           if (this.addData.id) {
             request.post({
-              url: "/system/sysclient/edit",
+              url: "/admin/adCustomer/edit",
               params: {
                 ...rest,
-                categoryId,
+                categoryId: 1,
+                attachment:
+                  attachment && attachment.length > 0 ? attachment[0].url : "",
               },
               success: (res) => {
                 this.$message.success(res);
@@ -310,10 +371,12 @@ export default {
             });
           } else {
             request.post({
-              url: "/system/sysclient/add",
+              url: "/admin/adCustomer/add",
               params: {
                 ...rest,
-                categoryId,
+                categoryId: 1,
+                attachment:
+                  attachment && attachment.length > 0 ? attachment[0].url : "",
               },
               success: (res) => {
                 this.$message.success(res);
@@ -324,6 +387,31 @@ export default {
           }
         }
       });
+    },
+
+    remoteMethod(search) {
+      if (!search) {
+        return;
+      }
+      this.remoteLoading = true;
+      request.post({
+        url: "/admin/adInfo/queryAdminByNameOrPhone",
+        params: {
+          search,
+        },
+        success: (res) => {
+          this.remoteLoading = false;
+          this.parentAdIdOptions = res;
+        },
+        catch: () => {
+          this.remoteLoading = false;
+        },
+      });
+    },
+    handleIdCardTypeChange(val) {
+      if (val && this.addData.idCard) {
+        this.$refs.clientRef.validateField("idCard");
+      }
     },
   },
 };

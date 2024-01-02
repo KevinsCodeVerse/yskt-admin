@@ -1,4 +1,4 @@
-<!-- 日志管理 -->
+<!-- 评论管理 -->
 <template>
   <div class="middle-container" v-loading="loading">
     <jat-fillter
@@ -6,7 +6,29 @@
       v-model="filterData"
       @searchFilter="searchFilter"
       @clearFilter="clearFilter"
-    ></jat-fillter>
+    >
+      <span slot="adVipld">
+        <el-select
+          style="width: 90%;"
+          v-model="filterData.adVipld"
+          filterable
+          remote
+          size="small"
+          clearable
+          placeholder="评论人(输入名称或者手机号)"
+          :remote-method="remoteMethod"
+          :loading="remoteLoading"
+        >
+          <el-option
+            v-for="item in adVipOptions"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+      </span>
+    </jat-fillter>
     <BasicTable
       :columns="table.columns"
       :data="table.data"
@@ -24,41 +46,51 @@
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 export default {
-  name: "logPage",
+  name: "evalPage",
   components: { BasicTable },
   data() {
     return {
-      categoryOptions: [],
-      loading:false,
+      adVipOptions: [],
+      remoteLoading: false,
+      loading: false,
       filterOptions: {
         column: [
           {
-            type: "input",
-            label: "日志内容",
-            value: "interfaceName",
+            type: "slot",
+            slotName: "adVipld",
           },
         ],
       },
 
       filterData: {
-        interfaceName: "",
+        adVipld: "",
       },
       table: {
         columns: [
           {
             id: 1,
-            prop: "interfaceName",
-            label: "日志内容",
+            prop: "courseName",
+            label: "课程名称",
           },
           {
             id: 2,
-            prop: "adName",
-            label: "操作人",
+            prop: "content",
+            label: "评论内容",
           },
           {
             id: 3,
+            prop: "vipName",
+            label: "评论人",
+          },
+          {
+            id: 4,
+            prop: "status",
+            label: "状态",
+          },
+          {
+            id: 5,
             prop: "createTime",
-            label: "操作时间",
+            label: "评论时间",
             type: "date",
           },
         ],
@@ -66,7 +98,7 @@ export default {
         currentPage: 1,
         data: [],
         total: 0,
-      }
+      },
     };
   },
   created() {
@@ -78,22 +110,41 @@ export default {
       this.getList();
     },
     getList() {
-      this.loading = true
+      this.loading = true;
       request.post({
-        url: "/system/sysLog/list",
+        url: "/admin/adCourseComment/list",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,
-          ...this.filterData
+          ...this.filterData,
         },
         success: (res) => {
           this.table.data = res.list;
           this.table.total = res.total;
-          this.loading = false
+          this.loading = false;
         },
         catch: () => {
-          this.loading = false
-        }
+          this.loading = false;
+        },
+      });
+    },
+    remoteMethod(search) {
+      if (!search) {
+        return;
+      }
+      this.remoteLoading = true;
+      request.post({
+        url: "/admin/adInfo/queryAdminByNameOrPhone",
+        params: {
+          search,
+        },
+        success: (res) => {
+          this.remoteLoading = false;
+          this.adVipOptions = res;
+        },
+        catch: () => {
+          this.remoteLoading = false;
+        },
       });
     },
 
@@ -116,23 +167,4 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
-.zt_colunms_box {
-  &.zt1 {
-    color: #0fba80;
-    display: inline-block;
-    padding: 3px;
-    background: rgba(15, 186, 128, 0.1);
-    // border: 1px solid rgba(108, 255, 40, 0.6);
-    border-radius: 2px;
-  }
-  &.zt0 {
-    color: #ff6600;
-    display: inline-block;
-    padding: 3px;
-    background: rgba(255, 102, 0, 0.1);
-    // border: 1px solid rgba(108, 255, 40, 0.6);
-    border-radius: 2px;
-  }
-}
-</style>
+<style lang="scss" scoped></style>

@@ -20,7 +20,7 @@
 					<span>设置</span>
 				</div>
 				<div>
-					<span style="color: #0482D1;">欢迎您，鹏飞超管</span>
+					<span style="color: #0482D1;">欢迎您，{{ userName }}</span>
 				</div>
 			</div>
 		</div>
@@ -54,6 +54,11 @@
 				tabs: [],
 				tabsValue: '',
 			};
+		},
+		computed: {
+			userName() {
+				return sessionStorage.getItem("userName")
+			}
 		},
 
 		watch: {

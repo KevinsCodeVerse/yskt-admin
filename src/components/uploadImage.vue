@@ -162,11 +162,11 @@ export default {
             this.$message.success("上传成功！");
             this.fileList.push({
               name: this.fileList.length + "",
-              url: "http://s624om21h.hb-bkt.clouddn.com/" + key,
+              url: this.$envConfig.qiniuDomain + key,
             });
             this.$emit(
               "update:fileValue",
-              "http://s624om21h.hb-bkt.clouddn.com/" + key
+              this.$envConfig.qiniuDomain + key
             );
           },
         });

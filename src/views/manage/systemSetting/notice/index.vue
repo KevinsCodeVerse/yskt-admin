@@ -1,6 +1,6 @@
 <!-- 角色管理 -->
 <template>
-  <div class="middle-container">
+  <div class="middle-container" v-loading="loading">
     <jat-fillter
       :option="filterOptions"
       v-model="filterData"
@@ -39,6 +39,7 @@ export default {
   components: { BasicTable, addDialog },
   data() {
     return {
+      loading: false,
       getDate: getDate,
       categoryOptions: [],
       filterOptions: {
@@ -79,7 +80,7 @@ export default {
             type: "date",
           },
         ],
-        pageSize: 10,
+        pageSize: 20,
         currentPage: 1,
         data: [],
         total: 0,
@@ -122,6 +123,7 @@ export default {
       this.getList();
     },
     getList() {
+      this.loading = true
       request.post({
         url: "/system/sysNotice/list",
         params: {
@@ -132,7 +134,11 @@ export default {
         success: (res) => {
           this.table.data = res.list;
           this.table.total = res.total;
+          this.loading = false
         },
+        catch: () => {
+          this.loading = false
+        }
       });
     },
     handleSuccess() {

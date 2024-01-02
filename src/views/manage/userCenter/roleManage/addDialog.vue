@@ -2,7 +2,7 @@
 <template>
   <div>
     <el-dialog
-      title="添加角色"
+      :title="dialogTile"
       :close-on-click-modal="false"
       :visible.sync="addModifyVisible"
       width="60%"
@@ -74,9 +74,9 @@
         <el-form-item label="接口路径:" prop="requestUrl">
           <jat-input v-model="interfaceData.requestUrl"></jat-input>
         </el-form-item>
-		<el-form-item label="接口状态:" >
-		  <jat-input v-model="interfaceData.status"></jat-input>
-		</el-form-item>
+        <el-form-item label="接口状态:">
+          <jat-input v-model="interfaceData.status"></jat-input>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <jat-button plain @click="closeInterface">取 消</jat-button>
@@ -94,6 +94,7 @@ export default {
     return {
       addModifyVisible: false,
       addInterfaceVisible: false,
+      dialogTile: "",
       addData: {
         roleName: "",
         id: "",
@@ -116,7 +117,7 @@ export default {
         label: "label",
         disabled: (data, node) => {
           if (node.level === 3 && data.status) {
-            return data.status == -1
+            return data.status == -1;
           }
           return false;
         },
@@ -126,7 +127,7 @@ export default {
         parentId: "",
         menuName: "",
         requestUrl: "",
-		status:0
+        status: 0,
       },
     };
   },
@@ -137,9 +138,11 @@ export default {
     open() {
       this.addData.roleName = "";
       this.addModifyVisible = true;
+      this.dialogTile = "添加角色";
       this.getRoleTree();
     },
     edit(id) {
+      this.dialogTile = "编辑角色";
       this.getRoleTree();
       this.addModifyVisible = true;
       this.getRoleInfo(id);
@@ -153,14 +156,14 @@ export default {
       this.addData = {
         roleName: "",
         id: "",
-      }
+      };
     },
     closeInterface() {
       this.interfaceData = {
         parentId: "",
         menuName: "",
         requestUrl: "",
-		status:0
+        status: 0,
       };
       this.$refs.intefaceRef && this.$refs.intefaceRef.clearValidate();
       this.addInterfaceVisible = false;
@@ -231,39 +234,52 @@ export default {
         if (valid) {
           const menus = this.$refs.tree.getCheckedKeys();
           const halfMenus = this.$refs.tree.getHalfCheckedKeys();
-          let flag = true;
+          const menuIds = JSON.stringify([...menus, ...halfMenus])
           if (this.addData.id) {
-            flag = false;
             request.post({
               url: "/admin/adRole/roleChangeMenuPre",
               params: {
-                menuIds: JSON.stringify([...menus, ...halfMenus]),
+                menuIds,
                 id: this.addData.id,
               },
               success: (res) => {
-                flag = true;
+                this.handleEditRoles(menuIds);
               },
             });
-          }
-          if (flag) {
-            request.post({
-              url: "/admin/adRole/add",
-              params: {
-                menuIds: this.addData.id
-                  ? undefined
-                  : JSON.stringify([...menus, ...halfMenus]),
-                name: this.addData.roleName,
-              },
-              success: (res) => {
-                this.$message.success(res);
-                this.close();
-                this.$emit("success");
-              },
-            });
+          } else {
+            this.handleAddRoles(menuIds);
           }
         }
       });
     },
+    handleAddRoles(menuIds) {
+      request.post({
+        url: "/admin/adRole/add",
+        params: {
+          menuIds: menuIds,
+          name: this.addData.roleName,
+        },
+        success: (res) => {
+          this.$message.success(res);
+          this.close();
+          this.$emit("success");
+        },
+      });
+    },
+    handleEditRoles() {
+      request.post({
+        url: "/admin/adRole/edit",
+        params: {
+          id: this.addData.id,
+          name: this.addData.roleName,
+        },
+        success: (res) => {
+          this.$message.success(res);
+          this.close();
+          this.$emit("success");
+        },
+      });
+    }
   },
 };
 </script>
