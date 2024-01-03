@@ -44,7 +44,7 @@ export default {
         language_url:
           window.location.origin +
           window.location.pathname +
-          "/static/tinymce5/langs/zh_CN.js",
+          "static/tinymce5/langs/zh_CN.js",
         language: "zh_CN", // 需要在官网自己下载一个全局的langs包。同时我提供的powerpaste本身自带一个langs包里面含中文，所以可以100%支持中文。
         skin_url:
           window.location.origin +
