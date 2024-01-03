@@ -142,7 +142,7 @@ import rsa from '@/utils/rsa'
 			},
 			exit(){
 				this.$confirm('确认退出登录?', '提示').then(()=>{
-					location.href = '/admin'
+					location.href = '/'
 				})
 			}
 		}

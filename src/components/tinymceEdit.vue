@@ -15,8 +15,8 @@ import "tinymce/plugins/table";
 import "tinymce/plugins/preview";
 import "tinymce/plugins/image";
 import "tinymce/plugins/paste";
-// import { uploadWzfxFile } from "@/api/common"
-// import { uploadFile } from "./api"
+import request from "../utils/request";
+import * as qiniu from "qiniu-js";
 export default {
   model: {
     prop: "editorContent",
@@ -54,12 +54,12 @@ export default {
           window.location.origin +
           window.location.pathname +
           "static/tinymce5/skins/content/default/content.min.css",
-        // plugins: [
-        //   "advlist",
-        //   "table",
-        //   "image",
-        //   "preview", // plugins中，用powerpaste替换原来的paste
-        // ],
+        plugins: [
+          "advlist",
+          "table",
+          "image",
+          "preview", // plugins中，用powerpaste替换原来的paste
+        ],
         content_style: "body {background: #fff}",
         external_plugins: {
           powerpaste:
@@ -86,23 +86,35 @@ export default {
   },
   mounted() {},
   methods: {
-    async imagesUploadHandler(blobInfo, success) {
-      let formData = new FormData();
-      formData.append("fxId", this.id ? this.id : "");
-      formData.append("lx", this.$route.query.id);
-      formData.append("wjlx", "1");
-      formData.append("file", blobInfo.blob());
-      // let params = {
-      //   fxId: this.id,
-      //   lx: this.$route.query.id,
-      //   wjlx: "1",
-      //   file: blobInfo.blob()
-      // }
-      // const res = await uploadWzfxFile(formData)
-      // const img = res.data.info
-      // success(img)
+    imagesUploadHandler(blobInfo, success) {
+      this.handleUpload(blobInfo.blob(), success);
     },
+    handleUpload(file, success) {
+    try {
+      request.post({
+        url: "/comm/getUpToken",
+        params: {},
+        success: (res) => {
+          const observable = qiniu.upload(file, null, res);
+          observable.subscribe({
+            next: undefined,
+            error: () => {
+              this.$message.error("上传出错，请重新上传！");
+            },
+            complete: ({ key }) => {
+              this.$message.success("上传成功！");
+              success(this.$envConfig.qiniuDomain + key);
+            },
+          });
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      this.$message.error("上传出错，请重新上传！");
+    }
   },
+  },
+  
   watch: {
     content() {
       this.$emit("change", this.content);
