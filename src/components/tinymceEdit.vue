@@ -8,7 +8,7 @@
 // eslint-disable-next-line no-unused-vars
 import tinymce from "tinymce/tinymce";
 import Editor from "@tinymce/tinymce-vue";
-import 'tinymce/icons/default'
+import "tinymce/icons/default";
 import "tinymce/themes/silver/theme";
 import "tinymce/plugins/advlist";
 import "tinymce/plugins/table";
@@ -41,10 +41,16 @@ export default {
     table image media charmap emoticons hr pagebreak insertdatetime print preview | fullscreen | bdmap indent2em lineheight formatpainter axupimgs",
         font_formats:
           "微软雅黑=Microsoft YaHei,Helvetica Neue,PingFang SC,sans-serif;苹果苹方=PingFang SC,Microsoft YaHei,sans-serif;宋体=simsun,serif;仿宋体=FangSong,serif;黑体=SimHei,sans-serif;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;",
-        language_url: "/static/tinymce5/langs/zh_CN.js",
+        language_url:
+          window.location.origin +
+          "/static/tinymce5/langs/zh_CN.js",
         language: "zh_CN", // 需要在官网自己下载一个全局的langs包。同时我提供的powerpaste本身自带一个langs包里面含中文，所以可以100%支持中文。
-        skin_url: "/static/tinymce5/skins/ui/oxide",
-        content_css: "/static/tinymce5/skins/content/default/content.min.css",
+        skin_url:
+          window.location.origin +
+          "/static/tinymce5/skins/ui/oxide",
+        content_css:
+          window.location.origin +
+          "/static/tinymce5/skins/content/default/content.min.css",
         // plugins: [
         //   "advlist",
         //   "table",
@@ -53,7 +59,9 @@ export default {
         // ],
         content_style: "body {background: #fff}",
         external_plugins: {
-          powerpaste: "/static/tinymce5/plugins/powerpaste/plugin.min.js",
+          powerpaste:
+            window.location.origin +
+            "/static/tinymce5/plugins/powerpaste/plugin.min.js",
         },
         powerpaste_word_import: "merge", // 参数可以是propmt, merge, clear，效果自行切换对比
         powerpaste_html_import: "merge", // propmt, merge, clear
@@ -66,6 +74,10 @@ export default {
   },
   components: { Editor },
   created() {
+    console.log(
+      window.location.origin +
+        "/static/tinymce5/skins/content/default/content.min.css"
+    );
     this.content = this.editorContent;
   },
   mounted() {},
