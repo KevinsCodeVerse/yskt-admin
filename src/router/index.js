@@ -37,7 +37,12 @@ var router = new Router({
 	mode: "hash",
 	base: "/",
 	// 公共路径
-	routes: [{
+	routes: [
+		{
+			path: "*",
+			redirect: "/err_404"
+		},
+		{
 			path: '/',
 			component: () => import('@/views/Login'),
 			meta: {
@@ -125,6 +130,7 @@ router.beforeEach((to, form, next) => {
 		console.log("跳转页面:",router);
 		// 判断菜单是否属于公共路由
 		if (publicUrl.indexOf(to.path) == -1) {
+			console.log("不存在页面", to.path);
 			next({ path: '/err_404' })
 			return;
 		}

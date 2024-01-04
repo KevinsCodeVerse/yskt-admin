@@ -263,6 +263,7 @@ export default {
               url: "/admin/adInfo/editAdmin",
               params: {
                 ...rest,
+                password: password ? rsa.encryptByPublicKey(password) : "",
                 canSeeDepartment: canSeeDepartment
                   ? JSON.stringify(canSeeDepartment)
                   : undefined,

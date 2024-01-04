@@ -133,11 +133,11 @@ export default {
   },
   created() {
     // this.initfsjdChart();
-    this.getSyztzs();
-    this.getKspjf();
-    this.getMxxy();
-    this.getFwcs();
-    this.getTkfb();
+    // this.getSyztzs();
+    // this.getKspjf();
+    // this.getMxxy();
+    // this.getFwcs();
+    // this.getTkfb();
   },
   methods: {
     initfsjdChart() {
