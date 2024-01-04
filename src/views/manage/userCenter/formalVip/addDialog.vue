@@ -43,7 +43,7 @@
             placeholder="请输入微信"
           ></jat-input>
         </el-form-item>
-        <el-form-item v-if="!addData.id" label="用户密码:" prop="password">
+        <el-form-item label="用户密码:" prop="password">
           <jat-input
             v-model="addData.password"
             placeholder="请输入用户密码，不填系统将会生成随机密码（以短信的方式通知密码给后台账号持有人）"
@@ -135,7 +135,6 @@ export default {
       phone,
       qq,
       wechat: wechatNum,
-      password,
       gender,
       nick,
       status,
@@ -148,7 +147,7 @@ export default {
         phone,
         qq,
         wechatNum,
-        password,
+        password: "",
         gender,
         status,
         nick,
