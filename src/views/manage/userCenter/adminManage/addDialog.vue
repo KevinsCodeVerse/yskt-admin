@@ -83,8 +83,8 @@
         <el-form-item label="用户状态:" prop="status">
           <jat-select v-model="addData.status" placeholder="请选择用户状态">
             <el-option label="正常" :value="0"> </el-option>
-            <el-option label="冻结" :value="1"> </el-option>
-            <el-option label="禁用" :value="2"> </el-option>
+            <el-option label="冻结" :value="-1"> </el-option>
+            <el-option label="禁用" :value="-2"> </el-option>
           </jat-select>
         </el-form-item>
         <el-form-item label="可查看部门:" prop="canSeeDepartment">

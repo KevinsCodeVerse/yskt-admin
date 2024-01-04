@@ -126,15 +126,15 @@ export default {
               },
               {
                 label: "冻结",
-                value: 1,
+                value: -1,
               },
               {
                 label: "禁用",
-                value: 2,
+                value: -2,
               },
               {
                 label: "未审核",
-                value: 3,
+                value: -3,
               },
             ],
           },
@@ -156,9 +156,10 @@ export default {
         registerTime: [],
       },
       statusDic: {
-        0: { label: "正常", type: "success" },
-        1: { label: "冻结", type: "warning" },
-        2: { label: "禁用", type: "danger" },
+        "0": { label: "正常", type: "success" },
+        "-1": { label: "冻结", type: "warning" },
+        "-2": { label: "禁用", type: "danger" },
+        "-3": { label: "未审核", type: "info" },
       },
       table: {
         columns: [
@@ -210,7 +211,7 @@ export default {
           {
             id: 9,
             prop: "departments",
-            label: "可查看课堂",
+            label: "可查看部门",
           },
           {
             id: 11,

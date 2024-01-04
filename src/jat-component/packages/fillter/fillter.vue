@@ -248,6 +248,7 @@ export default {
   background-image: linear-gradient(110deg, #1b77ff 0%, #003ce6 100%);
   border-radius: 5px;
   cursor: pointer;
+  margin-bottom: 20px;
   box-shadow: 0px 5px 0px 0px rgba(0, 38, 148, 0.9);
   // background-image: linear-gradient(180deg, #002694 0%, #003CE6 100%);
 }

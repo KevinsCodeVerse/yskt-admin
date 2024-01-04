@@ -72,7 +72,7 @@
             <i class="el-icon-tickets"></i>
             用户状态
           </template>
-          <el-tag size="small">{{ info.adStatus }}</el-tag>
+          <el-tag :type="statusDic[info.status].type" size="small">{{ statusDic[info.status].label }}</el-tag>
         </el-descriptions-item>
       </el-descriptions>
     </el-drawer>
@@ -105,22 +105,23 @@ export default {
         status: 0,
       },
       statusDic: {
-        0: "正常",
-        1: "冻结",
-        2: "禁用",
+        "0": { label: "正常", type: "success" },
+        "-1": { label: "冻结", type: "warning" },
+        "-2": { label: "禁用", type: "danger" },
+        "-3": { label: "未审核", type: "info" },
       },
     };
   },
 
   methods: {
     open(data, deparmentList) {
-      const { departmentId, gender, adStatus, ...rest } = data;
+      const { departmentId, gender, status, ...rest } = data;
       const department = deparmentList.find((item) => item.id === departmentId);
       console.log(department);
       this.info = {
         departmentId: department ? department.name : "",
         gender: gender == 1 ? "男" : "女",
-        adStatus: this.statusDic[adStatus],
+        status,
         ...rest,
       };
       this.drawer = true;

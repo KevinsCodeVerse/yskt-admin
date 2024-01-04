@@ -112,29 +112,29 @@ export default {
             type: "slot",
             slotName: "parentId",
           },
-          {
-            type: "select",
-            label: "状态",
-            value: "status",
-            options: [
-              {
-                label: "正常",
-                value: 0,
-              },
-              {
-                label: "冻结",
-                value: 1,
-              },
-              {
-                label: "禁用",
-                value: 2,
-              },
-              {
-                label: "未审核",
-                value: 3,
-              },
-            ],
-          },
+          // {
+          //   type: "select",
+          //   label: "状态",
+          //   value: "status",
+          //   options: [
+          //     {
+          //       label: "正常",
+          //       value: 0,
+          //     },
+          //     {
+          //       label: "冻结",
+          //       value: -1,
+          //     },
+          //     {
+          //       label: "禁用",
+          //       value: -2,
+          //     },
+          //     {
+          //       label: "未审核",
+          //       value: -3,
+          //     },
+          //   ],
+          // },
           {
             type: "timeAll",
             label: ["注册开始日期", "注册结束日期"],
@@ -149,7 +149,7 @@ export default {
         gender: "",
         departmentId: "",
         parentId: "",
-        status: "",
+        status: -3,
         registerTime: [],
       },
       table: {
@@ -292,7 +292,7 @@ export default {
         gender: "",
         departmentId: "",
         parentId: "",
-        status: "",
+        status: -3,
         registerTime: [],
       };
       this.searchFilter();

@@ -73,7 +73,7 @@ export default {
 	},
 
 	loadView(view) {  // 路由懒加载
-		return resolve => {
+		return resolve => {	
 			require.ensure([], (require) => {
 				resolve(require('@/views/' + view + '.vue'))
 			})

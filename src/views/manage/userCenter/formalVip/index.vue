@@ -125,15 +125,15 @@ export default {
               },
               {
                 label: "冻结",
-                value: 1,
+                value: -1,
               },
               {
                 label: "禁用",
-                value: 2,
+                value: -2,
               },
               {
                 label: "未审核",
-                value: 3,
+                value: -3,
               },
             ],
           },
@@ -143,6 +143,12 @@ export default {
             value: "registerTime",
           },
         ],
+      },
+      statusDic: {
+        "0": { label: "正常", type: "success" },
+        "-1": { label: "冻结", type: "warning" },
+        "-2": { label: "禁用", type: "danger" },
+        "-3": { label: "未审核", type: "info" },
       },
 
       filterData: {
@@ -180,6 +186,17 @@ export default {
             id: 6,
             prop: "phone",
             label: "联系电话",
+          },
+          {
+            id: 7,
+            prop: "status",
+            label: "状态",
+            render: (row) => {
+              return this.statusDic[row.status].label;
+            },
+            statusType: (row) => {
+              return this.statusDic[row.status].type;
+            },
           },
           {
             id: 8,
