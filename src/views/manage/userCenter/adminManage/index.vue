@@ -131,11 +131,7 @@ export default {
               {
                 label: "禁用",
                 value: -2,
-              },
-              {
-                label: "未审核",
-                value: -3,
-              },
+              }
             ],
           },
           {
@@ -159,7 +155,6 @@ export default {
         "0": { label: "正常", type: "success" },
         "-1": { label: "冻结", type: "warning" },
         "-2": { label: "禁用", type: "danger" },
-        "-3": { label: "未审核", type: "info" },
       },
       table: {
         columns: [
