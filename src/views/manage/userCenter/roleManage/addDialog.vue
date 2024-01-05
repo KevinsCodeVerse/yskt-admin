@@ -162,7 +162,7 @@ export default {
       this.interfaceData = {
         parentId: "",
         menuName: "",
-        requestUrl: "",
+        requestUrl:this.interfaceData.requestUrl,
         status: 0,
       };
       this.$refs.intefaceRef && this.$refs.intefaceRef.clearValidate();

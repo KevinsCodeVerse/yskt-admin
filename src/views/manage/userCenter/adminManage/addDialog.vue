@@ -61,7 +61,7 @@
         <el-form-item label="用户密码:" prop="password">
           <jat-input
             v-model="addData.password"
-            placeholder="请输入用户密码，不填系统将会生成随机密码（以短信的方式通知密码给后台账号持有人）"
+            placeholder="请输入用户密码，不填系统将会生成随机密码"
           ></jat-input>
         </el-form-item>
         <el-form-item label="性别:" prop="gender">
