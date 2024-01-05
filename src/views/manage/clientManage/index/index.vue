@@ -186,6 +186,7 @@ export default {
           key: "edit",
           title: "编辑",
           btnStyle: "yellow",
+          permission: "admin/adCustomer/edit",
           action: (o, row) => {
             console.log(row);
             this.$refs.addDialog.edit(row);
@@ -194,6 +195,7 @@ export default {
         {
           key: "delete",
           title: "删除",
+          permission: "admin/adCustomer/remove",
           btnStyle: "red",
           action: (o, row) => {
             this.handleDelete(row);
@@ -204,6 +206,7 @@ export default {
         {
           key: "el-icon-plus",
           name: "添加客户",
+          permission: "admin/adCustomer/add",
           action: () => {
             this.$refs.addDialog.open();
           },
