@@ -6,6 +6,7 @@
       label-position="right"
       :rules="webRules"
       label-width="130px"
+      :disabled="true"
       :inline="false"
       size="small"
     >
@@ -33,7 +34,7 @@
         <jat-input v-else v-model="item.value"></jat-input>
       </el-form-item>
     </el-form>
-    <div @click="submitForm" class="bottom_submit">
+    <div v-permission="'system/sysParam/editPlatformParams'" @click="submitForm" class="bottom_submit">
       <jat-button>保存</jat-button>
     </div>
   </div>

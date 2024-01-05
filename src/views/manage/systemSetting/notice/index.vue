@@ -90,6 +90,7 @@ export default {
           key: "edit",
           title: "编辑",
           btnStyle: "yellow",
+          permission: "system/sysNotice/edit",
           action: (o, row) => {
             this.$refs.addDialog.edit(row);
           },
@@ -98,6 +99,7 @@ export default {
           key: "delete",
           title: "删除",
           btnStyle: "red",
+          permission: "system/sysNotice/remove",
           action: (o, row) => {
             this.handleDelete(row);
           },
@@ -106,6 +108,7 @@ export default {
       headerOperates: [
         {
           key: "el-icon-plus",
+          permission: "system/sysNotice/add",
           name: "添加公告",
           action: () => {
             this.$refs.addDialog.open();

@@ -6,7 +6,7 @@
       :disabled="o.disabled"
       @click="o.action(o)"
     >
-      <HeaderBtn :name="o.key" :bgColor="o.bgColor">{{ o.name }}</HeaderBtn>
+      <HeaderBtn v-permission="o.permission" :name="o.key" :bgColor="o.bgColor">{{ o.name }}</HeaderBtn>
     </span>
   </div>
 </template>

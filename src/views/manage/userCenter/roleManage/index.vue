@@ -70,14 +70,15 @@ export default {
           key: "edit",
           title: "编辑",
           btnStyle: "yellow",
+          permission: "admin/adRole/edit",
           action: (o, row) => {
-            console.log(row.id);
             this.$refs.addDialog.edit(row.id);
           },
         },
         {
           key: "delete",
           title: "删除",
+          permission: "admin/adRole/remove",
           btnStyle: "red",
           action: (o, row) => {
             this.handleDelete(row)
@@ -88,6 +89,7 @@ export default {
         {
           key: "el-icon-plus",
           name: "添加角色",
+          permission: "admin/adRole/add",
           action: () => {
             this.$refs.addDialog.open();
           },

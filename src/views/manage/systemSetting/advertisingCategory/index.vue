@@ -74,6 +74,7 @@ export default {
         {
           key: "edit",
           title: "编辑",
+          permission: "system/sysAdvertiseCategory/edit",
           btnStyle: "yellow",
           action: (o, row) => {
             console.log(row.id);
@@ -83,6 +84,7 @@ export default {
         {
           key: "delete",
           title: "删除",
+          permission: "system/sysAdvertiseCategory/remove",
           btnStyle: "red",
           action: (o, row) => {
             this.handleDelete(row)
@@ -92,6 +94,7 @@ export default {
       headerOperates: [
         {
           key: "el-icon-plus",
+          permission: "system/sysAdvertiseCategory/add",
           name: "添加广告分类",
           action: () => {
             this.$refs.addDialog.open();

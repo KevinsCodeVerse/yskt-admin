@@ -3,7 +3,7 @@
   <div class="department_page">
     <div class="header_box">
       <span @click="handleAdddepartment">
-        <HeaderBtn name="el-icon-plus">添加部门</HeaderBtn>
+        <HeaderBtn v-permission="'admin/adDepartment/add'" name="el-icon-plus">添加部门</HeaderBtn>
       </span>
     </div>
 
@@ -19,14 +19,14 @@
         <div class="custom-tree-node" slot-scope="{ node, data }">
           <span>{{ node.label }}</span>
           <div>
-            <span @click.stop="handleAdd(data)" class="edit_box"
+            <span v-permission="'admin/adDepartment/add'" @click.stop="handleAdd(data)" class="edit_box"
               ><i
                 class="el-icon-plus
 "
               ></i
             ></span>
-            <span  @click.stop="handleEdit(data)" class="edit_box"><i class="el-icon-edit"></i></span>
-            <span  @click.stop="handleDelete(data)" class="edit_box del_box"><i class="el-icon-delete"></i></span>
+            <span v-permission="'admin/adDepartment/edit'"   @click.stop="handleEdit(data)" class="edit_box"><i class="el-icon-edit"></i></span>
+            <span v-permission="'admin/adDepartment/remove'"  @click.stop="handleDelete(data)" class="edit_box del_box"><i class="el-icon-delete"></i></span>
           </div>
         </div>
       </el-tree>

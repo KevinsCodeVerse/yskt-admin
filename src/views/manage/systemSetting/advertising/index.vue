@@ -120,15 +120,16 @@ export default {
         {
           key: "edit",
           title: "编辑",
+          permission: "system/sysAdvertise/edit",
           btnStyle: "yellow",
           action: (o, row) => {
-            console.log(row);
             this.$refs.addDialog.edit(row);
           },
         },
         {
           key: "delete",
           title: "删除",
+          permission: "system/sysAdvertise/remove",
           btnStyle: "red",
           action: (o, row) => {
             this.handleDelete(row);
@@ -138,6 +139,7 @@ export default {
       headerOperates: [
         {
           key: "el-icon-plus",
+          permission: "system/sysAdvertise/add",
           name: "添加广告",
           action: () => {
             this.$refs.addDialog.open();

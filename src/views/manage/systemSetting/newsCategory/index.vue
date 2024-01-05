@@ -3,7 +3,7 @@
   <div class="newCategory_page">
     <div class="header_box">
       <span @click="handleAddNewCategory">
-        <HeaderBtn name="el-icon-plus">添加新闻分类</HeaderBtn>
+        <HeaderBtn v-permission="'system/sysNewsCategory/add'" name="el-icon-plus">添加新闻分类</HeaderBtn>
       </span>
     </div>
 
@@ -19,13 +19,13 @@
         <div class="custom-tree-node" slot-scope="{ node, data }">
           <span>{{ node.label }}</span>
           <div>
-            <span @click.stop="handleAdd(data)" v-if="node.level === 1" class="edit_box"
+            <span v-permission="'system/sysNewsCategory/add'" @click.stop="handleAdd(data)" v-if="node.level === 1" class="edit_box"
               ><i
                 class="el-icon-plus
 "
               ></i
             ></span>
-            <span  @click.stop="handleEdit(data)" class="edit_box"><i class="el-icon-edit"></i></span>
+            <span v-permission="'system/sysNewsCategory/edit'"  @click.stop="handleEdit(data)" class="edit_box"><i class="el-icon-edit"></i></span>
           </div>
         </div>
       </el-tree>

@@ -214,6 +214,7 @@ export default {
         {
           key: "edit",
           title: "编辑",
+          permission: "admin/adInfo/editVip",
           btnStyle: "yellow",
           action: (o, row) => {
             this.$refs.addDialog.edit(row);
@@ -231,6 +232,7 @@ export default {
       headerOperates: [
         {
           key: "el-icon-plus",
+          permission: "admin/adInfo/addVip",
           name: "添加会员",
           action: () => {
             this.$refs.addDialog.open();

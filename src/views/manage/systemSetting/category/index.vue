@@ -107,6 +107,7 @@ export default {
           key: "edit",
           title: "编辑",
           btnStyle: "yellow",
+          permission: "system/sysCategory/edit",
           action: (o, row) => {
             this.$refs.addDialog.edit(row);
           },
@@ -115,6 +116,7 @@ export default {
           key: "delete",
           title: "删除",
           btnStyle: "red",
+          permission: "system/sysCategory/remove",
           action: (o, row) => {
             this.handleDelete(row);
           },
@@ -124,6 +126,7 @@ export default {
         {
           key: "el-icon-plus",
           name: "添加分类",
+          permission: "system/sysCategory/add",
           action: () => {
             this.$refs.addDialog.open();
           },

@@ -3,6 +3,7 @@
     <template v-for="o in operates">
       <span
         class="list-operate-btn"
+        v-permission="o.permission"
         :class="o.disabled === true ? 'not-allowed-btn' : o.btnStyle + '-btn'"
         :key="o.key"
         v-if="o.isHidden ? !o.isHidden(curRow) : true"

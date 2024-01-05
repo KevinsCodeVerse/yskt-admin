@@ -116,6 +116,7 @@ export default {
           key: "edit",
           title: "编辑",
           btnStyle: "yellow",
+          permission: "system/sysNews/edit",
           action: (o, row) => {
             this.$refs.addDialog.edit(row);
           },
@@ -124,6 +125,7 @@ export default {
           key: "delete",
           title: "删除",
           btnStyle: "red",
+          permission: "system/sysNews/remove",
           action: (o, row) => {
             this.handleDelete(row);
           },
@@ -132,6 +134,7 @@ export default {
       headerOperates: [
         {
           key: "el-icon-plus",
+          permission: "system/sysNews/add",
           name: "添加新闻",
           action: () => {
             this.$refs.addDialog.open();

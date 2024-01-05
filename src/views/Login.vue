@@ -171,6 +171,7 @@ export default {
               sessionStorage.setItem("userName", res.name);
               sessionStorage.setItem("id", res.id);
               sessionStorage.setItem("roleId", res.roleId);
+			  sessionStorage.setItem("interfaceList",JSON.stringify(res.interfaceList))
               const menuList = res.menuList;
               // this.$store.dispatch('router/setMenuList', res.menuList)
               sessionStorage.setItem("menuList", JSON.stringify(menuList));

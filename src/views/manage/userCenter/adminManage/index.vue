@@ -236,6 +236,7 @@ export default {
           key: "edit",
           title: "编辑",
           btnStyle: "yellow",
+          permission: "admin/adInfo/editAdmin",
           action: (o, row) => {
             this.$refs.addDialog.edit(row);
           },
@@ -253,6 +254,7 @@ export default {
         {
           key: "el-icon-plus",
           name: "添加管理员",
+          permission: "admin/adInfo/addAdmin",
           action: () => {
             this.$refs.addDialog.open();
           },

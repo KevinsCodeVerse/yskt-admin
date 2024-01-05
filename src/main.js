@@ -11,6 +11,7 @@ import * as filters from '@/config/filtersConfig' // 过滤器
 import request from '@/utils/request' // 请求工具类
 import common from '@/utils/common' // 常用工具
 import './assets/fonts/icon.css' // 自定义 svg转font字体样式
+import "@/utils/directive"
 // element-ui
 import '@/plugins/element/element.js'
 // import ElementUI from 'element-ui' // element-ui 组件库
