@@ -65,6 +65,10 @@ export default {
                 label: "银行账户分类",
                 value: 3,
               },
+              {
+                label: "课程套餐",
+                value: 4,
+              }
             ],
           },
         ],

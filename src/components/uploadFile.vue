@@ -7,14 +7,26 @@
       :before-remove="beforeRemove"
       :before-upload="beforeUpload"
       multiple
+      :accept="accept"
       :limit="limit"
       :file-list="fileList"
     >
-      <el-button :disabled="fileList.length == limit" size="small" type="primary">点击上传</el-button>
+      <el-button
+        :disabled="fileList.length == limit"
+        size="small"
+        type="primary"
+        >点击上传</el-button
+      >
+
       <!-- <div slot="tip" class="el-upload__tip">
         只能上传jpg/png文件，且不超过500kb
       </div> -->
     </el-upload>
+    <el-progress
+      style="width: 100%"
+      v-if="percentage !== 0 && percentage !== 100"
+      :percentage="percentage"
+    ></el-progress>
   </div>
 </template>
 
@@ -27,26 +39,34 @@ export default {
     prop: "fileValue",
     event: "update:fileValue",
   },
+ 
   props: {
     fileValue: [Array, String, File],
     limit: {
       type: Number,
       default: 1,
     },
+    accept: String,
+    valueType: String,
   },
   mounted() {
     this.initFileValue();
   },
   data() {
     return {
+      percentage: 0,
       fileList: [],
     };
   },
 
   methods: {
     beforeRemove(file, fileList) {
-      this.fileList  = fileList
-      this.$emit("update:fileValue", this.fileList);
+      this.fileList = fileList;
+      if (this.valueType === "string" && this.limit === 1) {
+        this.$emit("update:fileValue", "");
+      } else {
+        this.$emit("update:fileValue", this.fileList);
+      }
     },
 
     beforeUpload(file) {
@@ -61,9 +81,11 @@ export default {
           success: (res) => {
             const observable = qiniu.upload(file, file.name, res);
             observable.subscribe({
-              next: undefined,
               error: () => {
                 this.$message.error("上传出错，请重新上传！");
+              },
+              next: ({ total }) => {
+                this.percentage = parseInt(total.percent);
               },
               complete: ({ key }) => {
                 this.$message.success("上传成功！");
@@ -71,10 +93,11 @@ export default {
                   name: key,
                   url: this.$envConfig.qiniuDomain + key,
                 });
-                this.$emit(
-                  "update:fileValue",
-                 this.fileList
-                );
+                if (this.valueType === "string" && this.limit === 1) {
+                  this.$emit("update:fileValue", this.fileList[0].url);
+                } else {
+                  this.$emit("update:fileValue", this.fileList);
+                }
               },
             });
           },

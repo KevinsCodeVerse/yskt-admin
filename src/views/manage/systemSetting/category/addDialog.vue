@@ -71,6 +71,10 @@ export default {
           label: "银行账户分类",
           value: 3,
         },
+        {
+          label: "课程套餐",
+          value: 4,
+        }
       ],
       categoryRule: {
         type: [{ required: true, message: "请选择分类类型", trigger: "blur" }],
