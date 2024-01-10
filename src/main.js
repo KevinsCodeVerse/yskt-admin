@@ -22,6 +22,8 @@ import message from './utils/message'
 import MainHead from "./components/models/MainHead";
 import MainContent from "./components/models/MainContent";
 import JATUI from "./jat-component/index"
+import VueClipboards from 'vue-clipboard2'
+Vue.use(VueClipboards);
 import * as echarts from "echarts"
 import "./icons"
 Vue.prototype.$echarts = echarts

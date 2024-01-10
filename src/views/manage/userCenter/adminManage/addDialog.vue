@@ -104,6 +104,30 @@
         <jat-button @click="handleSubmit">确 定</jat-button>
       </span>
     </el-dialog>
+    <el-dialog
+      title="账号信息"
+      :close-on-click-modal="false"
+      :visible.sync="accountVisible"
+      width="30%"
+      @close="handleClose"
+    >
+      <div class="tipInfo">
+        您的账号创建成功了。请保存好，方便后面登录后台系统
+      </div>
+      <div class="account-box">
+        <span>账号：{{ accountInfo.account }}</span>
+        <span>密码：{{ accountInfo.password }}</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <jat-button
+          v-clipboard:copy="
+            '账号：' + accountInfo.account + '\n密码：' + accountInfo.password
+          "
+          v-clipboard:success="onCopy"
+          >一键复制</jat-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -132,6 +156,11 @@ export default {
         status: "",
         canSeeDepartment: [],
         id: "",
+      },
+      accountVisible: false,
+      accountInfo: {
+        account: "",
+        password: "",
       },
       departmentOptions: [],
       rolesOptions: [],
@@ -211,6 +240,12 @@ export default {
         this.$refs.departmentRef.setCheckedKeys(this.addData.canSeeDepartment);
       }, 100);
     },
+    handleClose() {
+      this.accountInfo = {
+        account: "",
+        password: "",
+      };
+    },
     close() {
       this.$refs.adminRef && this.$refs.adminRef.clearValidate();
       this.$refs.departmentRef.setCheckedKeys([]);
@@ -276,6 +311,7 @@ export default {
               },
             });
           } else {
+            this.accountInfo.password = password;
             request.post({
               url: "/admin/adInfo/addAdmin",
               params: {
@@ -287,7 +323,9 @@ export default {
                 roleIds: JSON.stringify(roleIds),
               },
               success: (res) => {
-                this.$message.success(res);
+                this.accountInfo.account = res;
+                this.accountVisible = true;
+                this.$message.success("操作成功");
                 this.close();
                 this.$emit("success");
               },
@@ -295,6 +333,9 @@ export default {
           }
         }
       });
+    },
+    onCopy() {
+      this.$message.success("复制成功");
     },
   },
 };
@@ -307,5 +348,20 @@ export default {
 .el-form {
   height: 520px;
   overflow: scroll;
+}
+.tipInfo {
+  font-size: 16px;
+  margin: 10px;
+  color: #f56c6c;
+}
+.account-box {
+  // text-align: center;
+  display: flex;
+  flex-direction: column;
+  span {
+    margin: 10px 20px;
+    font-size: 16px;
+  }
+  margin: auto;
 }
 </style>

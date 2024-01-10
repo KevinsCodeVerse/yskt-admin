@@ -1,4 +1,4 @@
-<!-- 角色管理 -->
+<!-- 订单管理 -->
 <template>
   <div class="middle-container" v-loading="loading">
     <jat-fillter
@@ -7,20 +7,20 @@
       @searchFilter="searchFilter"
       @clearFilter="clearFilter"
     >
-      <span slot="teacherAdId">
+      <span slot="parentAdId">
         <el-select
-          style="width: 85%;"
-          size="small"
-          clearable
-          v-model="filterData.teacherAdId"
+          style="width: 100%;"
+          v-model="filterData.parentAdId"
           filterable
           remote
-          placeholder="讲师"
-          :remote-method="teacherRemoteMethod"
+          size="small"
+          clearable
+          placeholder="所属人(输入名称或者手机号)"
+          :remote-method="remoteMethod"
           :loading="remoteLoading"
         >
           <el-option
-            v-for="item in teacherOptions"
+            v-for="item in supervisorAdOptions"
             :key="item.id"
             :label="item.name"
             :value="item.id"
@@ -33,16 +33,31 @@
       :columns="table.columns"
       :headerOperates="headerOperates"
       :operates="operates"
-      operateWidth="110px"
       :data="table.data"
       :pageSize="table.pageSize"
       :currentPage="table.currentPage"
+      operateWidth="250px"
       :total="table.total"
       @current-page-change="currentPageChange"
       @size-page-change="sizePageChange"
     >
+      <div slot="image" slot-scope="scope">
+        <el-image
+          v-if="scope.row.image"
+          style="width: 50px"
+          :src="scope.row.image"
+          :preview-src-list="[scope.row.image]"
+        >
+        </el-image>
+        <span v-else></span>
+      </div>
     </BasicTable>
     <add-dialog @success="handleSuccess" ref="addDialog"></add-dialog>
+    <create-collection-dialog
+      @success="handleSuccess"
+      ref="collectionDialog"
+    ></create-collection-dialog>
+    <order-detail ref="detailRef"></order-detail>
   </div>
 </template>
 
@@ -50,15 +65,12 @@
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 import addDialog from "./addDialog.vue";
-import {
-  hasFreeOptions,
-  hasLiveOptions,
-  positionptions,
-  tagOptions
-} from "./const";
+import { listToTree } from "../../../../utils/tools";
+import CreateCollectionDialog from "./createCollectionDialog.vue";
+import orderDetail from "./orderDetail.vue";
 export default {
-  name: "adverstPage",
-  components: { BasicTable, addDialog },
+  name: "orderPage",
+  components: { BasicTable, addDialog, CreateCollectionDialog, orderDetail },
   data() {
     return {
       loading: false,
@@ -69,153 +81,98 @@ export default {
         column: [
           {
             type: "input",
-            label: "课程编号",
-            value: "number",
-          },
-          {
-            type: "input",
-            label: "课程名称",
+            label: "客户名称",
             value: "name",
           },
           {
-            type: "select",
-            label: "课程类别",
-            value: "categoryId",
-            labelKey: "name",
-            valueKey: "id",
-            options: [],
-          },
-          {
-            type: "select",
-            label: "课程套餐",
-            value: "setMealCategoryId",
-            labelKey: "name",
-            valueKey: "id",
-            options: []
-          },
-          {
-            type: "select",
-            label: "课程标签",
-            value: "tag",
-            options: [
-              {
-                value: 1,
-                label: "单品课程",
-              },
-              {
-                value: 2,
-                label: "单品课程",
-              },
-            ],
-          },
-          {
-            type: "select",
-            label: "是否免费",
-            value: "hasFree",
-            options: hasFreeOptions,
+            type: "input",
+            label: "客户区域",
+            value: "region",
           },
           {
             type: "slot",
-            slotName: "teacherAdId",
+            slotName: "parentAdId",
           },
         ],
       },
-      remoteLoading: false,
-      teacherOptions: [],
+
       filterData: {
         name: "",
-        number: "",
-        hasLive: "",
-        teacherAdId: "",
-        categoryId: "",
-        hasFree: "",
-        setMealCategoryId: ""
+        region: "",
+        parentAdId: "",
       },
       table: {
         columns: [
           {
             id: 1,
-            prop: "number",
-            label: "课程编号",
+            prop: "orderNum",
+            label: "订单号",
           },
           {
             id: 2,
-            prop: "hasLive",
-            label: "课程类型",
-            render: (row) => {
-              const item = this.hasLiveOptions.find(
-                (item) => item.value == row.hasLive
-              );
-              return item ? item.label : "";
-            },
+            prop: "courseName",
+            label: "产品名称",
           },
           {
             id: 3,
-            prop: "setMealCategoryId",
-            label: "课程套餐",
-            render: (row) => {
-              const item = this.$refs.addDialog.MealCategoryOptions.find(
-                (item) => item.id == row.setMealCategoryId
-              );
-              return item ? item.name : "";
-            },
+            prop: "vipName",
+            label: "客户名称",
           },
           {
             id: 4,
-            prop: "categoryId",
-            label: "课程类别",
-            render: (row) => {
-              const item = this.$refs.addDialog.categoryOptions.find(
-                (item) => item.id == row.categoryId
-              );
-              return item ? item.name : "";
-            },
-          },
-          {
-            id: 5,
-            prop: "tag",
-            label: "课程标签",
-            render: (row) => {
-              const item = tagOptions.find((item) => item.value == row.tag);
-              return item ? item.label : "";
-            },
+            prop: "idCard",
+            label: "数量",
           },
           {
             id: 6,
-            prop: "position",
-            label: "推荐位",
-            render: (row) => {
-              const item = positionptions.find(
-                (item) => item.value == row.position
-              );
-              return item ? item.label : "";
-            },
+            prop: "region",
+            label: "总销售价",
           },
           {
             id: 7,
-            prop: "teacherName",
-            label: "讲师",
+            prop: "homeAddress",
+            label: "总结算价",
           },
           {
             id: 8,
-            prop: "price",
-            label: "价格",
+            prop: "wageLevel",
+            label: "下单人",
           },
           {
             id: 9,
-            prop: "createAdName",
-            label: "增加人",
+            prop: "company",
+            label: "销售人员",
           },
           {
             id: 10,
-            prop: "createTime",
-            label: "增加时间",
-            type: "date",
+            prop: "operator",
+            label: "操作人员",
+          },
+          {
+            id: 11,
+            prop: "status",
+            label: "订单状态",
           },
           {
             id: 12,
-            prop: "sort",
-            label: "排序",
+            prop: "openStatu",
+            label: "开通状态",
+          },
+          {
+            id: 13,
+            prop: "createTime",
+            label: "下单时间",
+            type: "date",
+          },
+          {
+            id: 14,
+            prop: "profitAdName",
+            label: "利润归属",
+          },
+          {
+            id: 15,
+            prop: "hxsj",
+            label: "核销时间",
           },
         ],
         pageSize: 20,
@@ -228,15 +185,33 @@ export default {
           key: "edit",
           title: "编辑",
           btnStyle: "yellow",
-          permission: "admin/adCourse/edit",
+          permission: "admin/adCustomer/edit",
           action: (o, row) => {
             this.$refs.addDialog.edit(row);
           },
         },
         {
+          key: "create",
+          title: "创建收款",
+          btnStyle: "blue",
+          permission: "admin/adCustomer/edit",
+          action: (o, row) => {
+            this.$refs.collectionDialog.open(row.orderNum);
+          },
+        },
+        {
+          key: "detail",
+          title: "详情",
+          btnStyle: "green",
+          permission: "admin/adCustomer/edit",
+          action: (o, row) => {
+            this.$refs.detailRef.open(row.orderNum);
+          },
+        },
+        {
           key: "delete",
           title: "删除",
-          permission: "admin/adCourse/remove",
+          permission: "admin/adCustomer/remove",
           btnStyle: "red",
           action: (o, row) => {
             this.handleDelete(row);
@@ -246,8 +221,8 @@ export default {
       headerOperates: [
         {
           key: "el-icon-plus",
-          name: "添加课程",
-          permission: "admin/adCourse/add",
+          name: "快捷下单",
+          permission: "system/sysCourseOrder/quicklyPlaceOrderAdd",
           action: () => {
             this.$refs.addDialog.open();
           },
@@ -255,32 +230,9 @@ export default {
       ],
     };
   },
-  computed: {
-    hasLiveOptions() {
-      return this.$refs.addDialog ? this.$refs.addDialog.hasLiveOptions : [];
-    },
-  },
-  mounted() {
-    this.$watch(
-      () => {
-        return this.$refs.addDialog.categoryOptions;
-      },
-      (val) => {
-        this.filterOptions.column[2].options = val;
-      }
-    );
-    this.$watch(
-      () => {
-        return this.$refs.addDialog.MealCategoryOptions;
-      },
-      (val) => {
-        this.filterOptions.column[3].options = val;
-      }
-    );
-  },
-
   created() {
     this.getList();
+    this.getCategoryList();
   },
   methods: {
     searchFilter() {
@@ -290,7 +242,7 @@ export default {
     getList() {
       this.loading = true;
       request.post({
-        url: "/admin/adCourse/list",
+        url: "/system/sysCourseOrder/salesOrderList",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,
@@ -306,22 +258,15 @@ export default {
         },
       });
     },
-    teacherRemoteMethod(keyword) {
-      if (!keyword) {
-        return;
-      }
-      this.remoteLoading = true;
+    getCategoryList() {
       request.post({
-        url: "/admin/adCourse/queryTeacherByNameOrTeacher",
+        url: "/system/sysNewsCategory/listNoPage",
         params: {
-          keyword,
+          ...this.addData,
         },
         success: (res) => {
-          this.remoteLoading = false;
-          this.teacherOptions = res;
-        },
-        catch: () => {
-          this.remoteLoading = false;
+          this.categoryOptions = res;
+          this.filterOptions.column[1].options = listToTree(res);
         },
       });
     },
@@ -330,14 +275,14 @@ export default {
     },
 
     handleDelete(row) {
-      this.$confirm("此操作将会删除该课程, 是否继续?", "提示", {
+      this.$confirm("此操作将会删除该客户, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
           request.post({
-            url: "/admin/adCourse/removee",
+            url: "/admin/adCustomer/remove",
             params: {
               id: row.id,
             },
@@ -358,12 +303,6 @@ export default {
     clearFilter() {
       this.filterData = {
         name: "",
-        number: "",
-        hasLive: "",
-        teacherAdId: "",
-        categoryId: "",
-        hasFree: "",
-        setMealCategoryId: ""
       };
       this.searchFilter();
     },
@@ -396,7 +335,7 @@ export default {
         },
       });
     },
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>

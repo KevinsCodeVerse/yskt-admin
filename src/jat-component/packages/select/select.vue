@@ -10,7 +10,6 @@ placeholder... */
   >
     <el-select
       style="width: 100%"
-      @change="handleChange"
       :size="size"
       :value="value"
       :validateEvent="validateEvent"
