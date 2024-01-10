@@ -15,11 +15,7 @@
         label-position="right"
         label-width="150px"
       >
-        <el-form-item
-          style="width: 100%;"
-          label="产品编号/产品名称:"
-          prop="course"
-        >
+        <el-form-item style="width: 100%;" label="套餐分类" prop="course">
           <jat-select
             v-model="addData.course"
             placeholder="请选择产品编号/产品名称"
@@ -38,7 +34,9 @@
         </el-form-item>
         <el-form-item style="width: 100%" label="课程套餐:" prop="ids">
           <BasicTable
+            v-model="addData.ids"
             height="300px"
+            ref="courseTableRef"
             selectType="multi"
             @selection-change="handleSelectionChange"
             :hasCard="false"
@@ -49,31 +47,34 @@
             :data="tableData"
           ></BasicTable>
         </el-form-item>
-        <el-form-item label="开始时间:" prop="time">
+        <el-form-item label="订单时间:" prop="time">
           <jat-date-picker
             width="100%"
             clearable
             type="daterange"
-            placeholder="请选择开始时间"
+            placeholder="请选择订单时间"
             size="small"
             v-model="addData.time"
           ></jat-date-picker>
         </el-form-item>
         <el-form-item label="数量:" prop="count">
           <jat-input
-            v-model.number="addData.count"
+            v-input.int
+            v-model="addData.count"
             placeholder="请输入数量"
           ></jat-input>
         </el-form-item>
         <el-form-item label="市场价:" prop="marketPrice">
           <jat-input
-            v-model.number="addData.marketPrice"
+            v-input.float="2"
+            v-model="addData.marketPrice"
             placeholder="请输入市场价"
           ></jat-input>
         </el-form-item>
         <el-form-item label="成本价:" prop="costPrice">
           <jat-input
-            v-model.number="addData.costPrice"
+            v-input.float="2"
+            v-model="addData.costPrice"
             placeholder="请输入成本价"
           ></jat-input>
         </el-form-item>
@@ -189,6 +190,21 @@ export default {
 
       clientRule: {
         name: [{ required: true, message: "请输入客户名称", trigger: "blur" }],
+        costPrice: [
+          { required: true, message: "请输入成本价", trigger: "blur" },
+        ],
+        adId: [{ required: true, message: "请输入下单者", trigger: "blur" }],
+        count: [{ required: true, message: "请输入数量", trigger: "blur" }],
+        time: [{ required: true, message: "请选择订单时间", trigger: "blur" }],
+        ids: [
+          { required: true, message: "请输入选择套餐课程", trigger: "blur" },
+        ],
+        marketPrice: [
+          { required: true, message: "请输入市场价", trigger: "blur" },
+        ],
+        profitAdId: [
+          { required: true, message: "请选择利润归属", trigger: "blur" },
+        ],
       },
     };
   },
@@ -267,6 +283,13 @@ export default {
         },
         success: (res) => {
           this.tableData = res;
+          this.$nextTick(() => {
+            this.tableData.forEach((row) => {
+              this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.toggleRowSelection(
+                row
+              );
+            });
+          });
         },
       });
     },
@@ -291,7 +314,7 @@ export default {
 
     handleSubmit() {
       this.$refs.clientRef.validate((valid) => {
-        const { ids,time,id, course, ...rest } = this.addData;
+        const { ids, time, id, course, ...rest } = this.addData;
 
         if (valid) {
           if (id) {
@@ -319,7 +342,7 @@ export default {
                 name: course.name,
                 startTime: time && time.length > 0 ? time[0] : "",
                 endTime: time && time.length > 0 ? time[1] : "",
-                ...rest
+                ...rest,
               },
               success: (res) => {
                 this.$message.success(res);

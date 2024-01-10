@@ -8,18 +8,164 @@
       width="70%"
       @close="handleClose"
     >
+      <el-descriptions
+        class="margin-top"
+        title="订单信息"
+        :colon="true"
+        :labelStyle="{ width: '140px' }"
+        :column="2"
+        size="medium"
+        border
+      >
+        <el-descriptions-item
+          v-for="(order, index) in orderList"
+          :key="order.id"
+          :span="index === 0 ? 2 : 1"
+        >
+          <template slot="label">
+            {{ order.name }}
+          </template>
+          {{ order.type === "date" ? getDate(info[order.id]) : info[order.id] }}
+        </el-descriptions-item>
+      </el-descriptions>
+      <div class="tilte-box">订单收款</div>
+      <BasicTable
+        height="300px"
+        :hasCard="false"
+        :hasPage="false"
+        :hasSort="false"
+        :columns="columns"
+        :isShowTableHead="false"
+        :data="tableData"
+      ></BasicTable>
     </el-dialog>
   </div>
 </template>
 
 <script>
 import request from "../../../../utils/request";
+import BasicTable from "@/components/BasicTable/index.vue";
+import { getDate } from "../../../../utils/tools";
 
 export default {
+  components: { BasicTable },
   data() {
     return {
+      getDate,
       detailVisible: false,
       info: {},
+      tableData: [],
+      orderList: [
+        {
+          id: "orderNum",
+          name: "订单编号",
+        },
+        {
+          id: "productNum",
+          name: "产品编号",
+        },
+        {
+          id: "courseName",
+          name: "产品名称",
+        },
+        {
+          id: "startTime",
+          name: "开始时间",
+          type: "date",
+        },
+        {
+          id: "endTime",
+          name: "结束时间",
+          type: "date",
+        },
+        {
+          id: "customName",
+          name: "客户名称",
+        },
+        {
+          id: "count",
+          name: "数量",
+        },
+        {
+          id: "ydr",
+          name: "预订人",
+        },
+        {
+          id: "yddh",
+          name: "预订电话",
+        },
+        {
+          id: "zxsj",
+          name: "订单总销售价",
+        },
+        {
+          id: "zjsj",
+          name: "订单总结算价",
+        },
+        {
+          id: "xsk",
+          name: "产品销售价",
+        },
+        {
+          id: "jsj",
+          name: "产品结算价",
+        },
+        {
+          id: "status",
+          name: "订单状态",
+        },
+        {
+          id: "createTime",
+          name: "下单时间",
+          type: "date"
+        },
+        {
+          id: "operator",
+          name: "操作员",
+        },
+        {
+          id: "remark",
+          name: "优惠信息/订单备注",
+        },
+        {
+          id: "",
+          name: "",
+        },
+      ],
+      // 应收金额，已收金额，水单，备注，创建人名称
+      columns: [
+        {
+          id: 1,
+          prop: "categoryName",
+          label: "付款方式",
+        },
+        {
+          id: 2,
+          prop: "orderMoney",
+          label: "应收金额",
+        },
+        {
+          id: 3,
+          prop: "collectionMoney",
+          label: "已收金额",
+        },
+        {
+          id: 4,
+          type: "image",
+          prop: "receiptUrl",
+          label: "水单",
+        },
+        {
+          id: 5,
+          prop: "collectionMoney",
+          label: "备注",
+        },
+        {
+          id: 6,
+          prop: "createAdName",
+          label: "创建人",
+        },
+      ],
     };
   },
 
@@ -29,7 +175,7 @@ export default {
       this.getDetailInfo(orderNum);
     },
     handleClose() {
-      this.detailVisible = false
+      this.detailVisible = false;
     },
     getDetailInfo(orderNum) {
       request.post({
@@ -38,12 +184,27 @@ export default {
           orderNum,
         },
         success: (res) => {
-            console.log(res);
-          this.info = res;
+          this.info = res.orderDetail;
+          this.tableData = res.billsList;
         },
       });
     },
   },
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.label-box {
+  width: 100px;
+}
+
+.tilte-box {
+  font-size: 16px;
+  color: #303133;
+  font-weight: bold;
+  margin-top: 20px;
+}
+/deep/.el-dialog__body {
+  height: 500px;
+  overflow: auto;
+}
+</style>

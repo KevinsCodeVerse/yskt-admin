@@ -52,6 +52,7 @@ import request from "../../../../utils/request";
 import addDialog from "./addDialog.vue";
 import {
   hasFreeOptions,
+  hasLiveOptions,
   positionptions,
   tagOptions
 } from "./const";
@@ -336,7 +337,7 @@ export default {
       })
         .then(() => {
           request.post({
-            url: "/admin/adCourse/remove",
+            url: "/admin/adCourse/removee",
             params: {
               id: row.id,
             },

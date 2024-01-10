@@ -108,6 +108,16 @@
             <span v-else-if="c.type === 'date'">
               {{ formdatetime(row[c.prop], c.formate) }}
             </span>
+            <span v-else-if="c.type === 'image'">
+              <el-image
+                v-if="row[c.prop]"
+                style="width: 50px"
+                :src="row[c.prop]"
+                :preview-src-list="[row[c.prop]]"
+              >
+              </el-image>
+              <span v-else></span>
+            </span>
             <span
               v-else
               :style="{ color: c.colorRener ? c.colorRener(row) : undefined }"

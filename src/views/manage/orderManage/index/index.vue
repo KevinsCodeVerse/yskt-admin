@@ -81,25 +81,15 @@ export default {
         column: [
           {
             type: "input",
-            label: "客户名称",
-            value: "name",
-          },
-          {
-            type: "input",
-            label: "客户区域",
-            value: "region",
-          },
-          {
-            type: "slot",
-            slotName: "parentAdId",
-          },
+            label: "订单号",
+            value: "orderNum",
+          }
+          
         ],
       },
 
       filterData: {
-        name: "",
-        region: "",
-        parentAdId: "",
+        orderNum: ""
       },
       table: {
         columns: [
@@ -181,20 +171,20 @@ export default {
         total: 0,
       },
       operates: [
-        {
-          key: "edit",
-          title: "编辑",
-          btnStyle: "yellow",
-          permission: "admin/adCustomer/edit",
-          action: (o, row) => {
-            this.$refs.addDialog.edit(row);
-          },
-        },
+        // {
+        //   key: "edit",
+        //   title: "编辑",
+        //   btnStyle: "yellow",
+        //   permission: "admin/adCustomer/edit",
+        //   action: (o, row) => {
+        //     this.$refs.addDialog.edit(row);
+        //   },
+        // },
         {
           key: "create",
           title: "创建收款",
-          btnStyle: "blue",
-          permission: "admin/adCustomer/edit",
+          btnStyle: "yellow",
+          permission: "system/sysCourseOrderBills/add",
           action: (o, row) => {
             this.$refs.collectionDialog.open(row.orderNum);
           },
@@ -203,20 +193,20 @@ export default {
           key: "detail",
           title: "详情",
           btnStyle: "green",
-          permission: "admin/adCustomer/edit",
+          permission: "system/sysCourseOrder/detail",
           action: (o, row) => {
             this.$refs.detailRef.open(row.orderNum);
           },
         },
-        {
-          key: "delete",
-          title: "删除",
-          permission: "admin/adCustomer/remove",
-          btnStyle: "red",
-          action: (o, row) => {
-            this.handleDelete(row);
-          },
-        },
+        // {
+        //   key: "delete",
+        //   title: "删除",
+        //   permission: "admin/adCustomer/remove",
+        //   btnStyle: "red",
+        //   action: (o, row) => {
+        //     this.handleDelete(row);
+        //   },
+        // },
       ],
       headerOperates: [
         {
@@ -302,7 +292,7 @@ export default {
 
     clearFilter() {
       this.filterData = {
-        name: "",
+        orderNum: "",
       };
       this.searchFilter();
     },

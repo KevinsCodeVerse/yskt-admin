@@ -35,6 +35,7 @@
         </el-form-item>
         <el-form-item label="收款金额:" prop="collectionMoney">
           <jat-input
+            v-input.float="2"
             v-model="addData.collectionMoney"
             placeholder="请输入收款金额"
           ></jat-input>
@@ -87,16 +88,10 @@ export default {
       categoryOptions: [],
       collectionRule: {
         categoryId: [
-          { required: true, message: "请选择广告位置", trigger: "blur" },
+          { required: true, message: "请选择收款方式", trigger: "blur" },
         ],
-        name: [{ required: true, message: "请输入广告名称", trigger: "blur" }],
-        sort: [
-          { required: true, message: "请输入广告排序", trigger: "blur" },
-          {
-            type: "number",
-            message: "请输入整数",
-          },
-        ],
+        collectionMoney: [{ required: true, message: "请输入收款金额", trigger: "blur" }],
+        collectionTime: [{ required: true, message: "请选择收款时间", trigger: "blur" }],
       },
     };
   },
@@ -108,7 +103,7 @@ export default {
   methods: {
     open(orderNum) {
       this.dialogTitle = "创建收款";
-      this.addData.orderNum = orderNum
+      this.addData.orderNum = orderNum;
       this.addModifyVisible = true;
     },
     close() {
@@ -119,7 +114,7 @@ export default {
         collectionTime: "",
         orderNum: "",
         receiptUrl: "",
-        remark: ""
+        remark: "",
       };
       this.addModifyVisible = false;
     },
@@ -131,7 +126,6 @@ export default {
           type: 3,
         },
         success: (res) => {
-          console.log(res);
           this.categoryOptions = res;
         },
       });
