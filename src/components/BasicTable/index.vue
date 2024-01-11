@@ -16,7 +16,7 @@
         class="basicTable"
         :class="{ absolute: isTableAbsolute }"
         :data="data"
-        border
+        :border="false"
         stripe
         :highlightCurrentRow="true"
         :headerCellStyle="{

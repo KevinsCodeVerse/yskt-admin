@@ -87,7 +87,7 @@
           <!-- 时间：开始时间、结束时间时 -->
           <div v-else-if="opt.type === 'timeAll'">
             <el-date-picker
-              :style="{width: inputWidth}"
+              :style="{ width: inputWidth }"
               v-model="FilterData[opt.value]"
               type="daterange"
               size="small"
@@ -130,7 +130,6 @@
         <span class="resetBtn" @click="clearFilter" type="info">重置</span>
       </div>
     </div>
-
   </div>
 </template>
 <script>
@@ -310,11 +309,11 @@ export default {
 }
 
 .BasicInfo_title {
-  margin-left: 24px;
+  margin: 20px 13px;
+  margin-top: 0px;
   font-family: PingFangSC-Regular;
   font-size: 14px;
-  color: #666;
-  margin-bottom: 14px;
+  color: hwb(0 40% 60%);
   display: inline-block;
   background: #eceff3;
   border-radius: 4px;
@@ -322,7 +321,8 @@ export default {
   span {
     display: inline-block;
     margin: 3px 3px;
-    padding: 1px 9px;
+   
+    padding: 6px 12px;
     cursor: pointer;
     &.is_active {
       background: #167cf3;

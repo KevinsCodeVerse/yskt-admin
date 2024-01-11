@@ -6,6 +6,12 @@
   color: white !important;
 }
 
+.el-drawer__header {
+  margin: 0px;
+  padding: 8px;
+  background-image: linear-gradient(180deg, #ffffff 4%, #e8e8f1 96%);
+}
+
 .el-dialog {
   background: #ffffff;
   border-radius: 9px;

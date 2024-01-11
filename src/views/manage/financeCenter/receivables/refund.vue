@@ -2,26 +2,24 @@
 <template>
   <div>
     <el-dialog
-      :title="dialogTitle"
+      title="退款"
       :close-on-click-modal="false"
       :visible.sync="addModifyVisible"
-      width="50%"
+      width="40%"
       @close="close"
     >
       <el-form
         :model="addData"
-        :rules="collectionRule"
-        ref="collectionRef"
+        :rules="refundRule"
+        ref="refundRef"
         label-position="right"
         label-width="90px"
       >
-        <el-form-item label="收款单位:">
-          {{ vipName }}
-        </el-form-item>
-        <el-form-item label="收款方式:" prop="categoryId">
+     
+        <el-form-item label="退款方式:" prop="categoryId">
           <jat-select
             v-model="addData.categoryId"
-            placeholder="请选择收款方式"
+            placeholder="退款方式"
             clearable
           >
             <el-option
@@ -33,33 +31,21 @@
             </el-option>
           </jat-select>
         </el-form-item>
-        <el-form-item label="水单:" prop="receiptUrl">
-          <upload-image v-model="addData.receiptUrl"></upload-image>
-        </el-form-item>
-        <el-form-item label="收款金额:" prop="collectionMoney">
+
+        <el-form-item label="退款金额:" prop="collectionMoney">
           <jat-input
             v-input.float="2"
             v-model="addData.collectionMoney"
             placeholder="请输入收款金额"
           ></jat-input>
         </el-form-item>
-        <el-form-item label="收款时间:" prop="collectionTime">
-          <jat-date-picker
-            width="100%"
-            clearable
-            type="datetime"
-            placeholder="请选择收款时间"
-            valueFormat="yyyy-MM-dd HH:mm:ss"
-            size="small"
-            v-model="addData.collectionTime"
-          ></jat-date-picker>
-        </el-form-item>
+
         <el-form-item label="收款备注:" prop="remark">
           <jat-input
             type="textarea"
             :rows="5"
             v-model="addData.remark"
-            placeholder="请输入收款备注"
+            placeholder="请输入退款备注"
           ></jat-input>
         </el-form-item>
       </el-form>
@@ -72,10 +58,9 @@
 </template>
 
 <script>
-import uploadImage from "@/components/uploadImage.vue";
 import request from "../../../../utils/request";
 export default {
-  components: { uploadImage },
+  components: {},
   data() {
     return {
       addModifyVisible: false,
@@ -84,21 +69,16 @@ export default {
       addData: {
         categoryId: "",
         collectionMoney: "",
-        collectionTime: "",
         orderNum: "",
-        receiptUrl: "",
         remark: "",
       },
       categoryOptions: [],
-      collectionRule: {
+      refundRule: {
         categoryId: [
-          { required: true, message: "请选择收款方式", trigger: "blur" },
+          { required: true, message: "请选择退款方式", trigger: "blur" },
         ],
         collectionMoney: [
-          { required: true, message: "请输入收款金额", trigger: "blur" },
-        ],
-        collectionTime: [
-          { required: true, message: "请选择收款时间", trigger: "blur" },
+          { required: true, message: "请输入退款金额", trigger: "blur" },
         ],
       },
     };
@@ -109,24 +89,21 @@ export default {
   },
 
   methods: {
-    open(orderNum, title, vipName) {
-      if (title) {
-        this.dialogTitle = title;
-        this.vipName = vipName;
-      }
-      this.dialogTitle = "创建收款";
-      this.addData.orderNum = orderNum;
+    open(row) {
+      const { vipName, receivedPrice: collectionMoney, orderNum } = row;
+      this.addData = {
+        vipName,
+        collectionMoney,
+        orderNum,
+      };
       this.addModifyVisible = true;
     },
     close() {
-      this.$refs.collectionRef && this.$refs.collectionRef.clearValidate();
-      this.vipName = "";
+      this.$refs.refundRef && this.$refs.refundRef.clearValidate();
       this.addData = {
         categoryId: "",
         collectionMoney: "",
-        collectionTime: "",
         orderNum: "",
-        receiptUrl: "",
         remark: "",
       };
       this.addModifyVisible = false;
@@ -145,10 +122,10 @@ export default {
     },
 
     handleSubmit() {
-      this.$refs.collectionRef.validate((valid) => {
+      this.$refs.refundRef.validate((valid) => {
         if (valid) {
           request.post({
-            url: "/system/sysCourseOrderBills/add",
+            url: "/system/sysCourseOrderBills/refundAdd",
             params: this.addData,
             success: (res) => {
               this.$message.success(res);
