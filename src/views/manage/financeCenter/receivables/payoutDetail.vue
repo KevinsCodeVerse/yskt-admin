@@ -142,12 +142,15 @@ export default {
             label: "金额(正收，负退)",
             minWidth: "100px",
             render: (row) => {
-              if(row.type == -1) {
-                return "-" + row.collectionMoney
+              if (row.type == -1) {
+                return "-" + row.collectionMoney;
               } else {
-                return row.collectionMoney
+                return row.collectionMoney;
               }
-            }
+            },
+            colorRener: (row) => {
+              return row.type == -1 ? "#C00063" : "";
+            },
           },
           {
             id: 1,
