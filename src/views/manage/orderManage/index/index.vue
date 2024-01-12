@@ -97,11 +97,10 @@ export default {
             id: 1,
             prop: "orderNum",
             label: "订单号",
-          },
-          {
+          },{
             id: 2,
             prop: "courseName",
-            label: "产品名称",
+            label: "课程名称",
           },
           {
             id: 3,
@@ -110,32 +109,32 @@ export default {
           },
           {
             id: 4,
-            prop: "idCard",
+            prop: "count",
             label: "数量",
           },
           {
             id: 6,
-            prop: "region",
+            prop: "marketPrice",
             label: "总销售价",
           },
           {
             id: 7,
-            prop: "homeAddress",
+            prop: "marketPrice",
             label: "总结算价",
           },
           {
             id: 8,
-            prop: "wageLevel",
+            prop: "vipName",
             label: "下单人",
           },
           {
             id: 9,
-            prop: "company",
+            prop: "profitAdName",
             label: "销售人员",
           },
           {
             id: 10,
-            prop: "operator",
+            prop: "createAdName",
             label: "操作人员",
           },
           {
@@ -145,7 +144,7 @@ export default {
           },
           {
             id: 12,
-            prop: "openStatu",
+            prop: "openStatus",
             label: "开通状态",
           },
           {
@@ -155,15 +154,16 @@ export default {
             type: "date",
           },
           {
+                      id: 15,
+                      prop: "hxsj",//startTime-endTime
+                      label: "开始/结束时间",
+                    },
+          {
             id: 14,
             prop: "profitAdName",
             label: "利润归属",
           },
-          {
-            id: 15,
-            prop: "hxsj",
-            label: "核销时间",
-          },
+
         ],
         pageSize: 20,
         currentPage: 1,
