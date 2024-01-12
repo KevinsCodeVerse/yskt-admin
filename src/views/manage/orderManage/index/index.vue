@@ -36,7 +36,7 @@
       :data="table.data"
       :pageSize="table.pageSize"
       :currentPage="table.currentPage"
-      operateWidth="250px"
+      operateWidth="150px"
       :total="table.total"
       @current-page-change="currentPageChange"
       @size-page-change="sizePageChange"
@@ -97,11 +97,13 @@ export default {
             id: 1,
             prop: "orderNum",
             label: "订单号",
+            minWidth: "160px"
           },
           {
             id: 2,
             prop: "courseName",
             label: "产品名称",
+            minWidth: "180px"
           },
           {
             id: 3,
@@ -152,6 +154,7 @@ export default {
             id: 13,
             prop: "createTime",
             label: "下单时间",
+            minWidth: "180px",
             type: "date",
           },
           {
@@ -163,6 +166,7 @@ export default {
             id: 15,
             prop: "hxsj",
             label: "核销时间",
+            minWidth: "180px",
           },
         ],
         pageSize: 20,
@@ -193,7 +197,7 @@ export default {
           key: "detail",
           title: "详情",
           btnStyle: "green",
-          permission: "system/sysCourseOrder/detail",
+          // permission: "system/sysCourseOrder/detail",
           action: (o, row) => {
             this.$refs.detailRef.open(row.orderNum);
           },

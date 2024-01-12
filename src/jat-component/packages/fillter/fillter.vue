@@ -100,6 +100,13 @@
             >
             </el-date-picker>
           </div>
+          <div v-else-if="opt.type === 'user'">
+            <select-user-remote
+              v-model="FilterData[opt.value]"
+              :type="opt.userType"
+              :placeholder="opt.label"
+            ></select-user-remote>
+          </div>
           <!-- 最小值，最大值 -->
           <div v-else-if="opt.type === 'min_max'">
             <div
@@ -133,8 +140,10 @@
   </div>
 </template>
 <script>
+import selectUserRemote from "../../../components/selectUserRemote.vue";
 export default {
   name: "jat-fillter",
+  components: { selectUserRemote },
   data() {
     return {
       FilterData: {},
@@ -321,7 +330,7 @@ export default {
   span {
     display: inline-block;
     margin: 3px 3px;
-   
+
     padding: 6px 12px;
     cursor: pointer;
     &.is_active {

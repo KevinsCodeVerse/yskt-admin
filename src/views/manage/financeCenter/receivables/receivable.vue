@@ -46,10 +46,16 @@ import { getDate } from "../../../../utils/tools";
 import { orderStatus } from "./const";
 import createCollectionDialog from "../../orderManage/index/createCollectionDialog.vue";
 import DetailDrawer from "./detailDrawer.vue";
-import refund from './refund.vue';
+import refund from "./refund.vue";
 export default {
   name: "receivablesPage",
-  components: { BasicTable, addDialog, createCollectionDialog, DetailDrawer, refund },
+  components: {
+    BasicTable,
+    addDialog,
+    createCollectionDialog,
+    DetailDrawer,
+    refund,
+  },
   data() {
     return {
       loading: false,
@@ -68,19 +74,22 @@ export default {
             value: "courseName",
           },
           {
-            type: "input",
+            type: "user",
+            userType: 0,
             label: "收款人",
-            value: "colectionName",
+            value: "createAdId",
           },
           {
-            type: "input",
+            type: "user",
+            userType: 0,
             label: "销售员",
-            value: "profitAdName",
+            value: "profitAdId",
           },
           {
-            type: "input",
+            type: "user",
+            userType: 1,
             label: "下单人",
-            value: "vipName",
+            value: "placeOrderId",
           },
         ],
       },
@@ -88,9 +97,9 @@ export default {
       filterData: {
         orderNum: "",
         courseName: "",
-        colectionName: "",
-        profitAdName: "",
-        vipName: "",
+        createAdId: "",
+        profitAdId: "",
+        placeOrderId: "",
       },
       table: {
         columns: [
@@ -196,14 +205,14 @@ export default {
         total: 0,
       },
       operates: [
-      {
+        {
           key: "deatil",
           title: "详情",
           permission: "system/sysAdvertise/remove",
           btnStyle: "green",
           action: (o, row) => {
             console.log(row);
-            this.$refs.drawerRef.open(row)
+            this.$refs.drawerRef.open(row);
             // this.handleDelete(row);
           },
         },
@@ -238,7 +247,7 @@ export default {
           btnStyle: "red",
           action: (o, row) => {
             console.log(row);
-            this.$refs.refundRef.open(row)
+            this.$refs.refundRef.open(row);
             // this.handleDelete(row);
           },
         },
@@ -252,9 +261,7 @@ export default {
           },
         },
       ],
-      headerOperates: [
-
-      ],
+      headerOperates: [],
     };
   },
   created() {
@@ -326,7 +333,11 @@ export default {
 
     clearFilter() {
       this.filterData = {
-        name: "",
+        orderNum: "",
+        courseName: "",
+        createAdId: "",
+        profitAdId: "",
+        placeOrderId: "",
       };
       this.searchFilter();
     },

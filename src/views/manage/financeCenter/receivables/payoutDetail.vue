@@ -53,8 +53,8 @@ export default {
             type: "select",
             label: "收款方式",
             value: "categoryId",
-            labelKey: "id",
-            valueKey: "name",
+            labelKey: "name",
+            valueKey: "id",
             options: [],
           },
           {
@@ -63,39 +63,50 @@ export default {
             value: "orderNum",
           },
           {
-            type: "input",
-            label: "产品名称",
-            value: "courseName",
-          },
-          {
             type: "select",
             label: "收款状态",
             value: "collectionStatus",
             options: collectionStatus,
           },
           {
-            type: "input",
+            type: "user",
+            userType: 0,
             label: "收款人",
-            value: "colectionName",
+            value: "profitAdId",
+          },
+
+          {
+            type: "user",
+            userType: 1,
+            label: "下单人",
+            value: "vipAdId",
           },
           {
             type: "timeAll",
-            label: ["开始日期", "结束日期"],
-            value: "time",
+            label: ["开始日期-开始", "开始日期-结束"],
+            value: "openTime",
           },
           {
-            type: "input",
-            label: "下单人",
-            value: "vipName",
+            type: "timeAll",
+            label: ["结束日期-开始", "结束日期-结束"],
+            value: "endTime",
+          },
+          {
+            type: "timeAll",
+            label: ["创建日期-开始", "创建日期-结束"],
+            value: "createTime",
           },
         ],
       },
       filterData: {
+        categoryId: "",
         orderNum: "",
-        courseName: "",
-        colectionName: "",
-        profitAdName: "",
-        vipName: "",
+        collectionStatus: "",
+        profitAdId: "",
+        openTime: [],
+        endTime: [],
+        createTime: [],
+        vipAdId: "",
       },
       table: {
         columns: [
@@ -203,9 +214,7 @@ export default {
           title: "入账",
           permission: "system/sysAdvertise/edit",
           btnStyle: "yellow",
-          action: (o, row) => {
-            
-          },
+          action: (o, row) => {},
         },
         {
           key: "delete",
@@ -242,23 +251,32 @@ export default {
       this.getList();
     },
     getList() {
-      (this.loading = true),
-        request.post({
-          url: "/system/sysCourseOrderBills/collectionDetailList",
-          params: {
-            pageNo: this.table.currentPage,
-            pageSize: this.table.pageSize,
-            ...this.filterData,
-          },
-          success: (res) => {
-            this.table.data = res.list;
-            this.table.total = res.total;
-            this.loading = false;
-          },
-          catch: () => {
-            this.loading = false;
-          },
-        });
+      this.loading = true;
+      const { openTime, endTime, createTime, ...rest } = this.filterData;
+      request.post({
+        url: "/system/sysCourseOrderBills/collectionDetailList",
+        params: {
+          pageNo: this.table.currentPage,
+          pageSize: this.table.pageSize,
+          ...rest,
+          openStartTime: openTime && openTime.length > 0 ? openTime[0] : "",
+          openEndTime: openTime && openTime.length > 0 ? openTime[1] : "",
+          createStartTime:
+            createTime && createTime.length > 0 ? createTime[0] : "",
+          createEndTime:
+            createTime && createTime.length > 0 ? createTime[1] : "",
+          endStartTime: endTime && endTime.length > 0 ? endTime[0] : "",
+          endEndTime: endTime && endTime.length > 0 ? endTime[1] : "",
+        },
+        success: (res) => {
+          this.table.data = res.list;
+          this.table.total = res.total;
+          this.loading = false;
+        },
+        catch: () => {
+          this.loading = false;
+        },
+      });
     },
 
     getCategoryList() {
@@ -304,7 +322,13 @@ export default {
 
     clearFilter() {
       this.filterData = {
-        name: "",
+        categoryId: "",
+        orderNum: "",
+        courseName: "",
+        collectionStatus: "",
+        colectionName: "",
+        time: [],
+        vipName: "",
       };
       this.searchFilter();
     },

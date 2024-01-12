@@ -90,12 +90,8 @@ export default {
 
   methods: {
     open(row) {
-      const { vipName, receivedPrice: collectionMoney, orderNum } = row;
-      this.addData = {
-        vipName,
-        collectionMoney,
-        orderNum,
-      };
+      const { orderNum } = row;
+      this.addData.orderNum = orderNum
       this.addModifyVisible = true;
     },
     close() {
