@@ -311,7 +311,7 @@ export default {
               },
             });
           } else {
-            this.accountInfo.password = password;
+            
             request.post({
               url: "/admin/adInfo/addAdmin",
               params: {
@@ -323,7 +323,7 @@ export default {
                 roleIds: JSON.stringify(roleIds),
               },
               success: (res) => {
-                this.accountInfo.account = res;
+                this.accountInfo = res;
                 this.accountVisible = true;
                 this.$message.success("操作成功");
                 this.close();

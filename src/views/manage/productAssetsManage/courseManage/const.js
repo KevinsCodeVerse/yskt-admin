@@ -14,6 +14,10 @@ export const positionptions = [
 ]
 export const tagOptions = [
     {
+        value: 0,
+        label: "套餐课程",
+    },
+    {
         value: 1,
         label: "单品课程",
     },

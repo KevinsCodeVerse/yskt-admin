@@ -85,6 +85,38 @@
         <el-form-item label="封面:" prop="image">
           <upload-image v-model="addData.image"></upload-image>
         </el-form-item>
+        <el-form-item label="课程标签:" prop="tag">
+          <jat-select
+            v-model="addData.tag"
+            placeholder="请选择课程标签"
+            @change="handleTagChange"
+            clearable
+          >
+            <el-option
+              v-for="item in tagOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </jat-select>
+        </el-form-item>
+        <el-form-item v-if="addData.tag === 0" label="课程套餐:" prop="setMealCategoryId">
+          <jat-select
+            v-model="addData.setMealCategoryId"
+            placeholder="请输入课程套餐"
+            clearable
+            filterable
+          >
+            <el-option
+              v-for="item in MealCategoryOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </jat-select>
+        </el-form-item>
         <el-form-item label="课程类型:" prop="hasLive">
           <jat-select
             v-model="addData.hasLive"
@@ -122,22 +154,7 @@
             @blur="handleCheck"
           ></jat-input>
         </el-form-item>
-        <el-form-item label="课程套餐:" prop="setMealCategoryId">
-          <jat-select
-            v-model="addData.setMealCategoryId"
-            placeholder="请输入课程套餐"
-            clearable
-            filterable
-          >
-            <el-option
-              v-for="item in MealCategoryOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            >
-            </el-option>
-          </jat-select>
-        </el-form-item>
+      
         <el-form-item label="直播回放链接:" prop="livePlaybackUrl">
           <jat-input
             v-model="addData.livePlaybackUrl"
@@ -252,21 +269,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="课程标签:" prop="tag">
-          <jat-select
-            v-model="addData.tag"
-            placeholder="请选择课程标签"
-            clearable
-          >
-            <el-option
-              v-for="item in tagOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </jat-select>
-        </el-form-item>
+        
         <el-form-item label="推荐位:" prop="position">
           <jat-select
             v-model="addData.position"
@@ -597,6 +600,9 @@ export default {
       } else {
         this.addData.price = "";
       }
+    },
+    handleTagChange() {
+      this.addData.setMealCategoryId = ""
     },
     teacherRemoteMethod(keyword, list) {
       if (!keyword) {

@@ -221,7 +221,6 @@ export default {
               },
             });
           } else {
-            this.accountInfo.password = password
             request.post({
               url: "/admin/adInfo/addVip",
               params: {
@@ -229,7 +228,7 @@ export default {
                 password: password ? rsa.encryptByPublicKey(password) : "",
               },
               success: (res) => {
-                this.accountInfo.account = res;
+                this.accountInfo = res;
                 this.accountVisible = true;
                 this.$message.success("操作成功");
                 this.close();
