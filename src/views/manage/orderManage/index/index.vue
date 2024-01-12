@@ -65,7 +65,7 @@
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 import addDialog from "./addDialog.vue";
-import { listToTree } from "../../../../utils/tools";
+import { getDate, listToTree } from "../../../../utils/tools";
 import CreateCollectionDialog from "./createCollectionDialog.vue";
 import orderDetail from "./orderDetail.vue";
 export default {
@@ -83,62 +83,68 @@ export default {
             type: "input",
             label: "订单号",
             value: "orderNum",
-          }
-          
+          },
         ],
       },
 
       filterData: {
-        orderNum: ""
+        orderNum: "",
       },
       table: {
         columns: [
           {
             id: 1,
             prop: "orderNum",
+            minWidth: "160px",
             label: "订单号",
-            minWidth: "160px"
           },
           {
             id: 2,
             prop: "courseName",
-            label: "产品名称",
+            label: "课程名称",
             minWidth: "180px"
           },
           {
             id: 3,
             prop: "vipName",
             label: "客户名称",
+            minWidth: "100px"
           },
           {
             id: 4,
-            prop: "idCard",
+            prop: "count",
             label: "数量",
+            minWidth: "100px"
           },
           {
             id: 6,
-            prop: "region",
+            prop: "marketPrice",
             label: "总销售价",
+            minWidth: "100px"
           },
           {
             id: 7,
-            prop: "homeAddress",
+            prop: "marketPrice",
             label: "总结算价",
+            minWidth: "100px"
           },
           {
             id: 8,
-            prop: "wageLevel",
+            prop: "vipName",
             label: "下单人",
+            minWidth: "100px"
           },
           {
             id: 9,
-            prop: "company",
+            prop: "profitAdName",
             label: "销售人员",
+            minWidth: "100px"
           },
           {
             id: 10,
-            prop: "operator",
+            prop: "createAdName",
             label: "操作人员",
+            minWidth: "100px"
           },
           {
             id: 11,
@@ -147,7 +153,7 @@ export default {
           },
           {
             id: 12,
-            prop: "openStatu",
+            prop: "openStatus",
             label: "开通状态",
           },
           {
@@ -158,15 +164,18 @@ export default {
             type: "date",
           },
           {
+            id: 15,
+            prop: "time", //startTime-endTime
+            label: "开始/结束时间",
+            minWidth: "200px",
+            render: (row) => {
+              return row.startTime ? [getDate(row.startTime), getDate(row.endTime)] : ""
+            }
+          },
+          {
             id: 14,
             prop: "profitAdName",
             label: "利润归属",
-          },
-          {
-            id: 15,
-            prop: "hxsj",
-            label: "核销时间",
-            minWidth: "180px",
           },
         ],
         pageSize: 20,
