@@ -156,7 +156,7 @@ import uploadFile from "@/components/uploadFile.vue";
 import request from "@/utils/request";
 import { getIdCardInfo, validIdCard } from "@/utils/idCardValid";
 import { validPhone } from "@/utils/validate";
-import { getDate } from '@/utils/tools';
+import { getDate } from "@/utils/tools";
 
 export default {
   components: { uploadFile },
@@ -240,7 +240,10 @@ export default {
             validator: (rule, value, callback) => {
               if (this.addData.idCardType == 1 && value) {
                 if (validIdCard(value)) {
-                  this.addData.birthdayParam = getIdCardInfo(value, "birthDate");
+                  this.addData.birthdayParam = getIdCardInfo(
+                    value,
+                    "birthDate"
+                  );
                   this.addData.gender = getIdCardInfo(value, "sex");
                   callback();
                 } else {
@@ -295,12 +298,12 @@ export default {
     }) {
       this.dialogTitle = "编辑客户";
       this.addModifyVisible = true;
-      let fileName = ""
-      if(attachment) {
-        const arrName = attachment.split("/")
-        fileName  = arrName[arrName.length -1]
+      let fileName = "";
+      if (attachment) {
+        const arrName = attachment.split("/");
+        fileName = arrName[arrName.length - 1];
       }
-    
+
       this.addData = {
         id,
         name,
@@ -342,11 +345,15 @@ export default {
     getCurrentUser() {
       this.parentAdIdOptions = [
         {
-          id: sessionStorage.getItem("id") ? parseInt(sessionStorage.getItem("id")) : "",
+          id: sessionStorage.getItem("id")
+            ? parseInt(sessionStorage.getItem("id"))
+            : "",
           name: sessionStorage.getItem("userName"),
         },
       ];
-      this.addData.parentAdId = sessionStorage.getItem("id");
+      this.addData.parentAdId = sessionStorage.getItem("id")
+        ? parseInt(sessionStorage.getItem("id"))
+        : "";
     },
 
     handleSubmit() {

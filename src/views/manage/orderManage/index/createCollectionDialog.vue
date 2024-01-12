@@ -109,13 +109,13 @@ export default {
   },
 
   methods: {
-    open(orderNum, title, vipName) {
-      if (title) {
-        this.dialogTitle = title;
-        this.vipName = vipName;
-      }
+    open(orderNum, title, collectionName) {
       this.dialogTitle = "创建收款";
       this.addData.orderNum = orderNum;
+      if (title) {
+        this.dialogTitle = title;
+        this.vipName = collectionName;
+      }
       this.addModifyVisible = true;
     },
     close() {

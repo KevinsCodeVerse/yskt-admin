@@ -59,6 +59,7 @@
         </el-form-item>
         <el-form-item label="数量:" prop="count">
           <jat-input
+            disabled
             v-input.int
             v-model="addData.count"
             placeholder="请输入数量"
@@ -180,7 +181,7 @@ export default {
         course: {},
         adId: "",
         costPrice: "",
-        count: "",
+        count: 1,
         ids: "",
         marketPrice: "",
         profitAdId: "",
@@ -239,7 +240,7 @@ export default {
         course,
         adId,
         costPrice,
-        count,
+        count: count ? count : 1,
         ids,
         marketPrice,
         profitAdId,
@@ -254,7 +255,7 @@ export default {
         course: {},
         adId: "",
         costPrice: "",
-        count: "",
+        count: 1,
         ids: "",
         marketPrice: "",
         profitAdId: "",

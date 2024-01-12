@@ -237,7 +237,7 @@ export default {
           permission: "system/sysAdvertise/remove",
           btnStyle: "green",
           action: (o, row) => {
-            this.$refs.collectionRef.open(row.orderNum, "领款", row.vipName);
+            this.$refs.collectionRef.open(row.orderNum, "领款", row.collectionName);
           },
         },
         {
