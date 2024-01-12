@@ -6,6 +6,11 @@
   color: white !important;
 }
 
+.el-dialog__body {
+  max-height: 500px;
+  overflow: auto;
+}
+
 .el-drawer__header {
   margin: 0px;
   padding: 8px;

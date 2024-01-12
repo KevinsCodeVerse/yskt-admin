@@ -79,7 +79,7 @@
           v-if="operates"
           label="操作"
           :width="operateWidth"
-          fixed="left"
+          fixed="right"
         >
           <template slot-scope="scope">
             <ListOperate :operates="showOperates(scope)" :curRow="scope.row" />

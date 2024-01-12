@@ -1,0 +1,56 @@
+/* 默认-微软雅黑 */
+/* 下拉框backgroundColor */
+/* hoverGray */
+/* 禁止 */
+/* 错误颜色--borderColor */
+/* 错误颜色--hover borderColor */
+/* 主体字体大小 */
+/* 主体字体大小 */
+/* 表格背景 */
+/* 斑马纹 */
+/* hover */
+/* 聚焦颜色 */
+.el-input__inner,
+.el-range-input {
+  height: 30px;
+  font-size: 14px;
+  line-height: 30px;
+  color: #333333;
+  background: #fff;
+  border-color: #d5d5d5;
+  border-radius: 4px;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+.el-input__inner::-webkit-input-placeholder,
+.el-range-input::-webkit-input-placeholder {
+  color: #999999;
+}
+.el-input__inner:hover,
+.el-range-input:hover {
+  border-color: hwb(217 18% 0% / 0.36);
+}
+.el-input__inner:focus,
+.el-range-input:focus {
+  border-color: rgba(45, 125, 255, 0.8);
+}
+.el-date-editor .el-range-input {
+  height: 30px;
+  font-size: 14px;
+  line-height: 30px;
+  color: #333333 !important;
+  background: #fff !important;
+  border-color: #d5d5d5 !important;
+  border-radius: 4px;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+.el-date-editor .el-range-input::-webkit-input-placeholder {
+  color: #999999 !important;
+}
+.el-date-editor .el-range-input:hover {
+  border-color: hwb(217 18% 0% / 0.36) !important;
+}
+.el-date-editor .el-range-input:focus {
+  border-color: rgba(45, 125, 255, 0.8) !important;
+}

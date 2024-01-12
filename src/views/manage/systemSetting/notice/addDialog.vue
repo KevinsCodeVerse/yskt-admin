@@ -5,7 +5,7 @@
       :title="dialogTitle"
       :close-on-click-modal="false"
       :visible.sync="addModifyVisible"
-      width="50%"
+      width="60%"
       @close="close"
     >
       <el-form

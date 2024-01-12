@@ -169,7 +169,7 @@ export default {
             label: "开始/结束时间",
             minWidth: "200px",
             render: (row) => {
-              return row.startTime ? [getDate(row.startTime), getDate(row.endTime)] : ""
+              return row.startTime ?`${getDate(row.startTime, "yyyy-MM-dd")}至${getDate(row.endTime, "yyyy-MM-dd")}` : ""
             }
           },
           {

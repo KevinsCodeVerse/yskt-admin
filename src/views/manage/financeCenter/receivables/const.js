@@ -40,22 +40,25 @@ export const orderStatus = [
         color: "#95a5a6"
     },
 ]
-
 export const collectionStatus = [
     {
         value: 0,
-        label: "待审"
+        label: "待审",
+        color: "#409EFF",
     },
     {
         value: 1,
-        label: "已审核"
+        label: "已审核",
+        color: "#67C23A"
     },
     {
         value: 2,
-        label: "已收"
+        label: "已收",
+        color: "#E6A23C"
     },
     {
         value: 3,
-        label: "已入账"
+        label: "已入账",
+        color: "#909399"
     }
 ]

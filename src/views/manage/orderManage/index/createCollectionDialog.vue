@@ -15,7 +15,7 @@
         label-position="right"
         label-width="90px"
       >
-        <el-form-item label="收款单位:">
+        <el-form-item v-if="vipName" label="收款单位:">
           {{ vipName }}
         </el-form-item>
         <el-form-item label="收款方式:" prop="categoryId">

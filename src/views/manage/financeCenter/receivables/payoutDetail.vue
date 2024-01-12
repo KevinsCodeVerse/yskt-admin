@@ -139,8 +139,15 @@ export default {
           {
             id: 5,
             prop: "collectionMoney",
-            label: "金额",
+            label: "金额(正收，负退)",
             minWidth: "100px",
+            render: (row) => {
+              if(row.type == -1) {
+                return "-" + row.collectionMoney
+              } else {
+                return row.collectionMoney
+              }
+            }
           },
           {
             id: 1,
@@ -189,6 +196,12 @@ export default {
               );
               return item ? item.label : "";
             },
+            colorRener: (row) => {
+              const item = collectionStatus.find(
+                (item) => item.value == row.status
+              );
+              return item ? item.color : "";
+            },
           },
           {
             id: 14,
@@ -221,9 +234,7 @@ export default {
           title: "回退",
           permission: "system/sysAdvertise/remove",
           btnStyle: "red",
-          action: (o, row) => {
-            // this.handleDelete(row);
-          },
+          action: (o, row) => {},
         },
       ],
       headerOperates: [
