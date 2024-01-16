@@ -34,7 +34,7 @@
     <create-collection-dialog ref="collectionRef" @success="handleSuccess">
     </create-collection-dialog>
     <detail-drawer ref="drawerRef"></detail-drawer>
-    <refund ref="refundRef"></refund>
+    <refund  @success="handleSuccess"  ref="refundRef"></refund>
   </div>
 </template>
 
@@ -211,7 +211,6 @@ export default {
           permission: "system/sysAdvertise/remove",
           btnStyle: "green",
           action: (o, row) => {
-            console.log(row);
             this.$refs.drawerRef.open(row);
             // this.handleDelete(row);
           },
@@ -219,7 +218,7 @@ export default {
         {
           key: "payoutDetail",
           title: "收款明细",
-          permission: "system/sysAdvertise/edit",
+          // permission: "system/sysAdvertise/edit",
           btnStyle: "yellow",
           action: (o, row) => {
             this.$router.push({
@@ -234,7 +233,7 @@ export default {
         {
           key: "payment",
           title: "领款",
-          permission: "system/sysAdvertise/remove",
+          permission: "system/sysCourseOrderBills/claimMoneyAdd",
           btnStyle: "green",
           action: (o, row) => {
             this.$refs.collectionRef.open(row.orderNum, "领款", row.collectionName);
@@ -243,30 +242,26 @@ export default {
         {
           key: "refund",
           title: "退款",
-          permission: "system/sysAdvertise/remove",
+          permission: "system/sysCourseOrderBills/refundAdd",
           btnStyle: "red",
           action: (o, row) => {
-            console.log(row);
             this.$refs.refundRef.open(row);
-            // this.handleDelete(row);
           },
         },
-        {
-          key: "billing",
-          title: "开票",
-          permission: "system/sysAdvertise/remove",
-          btnStyle: "blue",
-          action: (o, row) => {
-            // this.handleDelete(row);
-          },
-        },
+        // {
+        //   key: "billing",
+        //   title: "开票",
+        //   permission: "system/sysAdvertise/remove",
+        //   btnStyle: "blue",
+        //   action: (o, row) => {
+        //   },
+        // },
       ],
       headerOperates: [],
     };
   },
   created() {
     this.getList();
-    this.getCategoryList();
   },
   methods: {
     searchFilter() {
@@ -292,21 +287,12 @@ export default {
           },
         });
     },
-    getCategoryList() {
-      request.post({
-        url: "/system/sysAdvertise/getAllAdvertisingSpace",
-        params: {},
-        success: (res) => {
-          this.filterOptions.column[0].options = res;
-        },
-      });
-    },
     handleSuccess() {
       this.getList();
     },
 
     handleDelete(row) {
-      this.$confirm("此操作将会删除该广告, 是否继续?", "提示", {
+      this.$confirm("此操作将会删除, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",

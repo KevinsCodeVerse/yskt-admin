@@ -42,3 +42,14 @@ export const hasFreeOptions = [
         label: "收费",
     },
 ]
+
+export const showOfficialWebsiteOptions = [
+    {
+        value: 0,
+        label: "不展示",
+    },
+    {
+        value: 1,
+        label: "展示",
+    }
+]

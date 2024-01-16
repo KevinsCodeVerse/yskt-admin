@@ -1,7 +1,7 @@
 <template>
   <span
     :class="[
-      type.indexOf('range') == -1 ? 'jat-date-picker' : 'jat-date-picker-range'
+      type.indexOf('range') == -1 ? 'jat-date-picker' : 'jat-date-picker-range',
     ]"
     :style="{ width: width }"
   >
@@ -15,10 +15,10 @@
       ref="jatDatePicker"
       :popper-class="
         'jat-daterange-popover__' +
-        type +
-        ' common-datePicker-popover' +
-        ' ' +
-        popperClass
+          type +
+          ' common-datePicker-popover' +
+          ' ' +
+          popperClass
       "
       @input="handleInput"
       :class="readonly && 'readOnlyPicker'"
@@ -48,7 +48,7 @@ export default {
   name: "jat-date-picker",
   props: {
     value: {
-      type: [Object, Array, String]
+      type: [Object, Array, String],
     },
     /** year/month/date/dates/months/years week/datetime/datetimerange/ daterange/monthrange */
     type: {
@@ -65,63 +65,63 @@ export default {
           "datetime",
           "datetimerange",
           "daterange",
-          "monthrange"
-        ].includes(value)
-      }
+          "monthrange",
+        ].includes(value);
+      },
     },
     popoverFlag: Boolean,
     format: {
       type: String,
-      default: ""
+      default: "",
     },
     valueFormat: {
       type: String,
-      default: "yyyy-MM-dd"
+      default: "yyyy-MM-dd",
     },
     width: {
       type: String,
-      default: ""
+      default: "",
     },
     /** 文本框是否可以输入 */
     editable: {
       type: Boolean,
-      default: false
+      default: false,
     },
     clearable: {
       type: Boolean,
-      default: false
+      default: false,
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     readonly: {
       type: Boolean,
-      default: false
+      default: false,
     },
     size: {
       type: String,
-      default: ""
+      default: "",
     },
     placeholder: {
       type: String,
-      default: ""
+      default: "",
     },
     startPlaceholder: {
       type: String,
-      default: "开始时间"
+      default: "开始时间",
     },
     endPlaceholder: {
       type: String,
-      default: "结束时间"
+      default: "结束时间",
     },
     rangeSeparator: {
       type: String,
-      default: "至"
+      default: "至",
     },
     popperClass: {
       type: String,
-      default: ""
+      default: "",
     },
     /** 在范围选择器里取消两个日期面板之间的联动 */
     unlinkPanels: Boolean,
@@ -137,58 +137,58 @@ export default {
     defaultTime: Array,
     prefixIcon: {
       type: String,
-      default: ""
+      default: "",
     },
     /** 原生属性 */
     name: String,
     pickerOptions: {
       type: Object,
-      default() {}
-    }
+      default() {},
+    },
   },
   data() {
     return {
-      timeValue: ""
-    }
+      timeValue: "",
+    };
   },
   components: {},
   watch: {
     value: {
       deep: true,
       handler(newValue) {
-        this.timeValue = newValue
-      }
+        this.timeValue = newValue;
+      },
     },
     popoverFlag(val) {
       if (!val) {
-        this.$refs.jatDatePicker.handleClose()
+        this.$refs.jatDatePicker.handleClose();
       }
-    }
+    },
   },
   model: {
     event: "input",
-    prop: "value"
+    prop: "value",
   },
   created() {
-    this.timeValue = this.value
+    this.timeValue = this.value;
   },
   mounted() {},
   methods: {
     handleInput(item) {
-      this.timeValue = this.value
-      this.$emit("input", item)
+      this.timeValue = this.value;
+      this.$emit("input", item);
     },
     handleChange(item) {
-      this.$emit("change", item)
+      this.$emit("change", item);
     },
     handleHide(item) {
-      this.$emit("blur", item)
+      this.$emit("blur", item);
     },
     handleShow(item) {
-      this.$emit("focus", item)
-    }
-  }
-}
+      this.$emit("focus", item);
+    },
+  },
+};
 </script>
 
 <style lang="less">
@@ -348,19 +348,32 @@ export default {
     position: absolute;
     right: 0;
     width: 30px;
+    background: #fff;
     border-left: 1px solid #d5d5d5;
     padding-left: 7px;
     box-sizing: border-box;
+    &::before {
+      position: absolute;
+      z-index: 10;
+    }
   }
 
   .el-date-editor .el-range__close-icon {
     line-height: 22px;
+
     padding-left: 0px;
     &::before {
       background-color: var(--bg--primary);
     }
+    z-index: 9;
 
     &.el-icon-circle-close {
+      background: #fff;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
       &i:first-child {
         display: none;
       }

@@ -3,13 +3,16 @@
   <div class="middle-container">
     <div class="header-box">
       <div class="BasicInfo_title" v-if="headerTab.length > 0">
-        <span
+        <div
           v-for="tab in headerTab"
           :key="tab.id"
+          v-permission="tab.permission"
+          class="item"
           :class="{ is_active: tab.isChecked }"
           @click="handleTabSelect(tab)"
-          >{{ tab.name }}</span
         >
+          <span :class="'tab_' + tab.id">{{ tab.name }}</span>
+        </div>
       </div>
     </div>
     <component :is="currentComponet"></component>
@@ -21,7 +24,6 @@ import Canceled from "./canceled.vue";
 import OutstandingCharges from "./outstandingCharges.vue";
 import receivable from "./receivable.vue";
 import payoutDetail from "./payoutDetail.vue";
-
 
 export default {
   name: "receivablesManagerPage",
@@ -35,33 +37,38 @@ export default {
           name: "应收款",
           component: receivable,
           isChecked: true,
+          permission: "system/sysCourseOrderBills/receivablesList",
         },
         {
           id: 2,
           name: "收款明细",
           component: payoutDetail,
           isChecked: false,
+          permission: "system/sysCourseOrderBills/collectionDetailList",
         },
         {
           id: 3,
           name: "未结清收款",
           component: OutstandingCharges,
           isChecked: false,
+          permission: "system/sysCourseOrderBills/outstandingAccountsList",
         },
         {
           id: 4,
           name: "已取消",
           component: Canceled,
+          permission: "system/sysCourseOrderBills/cancelBillsList",
           isChecked: false,
         },
       ],
     };
   },
   mounted() {
-    this.init()
+    this.init();
   },
   methods: {
     handleTabSelect(tab, flag) {
+      // if() {}
       if (tab.id == this.$route.query.type && tab.isChecked) {
         return;
       }
@@ -77,29 +84,43 @@ export default {
       this.currentComponet = tab.component;
     },
     init() {
-      if (this.$route.query.type) {
-      const id = this.$route.query.type;
-      const item = this.headerTab.find((item) => item.id == id);
-      if (item) {
-        this.handleTabSelect(item, true);
+      const type = this.$route.query.type;
+      if (type) {
+        const dom = document.querySelector(".tab_" + type);
+        if (!dom) {
+          const currentTab = this.headerTab.find((item) => item.isChecked);
+          this.$router.replace({
+            path: this.$router.path,
+            query: { type: currentTab.id },
+          });
+          return;
+        }
+        const item = this.headerTab.find((item) => item.id == type);
+        if (item) {
+          this.handleTabSelect(item, true);
+        }
+      } else {
+        this.$router.replace({
+          path: this.$router.path,
+          query: { type: 1 },
+        });
       }
-    } else {
-      this.$router.replace({
-        path: this.$router.path,
-        query: { type: 1 },
-      });
-    }
-    }
+    },
   },
-  watch:{
-  	//监听路由
-  	//监听路由的categoryId属性的数据变化
-    '$route.query.orderNum': function(val){
-    	if(val) {
-        this.init()
+  watch: {
+    //监听路由
+    //监听路由的orderNum属性的数据变化
+    "$route.query.orderNum": function(val) {
+      if (val) {
+        this.init();
       }
-    }
-  }
+    },
+    "$route.query.type": function(val) {
+      if (val) {
+        this.init();
+      }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
@@ -121,6 +142,7 @@ export default {
   padding-top: 15px;
 }
 .BasicInfo_title {
+  // display: inline-block;
   margin: 10px 13px;
   // margin-top: 0px;
   font-family: PingFangSC-Regular;
@@ -130,7 +152,7 @@ export default {
   background: #eceff3;
   border-radius: 4px;
 
-  span {
+  div {
     display: inline-block;
     margin: 3px 3px;
 

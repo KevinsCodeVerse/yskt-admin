@@ -13,7 +13,7 @@
         :rules="courseRule"
         ref="courseRef"
         label-position="right"
-        label-width="110px"
+        label-width="140px"
       >
         <el-form-item label="课程名称:" prop="name">
           <jat-input
@@ -292,6 +292,21 @@
             placeholder="请输入查看数"
           ></jat-input>
         </el-form-item>
+        <el-form-item label="是否展示在官网(h5):" prop="showOfficialWebsite">
+          <jat-select
+            v-model="addData.position"
+            placeholder="请选择是否展示在官网(h5)"
+            clearable
+          >
+            <el-option
+              v-for="item in showOfficialWebsiteOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </jat-select>
+        </el-form-item>
         <el-form-item style="width: 100%;" label="课程详情:" prop="content">
           <tinymce-edit v-model="addData.content"></tinymce-edit>
         </el-form-item>
@@ -315,6 +330,7 @@ import {
   tagOptions,
   hasLiveOptions,
   hasFreeOptions,
+  showOfficialWebsiteOptions,
 } from "./const";
 export default {
   components: { uploadFile, uploadImage, tinymceEdit },
@@ -330,6 +346,7 @@ export default {
       tagOptions: tagOptions,
       hasLiveOptions: hasLiveOptions,
       hasFreeOptions: hasFreeOptions,
+      showOfficialWebsiteOptions: showOfficialWebsiteOptions,
       dialogTitle: "",
       addData: {
         id: "",
@@ -357,6 +374,7 @@ export default {
         teacherAdId: "",
         underlinedPrice: "",
         costPrice: "",
+        showOfficialWebsite: ""
       },
       parentAdIdOptions: [],
       courseRule: {
@@ -434,6 +452,7 @@ export default {
       underlinedPrice,
       costPrice,
       teacherName,
+      showOfficialWebsite
     }) {
       this.dialogTitle = "编辑课程";
       this.addModifyVisible = true;
@@ -463,6 +482,7 @@ export default {
         sort,
         tag,
         teacherAdId,
+        showOfficialWebsite
       };
       this.teacherOptions = [
         {
@@ -499,6 +519,7 @@ export default {
         sort: 255,
         tag: "",
         teacherAdId: "",
+        showOfficialWebsite: ""
       };
       this.addModifyVisible = false;
     },

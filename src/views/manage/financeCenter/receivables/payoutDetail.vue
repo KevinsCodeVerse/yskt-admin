@@ -11,6 +11,7 @@
       :columns="table.columns"
       :headerOperates="headerOperates"
       :operates="operates"
+      operateWidth="280px"
       :data="table.data"
       :pageSize="table.pageSize"
       :currentPage="table.currentPage"
@@ -140,7 +141,7 @@ export default {
             id: 5,
             prop: "collectionMoney",
             label: "金额(正收，负退)",
-            minWidth: "100px",
+            minWidth: "130px",
             render: (row) => {
               if (row.type == -1) {
                 return "-" + row.collectionMoney;
@@ -226,30 +227,83 @@ export default {
       },
       operates: [
         {
-          key: "edit",
-          title: "入账",
-          permission: "system/sysAdvertise/edit",
-          btnStyle: "yellow",
-          action: (o, row) => {},
+          key: "detail",
+          title: "详情",
+          permission: "",
+          btnStyle: "green",
+          // 已收、取消、回退
+          show: (row) => {
+            return row.status == 0 || row.status == 1;
+          },
         },
         {
-          key: "delete",
+          key: "received",
+          title: "已收",
+          permission: "system/sysCourseOrderBills/receivedEdit",
+          btnStyle: "blue",
+          action: (o, row) => {
+            this.handleRecived(row);
+          },
+          // 已收、取消、回退
+          show: (row) => {
+            return row.status == 0;
+          },
+        },
+        {
+          key: "cancel",
+          title: "取消",
+          permission: "system/sysCourseOrderBills/cancelEdit",
+          btnStyle: "yellow",
+          action: (o, row) => {
+            this.handleCancle(row);
+          },
+          show: (row) => {
+            return row.status == 0;
+          },
+        },
+        {
+          key: "recorded",
+          title: "入账",
+          permission: "system/sysCourseOrderBills/enterBillEdit",
+          btnStyle: "yellow",
+          action: (o, row) => {
+            this.handleRecorded(row);
+          },
+          show: (row) => {
+            return row.status == 2;
+          },
+        },
+        {
+          key: "fallback",
           title: "回退",
-          permission: "system/sysAdvertise/remove",
+          permission: "system/sysCourseOrderBills/fallbackEdit",
           btnStyle: "red",
-          action: (o, row) => {},
+          action: (o, row) => {
+            this.handleFallback(row);
+          },
+          show: (row) => {
+            return (
+              row.status == 0 ||
+              row.status == 1 ||
+              row.status == 2 ||
+              row.status == 3
+            );
+          },
+        },
+        {
+          key: "financialAudits",
+          title: "财务审核",
+          permission: "system/sysCourseOrderBills/financialAuditEdit",
+          btnStyle: "blue",
+          action: (o, row) => {
+            this.handleFinancialAudits(row);
+          },
+          show: (row) => {
+            return row.status == 0 && row.type == -1;
+          },
         },
       ],
-      headerOperates: [
-        // {
-        //   key: "el-icon-plus",
-        //   permission: "system/sysAdvertise/add",
-        //   name: "添加广告",
-        //   action: () => {
-        //     this.$refs.addDialog.open();
-        //   },
-        // },
-      ],
+      headerOperates: [],
     };
   },
   created() {
@@ -307,18 +361,18 @@ export default {
     handleSuccess() {
       this.getList();
     },
-
-    handleDelete(row) {
-      this.$confirm("此操作将会删除该广告, 是否继续?", "提示", {
+    //已收
+    handleRecived(row) {
+      this.$confirm("确定执行已收操作, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
           request.post({
-            url: "/system/sysAdvertise/remove",
+            url: "/system/sysCourseOrderBills/receivedEdit",
             params: {
-              id: row.id,
+              billsId: row.billsId,
             },
             success: (res) => {
               this.$message.success(res);
@@ -329,7 +383,112 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除",
+            message: "已取消操作",
+          });
+        });
+    },
+    //财务审核
+    handleFinancialAudits(row) {
+      this.$confirm("确定执行财务审核操作, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          request.post({
+            url: "/system/sysCourseOrderBills/financialAuditEdit",
+            params: {
+              billsId: row.billsId,
+            },
+            success: (res) => {
+              this.$message.success(res);
+              this.getList();
+            },
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          this.$message({
+            type: "info",
+            message: "已取消操作",
+          });
+        });
+    },
+    //取消
+    handleCancle(row) {
+      this.$confirm("确定执行取消操作, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          request.post({
+            url: "/system/sysCourseOrderBills/cancelEdit",
+            params: {
+              billsId: row.billsId,
+            },
+            success: (res) => {
+              this.$message.success(res);
+              this.getList();
+            },
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消操作",
+          });
+        });
+    },
+    //入账
+    handleRecorded(row) {
+      this.$confirm("确定执行入账操作, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          request.post({
+            url: "/system/sysCourseOrderBills/enterBillEdit",
+            params: {
+              billsId: row.billsId,
+            },
+            success: (res) => {
+              this.$message.success(res);
+              this.getList();
+            },
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消操作",
+          });
+        });
+    },
+    //回退
+    handleFallback(row) {
+      this.$confirm("确定执行回退操作, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          request.post({
+            url: "/system/sysCourseOrderBills/fallbackEdit",
+            params: {
+              billsId: row.billsId,
+            },
+            success: (res) => {
+              this.$message.success(res);
+              this.getList();
+            },
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消操作",
           });
         });
     },

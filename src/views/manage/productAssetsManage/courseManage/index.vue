@@ -97,16 +97,7 @@ export default {
             type: "select",
             label: "课程标签",
             value: "tag",
-            options: [
-              {
-                value: 1,
-                label: "单品课程",
-              },
-              {
-                value: 2,
-                label: "单品课程",
-              },
-            ],
+            options: tagOptions
           },
           {
             type: "select",

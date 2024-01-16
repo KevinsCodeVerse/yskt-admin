@@ -6,7 +6,7 @@
         v-permission="o.permission"
         :class="o.disabled === true ? 'not-allowed-btn' : o.btnStyle + '-btn'"
         :key="o.key"
-        v-if="o.isHidden ? !o.isHidden(curRow) : true"
+        v-if="o.show ? o.show(curRow) : true"
         @click="o.action(o, curRow)"
       >
         {{ o.title }}

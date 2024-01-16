@@ -42,6 +42,11 @@ export const orderStatus = [
 ]
 export const collectionStatus = [
     {
+        value: -1,
+        label: "已取消",
+        color: "#409EFF",
+    },
+    {
         value: 0,
         label: "待审",
         color: "#409EFF",

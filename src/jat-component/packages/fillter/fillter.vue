@@ -86,7 +86,7 @@
           </div>
           <!-- 时间：开始时间、结束时间时 -->
           <div v-else-if="opt.type === 'timeAll'">
-            <el-date-picker
+            <jat-date-picker
               :style="{ width: inputWidth }"
               v-model="FilterData[opt.value]"
               type="daterange"
@@ -98,7 +98,7 @@
               clearable
               :picker-options="PickerOptions"
             >
-            </el-date-picker>
+            </jat-date-picker>
           </div>
           <div v-else-if="opt.type === 'user'">
             <select-user-remote

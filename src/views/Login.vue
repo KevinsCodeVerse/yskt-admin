@@ -9,7 +9,6 @@
           <el-image
             style="width: 55px; height: 55px"
             :src="require('@/assets/svg/pf.png')"
-            :fit="fit"
           >
           </el-image>
           <span style="margin-left: 10px;">鹏飞课堂智能后台管理系统</span>
@@ -84,6 +83,8 @@ export default {
     return {
       remember: false,
       logo: require("@/assets/img/logo.png"),
+      redirect: undefined,
+      otherQuery: {},
       params: {
         account: "",
         password: "",
@@ -171,25 +172,39 @@ export default {
               sessionStorage.setItem("userName", res.name);
               sessionStorage.setItem("id", res.id);
               sessionStorage.setItem("roleId", res.roleId);
-			  sessionStorage.setItem("interfaceList",JSON.stringify(res.interfaceList))
+              sessionStorage.setItem(
+                "interfaceList",
+                JSON.stringify(res.interfaceList)
+              );
               const menuList = res.menuList;
               // this.$store.dispatch('router/setMenuList', res.menuList)
               sessionStorage.setItem("menuList", JSON.stringify(menuList));
               sessionStorage.setItem("roleName", res.roleName);
               routerUtil.init();
               if (res.id === 1) {
-                this.$router.push("/index");
+                // this.$router.push("/index");
+                this.$router.push({
+                  path: this.redirect || "/index",
+                  query: this.otherQuery,
+                });
               } else {
                 const index = menuList.findIndex(
                   (item) => item.menuName === "系统设置"
                 );
-				console.log(index);
                 if (index !== -1) {
-                  this.$router.push("/index");
+                  // this.$router.push("/index");
+                  this.$router.push({
+                    path: this.redirect || "/index",
+                    query: this.otherQuery,
+                  });
                 } else {
                   const menu = menuList.filter((item) => item.flag === 2);
                   if (menu && menu.length > 0) {
-                    this.$router.push(menu[0].requestUrl);
+                    // this.$router.push(menu[0].requestUrl);
+                    this.$router.push({
+                      path: this.redirect || menu[0].requestUrl,
+                      query: this.otherQuery,
+                    });
                   }
                 }
               }
@@ -231,6 +246,26 @@ export default {
           this.loading = false;
         },
       });
+    },
+    getOtherQuery(query) {
+      return Object.keys(query).reduce((acc, cur) => {
+        if (cur !== "redirect") {
+          acc[cur] = query[cur];
+        }
+        return acc;
+      });
+    },
+  },
+  watch: {
+    $route: {
+      handler: function(route) {
+        const query = route.query;
+        if (query) {
+          this.redirect = query.redirect;
+          this.otherQuery = this.getOtherQuery(query);
+        }
+      },
+      immediate: true,
     },
   },
 };

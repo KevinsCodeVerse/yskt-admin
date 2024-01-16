@@ -78,7 +78,7 @@
         <el-table-column
           v-if="operates"
           label="操作"
-          :width="operateWidth"
+          :min-width="operateWidth"
           fixed="right"
         >
           <template slot-scope="scope">
