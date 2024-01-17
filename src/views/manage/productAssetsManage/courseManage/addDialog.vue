@@ -294,7 +294,7 @@
         </el-form-item>
         <el-form-item label="是否展示在官网(h5):" prop="showOfficialWebsite">
           <jat-select
-            v-model="addData.position"
+            v-model="addData.showOfficialWebsite"
             placeholder="请选择是否展示在官网(h5)"
             clearable
           >

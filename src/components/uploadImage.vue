@@ -6,7 +6,7 @@
       :limit="limit"
       :auto-upload="true"
       :before-upload="beforeUpload"
-      accept=".jpg,.jpeg,.png"
+      accept=".jpg,.jpeg,.png,.gif"
       :file-list="fileList"
       :class="fileList.length < limit ? '' : 'hiddenImage'"
     >
@@ -134,7 +134,7 @@ export default {
       this.dialogVisible = true;
     },
     beforeUpload(file) {
-      const isImg = ["image/png", "image/jpg", "image/jpeg"].includes(
+      const isImg = ["image/png", "image/jpg", "image/jpeg", "image/gif"].includes(
         file.type
       );
       const isLtM = file.size / 1024 / 1024 < 5;
