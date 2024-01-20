@@ -93,7 +93,7 @@
           :width="c.width"
           :min-width="c.minWidth || ''"
           :align="c.align || 'left'"
-          :show-overflow-tooltip="true"
+          :show-overflow-tooltip="c.showOverflowTooltip === false ? false  : true "
           :sortable="c.sortable || false"
           :formatter="
             (row, column, cellValue, index) => {
@@ -103,6 +103,7 @@
             }
           "
         >
+       
           <template slot-scope="{ row, column, $index }">
             <slot v-if="c.renderName" :name="c.renderName" :row="row" />
             <span v-else-if="c.type === 'date'">

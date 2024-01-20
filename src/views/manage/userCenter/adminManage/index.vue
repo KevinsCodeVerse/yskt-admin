@@ -185,18 +185,9 @@ export default {
           },
           {
             id: 7,
-            prop: "departmentId",
+            prop: "departments",
             label: "所属部门",
-            render: (row) => {
-              const deparment = this.departmentList.find(
-                (item) => item.id == row.departmentId
-              );
-              if (deparment) {
-                return deparment.name;
-              } else {
-                return "";
-              }
-            },
+            showOverflowTooltip: false,
           },
           {
             id: 8,
@@ -207,6 +198,7 @@ export default {
             id: 9,
             prop: "departments",
             label: "可查看部门",
+            showOverflowTooltip: false,
           },
           {
             id: 11,

@@ -95,7 +95,7 @@
               :start-placeholder="opt.label[0]"
               :value-format="opt.valueFormat || 'yyyy-MM-dd'"
               :end-placeholder="opt.label[1]"
-              clearable
+              :clearable="opt.clearable === false ? opt.clearable : true"
               :picker-options="PickerOptions"
             >
             </jat-date-picker>

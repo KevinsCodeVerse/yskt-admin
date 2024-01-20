@@ -1,4 +1,4 @@
-<!-- 课程管理 -->
+<!-- 文章管理 -->
 <template>
   <div class="middle-container" v-loading="loading">
     <jat-fillter
@@ -7,27 +7,6 @@
       @searchFilter="searchFilter"
       @clearFilter="clearFilter"
     >
-      <span slot="teacherAdId">
-        <el-select
-          style="width: 85%;"
-          size="small"
-          clearable
-          v-model="filterData.teacherAdId"
-          filterable
-          remote
-          placeholder="讲师"
-          :remote-method="teacherRemoteMethod"
-          :loading="remoteLoading"
-        >
-          <el-option
-            v-for="item in teacherOptions"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          >
-          </el-option>
-        </el-select>
-      </span>
     </jat-fillter>
     <BasicTable
       :columns="table.columns"
@@ -50,14 +29,8 @@
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 import addDialog from "./addDialog.vue";
-import {
-  hasFreeOptions,
-  hasLiveOptions,
-  positionptions,
-  tagOptions
-} from "./const";
 export default {
-  name: "adverstPage",
+  name: "articlePage",
   components: { BasicTable, addDialog },
   data() {
     return {
@@ -67,19 +40,15 @@ export default {
       categoryOptions: [],
       filterOptions: {
         column: [
+          
           {
             type: "input",
-            label: "课程编号",
-            value: "number",
-          },
-          {
-            type: "input",
-            label: "课程名称",
-            value: "name",
+            label: "文章名称",
+            value: "title",
           },
           {
             type: "select",
-            label: "课程类别",
+            label: "文章类别",
             value: "categoryId",
             labelKey: "name",
             valueKey: "id",
@@ -87,74 +56,39 @@ export default {
           },
           {
             type: "select",
-            label: "课程套餐",
-            value: "setMealCategoryId",
-            labelKey: "name",
-            valueKey: "id",
-            options: []
-          },
-          {
-            type: "select",
-            label: "课程标签",
-            value: "tag",
-            options: tagOptions
-          },
-          {
-            type: "select",
-            label: "是否免费",
-            value: "hasFree",
-            options: hasFreeOptions,
-          },
-          {
-            type: "slot",
-            slotName: "teacherAdId",
-          },
+            label: "文章状态",
+            value: "status",
+            options: [
+              {
+                value: 0,
+                label: "正常"
+              },
+              {
+                value: 1,
+                label: "下架"
+              }
+            ],
+          }
         ],
       },
       remoteLoading: false,
       teacherOptions: [],
       filterData: {
-        name: "",
-        number: "",
-        hasLive: "",
-        teacherAdId: "",
+        title: "",
         categoryId: "",
-        hasFree: "",
-        setMealCategoryId: ""
+        status: ""
       },
       table: {
         columns: [
           {
             id: 1,
-            prop: "number",
-            label: "课程编号",
+            prop: "title",
+            label: "文章名称",
           },
           {
             id: 2,
-            prop: "hasLive",
-            label: "课程类型",
-            render: (row) => {
-              const item = this.hasLiveOptions.find(
-                (item) => item.value == row.hasLive
-              );
-              return item ? item.label : "";
-            },
-          },
-          {
-            id: 3,
-            prop: "setMealCategoryId",
-            label: "课程套餐",
-            render: (row) => {
-              const item = this.$refs.addDialog.MealCategoryOptions.find(
-                (item) => item.id == row.setMealCategoryId
-              );
-              return item ? item.name : "";
-            },
-          },
-          {
-            id: 4,
             prop: "categoryId",
-            label: "课程类别",
+            label: "文章类别",
             render: (row) => {
               const item = this.$refs.addDialog.categoryOptions.find(
                 (item) => item.id == row.categoryId
@@ -163,48 +97,29 @@ export default {
             },
           },
           {
-            id: 5,
-            prop: "tag",
-            label: "课程标签",
-            render: (row) => {
-              const item = tagOptions.find((item) => item.value == row.tag);
-              return item ? item.label : "";
-            },
-          },
-          {
-            id: 6,
-            prop: "position",
-            label: "推荐位",
-            render: (row) => {
-              const item = positionptions.find(
-                (item) => item.value == row.position
-              );
-              return item ? item.label : "";
-            },
-          },
-          {
-            id: 7,
-            prop: "teacherName",
-            label: "讲师",
-          },
-          {
-            id: 8,
-            prop: "price",
-            label: "价格",
-          },
-          {
-            id: 9,
+            id: 3,
             prop: "createAdName",
             label: "增加人",
           },
           {
-            id: 10,
+            id: 4,
             prop: "createTime",
             label: "增加时间",
             type: "date",
           },
           {
-            id: 12,
+            id: 5,
+            prop: "status",
+            label: "文章状态",
+            render: (row) => {
+              return row.status == 0 ? '正常' : "下架"
+            },
+            statusType: (row) => {
+              return row.status == 0 ? 'success' : "error"
+            }
+          },
+          {
+            id: 6,
             prop: "sort",
             label: "排序",
           },
@@ -227,7 +142,7 @@ export default {
         {
           key: "delete",
           title: "删除",
-          permission: "admin/adCourse/remove",
+          permission: "system/sysArticle/remove",
           btnStyle: "red",
           action: (o, row) => {
             this.handleDelete(row);
@@ -237,8 +152,8 @@ export default {
       headerOperates: [
         {
           key: "el-icon-plus",
-          name: "添加课程",
-          permission: "admin/adCourse/add",
+          name: "添加文章",
+          permission: "system/sysArticle/add",
           action: () => {
             this.$refs.addDialog.open();
           },
@@ -257,15 +172,7 @@ export default {
         return this.$refs.addDialog.categoryOptions;
       },
       (val) => {
-        this.filterOptions.column[2].options = val;
-      }
-    );
-    this.$watch(
-      () => {
-        return this.$refs.addDialog.MealCategoryOptions;
-      },
-      (val) => {
-        this.filterOptions.column[3].options = val;
+        this.filterOptions.column[1].options = val;
       }
     );
   },
@@ -281,7 +188,7 @@ export default {
     getList() {
       this.loading = true;
       request.post({
-        url: "/admin/adCourse/list",
+        url: "/system/sysArticle/list",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,
@@ -321,14 +228,14 @@ export default {
     },
 
     handleDelete(row) {
-      this.$confirm("此操作将会删除该课程, 是否继续?", "提示", {
+      this.$confirm("此操作将会删除该文章, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
           request.post({
-            url: "/admin/adCourse/remove",
+            url: "/system/sysArticle/remove",
             params: {
               id: row.id,
             },
