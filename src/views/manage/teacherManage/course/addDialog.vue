@@ -13,7 +13,7 @@
         :rules="courseRule"
         ref="courseRef"
         label-position="right"
-        label-width="110px"
+        label-width="140px"
       >
         <el-form-item label="课程名称:" prop="name">
           <jat-input
@@ -85,6 +85,38 @@
         <el-form-item label="封面:" prop="image">
           <upload-image v-model="addData.image"></upload-image>
         </el-form-item>
+        <el-form-item label="课程标签:" prop="tag">
+          <jat-select
+            v-model="addData.tag"
+            placeholder="请选择课程标签"
+            @change="handleTagChange"
+            clearable
+          >
+            <el-option
+              v-for="item in tagOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </jat-select>
+        </el-form-item>
+        <el-form-item v-if="addData.tag === 0" label="课程套餐:" prop="setMealCategoryId">
+          <jat-select
+            v-model="addData.setMealCategoryId"
+            placeholder="请输入课程套餐"
+            clearable
+            filterable
+          >
+            <el-option
+              v-for="item in MealCategoryOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </jat-select>
+        </el-form-item>
         <el-form-item label="课程类型:" prop="hasLive">
           <jat-select
             v-model="addData.hasLive"
@@ -122,22 +154,7 @@
             @blur="handleCheck"
           ></jat-input>
         </el-form-item>
-        <el-form-item label="课程套餐:" prop="setMealCategoryId">
-          <jat-select
-            v-model="addData.setMealCategoryId"
-            placeholder="请输入课程套餐"
-            clearable
-            filterable
-          >
-            <el-option
-              v-for="item in MealCategoryOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            >
-            </el-option>
-          </jat-select>
-        </el-form-item>
+      
         <el-form-item label="直播回放链接:" prop="livePlaybackUrl">
           <jat-input
             v-model="addData.livePlaybackUrl"
@@ -252,21 +269,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="课程标签:" prop="tag">
-          <jat-select
-            v-model="addData.tag"
-            placeholder="请选择课程标签"
-            clearable
-          >
-            <el-option
-              v-for="item in tagOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            >
-            </el-option>
-          </jat-select>
-        </el-form-item>
+        
         <el-form-item label="推荐位:" prop="position">
           <jat-select
             v-model="addData.position"
@@ -291,7 +294,7 @@
         </el-form-item>
         <el-form-item label="是否展示在官网(h5):" prop="showOfficialWebsite">
           <jat-select
-            v-model="addData.position"
+            v-model="addData.showOfficialWebsite"
             placeholder="请选择是否展示在官网(h5)"
             clearable
           >
@@ -356,7 +359,6 @@ export default {
         image: "",
         livePlaybackUrl: "",
         openLiveTime: "",
-        showOfficialWebsite: "",
         overview: "",
         position: "",
         price: 0,
@@ -372,6 +374,7 @@ export default {
         teacherAdId: "",
         underlinedPrice: "",
         costPrice: "",
+        showOfficialWebsite: ""
       },
       parentAdIdOptions: [],
       courseRule: {
@@ -434,7 +437,6 @@ export default {
       livePlaybackUrl,
       openLive,
       overview,
-      showOfficialWebsite,
       position,
       price,
       readCount,
@@ -450,6 +452,7 @@ export default {
       underlinedPrice,
       costPrice,
       teacherName,
+      showOfficialWebsite
     }) {
       this.dialogTitle = "编辑课程";
       this.addModifyVisible = true;
@@ -461,7 +464,6 @@ export default {
         createAdId,
         hasFree,
         hasLive,
-        showOfficialWebsite,
         image,
         livePlaybackUrl,
         openLiveTime: getDate(openLive, "yyyy-MM-dd HH:mm:ss"),
@@ -480,6 +482,7 @@ export default {
         sort,
         tag,
         teacherAdId,
+        showOfficialWebsite
       };
       this.teacherOptions = [
         {
@@ -503,7 +506,6 @@ export default {
         openLiveTime: "",
         overview: "",
         position: "",
-        showOfficialWebsite: "",
         price: "",
         readCount: "",
         recordLiveUrl: "",
@@ -517,6 +519,7 @@ export default {
         sort: 255,
         tag: "",
         teacherAdId: "",
+        showOfficialWebsite: ""
       };
       this.addModifyVisible = false;
     },
@@ -618,6 +621,9 @@ export default {
       } else {
         this.addData.price = "";
       }
+    },
+    handleTagChange() {
+      this.addData.setMealCategoryId = ""
     },
     teacherRemoteMethod(keyword, list) {
       if (!keyword) {

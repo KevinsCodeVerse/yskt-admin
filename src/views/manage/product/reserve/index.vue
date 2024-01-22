@@ -19,15 +19,17 @@
       @size-page-change="sizePageChange"
     >
     </BasicTable>
+    <bookNow ref="bookNow"></bookNow>
   </div>
 </template>
 
 <script>
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
+import bookNow from './bookNow.vue';
 export default {
   name: "reservePage",
-  components: { BasicTable },
+  components: { BasicTable, bookNow },
   data() {
     return {
       loading: false,
@@ -100,12 +102,12 @@ export default {
       },
       operates: [
         {
-          key: "edit",
+          key: "reserve",
           title: "立即预订",
           btnStyle: "yellow",
           permission: "system/sysNews/edit",
           action: (o, row) => {
-            this.$refs.addDialog.edit(row);
+            this.$refs.bookNow.edit(row);
           },
         },
       ],

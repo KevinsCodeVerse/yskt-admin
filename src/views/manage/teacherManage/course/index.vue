@@ -1,4 +1,4 @@
-<!-- 角色管理 -->
+<!-- 我的课程 -->
 <template>
   <div class="middle-container" v-loading="loading">
     <jat-fillter
@@ -31,9 +31,8 @@
     </jat-fillter>
     <BasicTable
       :columns="table.columns"
-      :headerOperates="headerOperates"
       :operates="operates"
-      operateWidth="110px"
+      operateWidth="130px"
       :data="table.data"
       :pageSize="table.pageSize"
       :currentPage="table.currentPage"
@@ -56,7 +55,7 @@ import {
   tagOptions
 } from "./const";
 export default {
-  name: "adverstPage",
+  name: "myCoursePage",
   components: { BasicTable, addDialog },
   data() {
     return {
@@ -96,16 +95,7 @@ export default {
             type: "select",
             label: "课程标签",
             value: "tag",
-            options: [
-              {
-                value: 1,
-                label: "单品课程",
-              },
-              {
-                value: 2,
-                label: "单品课程",
-              },
-            ],
+            options: tagOptions
           },
           {
             type: "select",
@@ -225,33 +215,21 @@ export default {
       operates: [
         {
           key: "edit",
-          title: "编辑",
+          title: "一键开播",
           btnStyle: "yellow",
-          permission: "admin/adCourse/edit",
-          action: (o, row) => {
-            this.$refs.addDialog.edit(row);
-          },
-        },
-        {
-          key: "delete",
-          title: "删除",
-          permission: "admin/adCourse/remove",
-          btnStyle: "red",
-          action: (o, row) => {
-            this.handleDelete(row);
-          },
-        },
-      ],
-      headerOperates: [
-        {
-          key: "el-icon-plus",
-          name: "添加课程",
-          permission: "admin/adCourse/add",
+          permission: "",
           action: () => {
-            this.$refs.addDialog.open();
-          },
+          }
         },
-      ],
+        {
+          key: "upload",
+          title: "上传直播回放",
+          permission: "",
+          btnStyle: "green",
+          action: () => {
+          },
+        }
+      ]
     };
   },
   computed: {
@@ -289,7 +267,7 @@ export default {
     getList() {
       this.loading = true;
       request.post({
-        url: "/admin/adCourse/list",
+        url: "/admin/adCourse/myList",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,
@@ -399,22 +377,4 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.zt_colunms_box {
-  &.zt1 {
-    color: #0fba80;
-    display: inline-block;
-    padding: 3px;
-    background: rgba(15, 186, 128, 0.1);
-    // border: 1px solid rgba(108, 255, 40, 0.6);
-    border-radius: 2px;
-  }
-  &.zt0 {
-    color: #ff6600;
-    display: inline-block;
-    padding: 3px;
-    background: rgba(255, 102, 0, 0.1);
-    // border: 1px solid rgba(108, 255, 40, 0.6);
-    border-radius: 2px;
-  }
-}
 </style>
