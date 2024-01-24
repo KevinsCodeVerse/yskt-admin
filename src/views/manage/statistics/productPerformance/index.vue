@@ -1,4 +1,4 @@
-<!-- 角色管理 -->
+<!-- 个人业绩分析 -->
 <template>
   <div class="middle-container" v-loading="loading">
     <jat-fillter
@@ -10,7 +10,6 @@
     <BasicTable
       :columns="table.columns"
       :headerOperates="headerOperates"
-      :operates="operates"
       :data="table.data"
       :pageSize="table.pageSize"
       :currentPage="table.currentPage"
@@ -19,17 +18,16 @@
       @size-page-change="sizePageChange"
     >
     </BasicTable>
-    <bookNow ref="bookNow"></bookNow>
   </div>
 </template>
 
 <script>
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
-import bookNow from './bookNow.vue';
+import { listToTree } from "../../../../utils/tools";
 export default {
-  name: "reservePage",
-  components: { BasicTable, bookNow },
+  name: "personPerformance",
+  components: { BasicTable },
   data() {
     return {
       loading: false,
@@ -38,90 +36,76 @@ export default {
         column: [
           {
             type: "input",
-            label: "关键字",
-            value: "keyword",
+            label: "课程编号",
+            value: "number",
           },
           {
-            type: "select",
-            label: "课程标签",
-            value: "tag",
-            options: [
-              {
-                value: 0,
-                label: "套餐课程",
-              },
-              {
-                value: 1,
-                label: "单品课程",
-              },
-              {
-                value: 2,
-                label: "vip课程",
-              },
-            ],
+            type: "user",
+            userType: 0,
+            label: "销售员",
+            value: "profitAdId",
+          },
+          {
+            type: "cascader",
+            label: "部门",
+            value: "departmentId",
+            options: [],
+            props: {
+              value: "id",
+              label: "name",
+              emitPath: false,
+              checkStrictly: true,
+            },
+          },
+          {
+            type: "timeAll",
+            label: ["开始日期", "结束日期"],
+            value: "time",
+            clearable: false,
           },
         ],
       },
       categoryOptions: [],
+
       filterData: {
-        categoryId: "",
-        name: "",
+        profitAdId: "",
+        departmentId: "",
+        time: [],
       },
       table: {
         columns: [
           {
             id: 1,
-            prop: "name",
+            prop: "courseName",
             label: "课程名称",
           },
           {
             id: 2,
-            prop: "image",
-            label: "封面",
-            type: "image"
-          },
-          {
-            id: 3,
-            prop: "categoryId",
-            label: "课程类型",
-            render: (row) => {
-                const item = this.categoryOptions.find(item => item.id == row.categoryId);
-                return item ? item.name : ""
-            }
-            //   renderName: "image",
+            prop: "number",
+            label: "课程编号",
           },
           {
             id: 4,
-            prop: "price",
-            label: "价格",
+            prop: "count",
+            label: "总数量",
           },
           {
             id: 5,
-            prop: "teacherName",
-            label: "操作员",
-          },
+            prop: "totalPrice",
+            label: "总收入",
+          }
         ],
         pageSize: 20,
         currentPage: 1,
         data: [],
         total: 0,
       },
-      operates: [
-        {
-          key: "reserve",
-          title: "立即预订",
-          btnStyle: "yellow",
-          permission: "system/sysNews/edit",
-          action: (o, row) => {
-            this.$refs.bookNow.edit(row);
-          },
-        },
-      ],
+      operates: [],
       headerOperates: [],
     };
   },
   created() {
-    this.getCategoryList();
+    this.getDepartmentList();
     this.getList();
   },
   methods: {
@@ -131,12 +115,15 @@ export default {
     },
     getList() {
       this.loading = true;
+      const { time, ...rest } = this.filterData;
       request.post({
-        url: "/admin/adCourse/listReserve",
+        url: "/system/sysCourseOrderBills/coursePerformanceStatistics",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,
-          ...this.filterData,
+          startTime: time && time.length > 1 ? time[0] : "",
+          endTime: time && time.length > 1 ? time[1] : "",
+          ...rest,
         },
         success: (res) => {
           this.table.data = res.list;
@@ -145,18 +132,6 @@ export default {
         },
         catch: () => {
           this.loading = false;
-        },
-      });
-    },
-
-    getCategoryList() {
-      request.post({
-        url: "system/sysCategory/listNoPage",
-        params: {
-          type: 2,
-        },
-        success: (res) => {
-          this.categoryOptions = res;
         },
       });
     },
@@ -187,9 +162,23 @@ export default {
         });
     },
 
+    getDepartmentList() {
+      request.post({
+        url: "/admin/adDepartment/listNoPage",
+        params: {
+        },
+        success: (res) => {
+          this.filterOptions.column[2].options = listToTree(res);
+        },
+      });
+    },
+
     clearFilter() {
       this.filterData = {
-        name: "",
+        profitAdId: "",
+        departmentId: "",
+        number: "",
+        time: [],
       };
       this.searchFilter();
     },

@@ -1,4 +1,4 @@
-<!-- 添加广告 -->
+<!-- 开通课程 -->
 <template>
   <div>
     <el-dialog
@@ -15,22 +15,8 @@
         label-position="right"
         label-width="150px"
       >
-        <el-form-item style="width: 100%;" label="套餐分类" prop="course">
-          <jat-select
-            v-model="addData.course"
-            placeholder="请选择产品编号/产品名称"
-            @change="handleCategoryChange"
-            value-key="id"
-            clearable
-          >
-            <el-option
-              v-for="item in categoryOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item"
-            >
-            </el-option>
-          </jat-select>
+        <el-form-item style="width: 100%;" label="产品名称" prop="courseName">
+          {{ addData.courseName }}
         </el-form-item>
         <el-form-item style="width: 100%" label="课程套餐:" prop="ids">
           <BasicTable
@@ -47,7 +33,7 @@
             :data="tableData"
           ></BasicTable>
         </el-form-item>
-        <el-form-item label="订单时间:" prop="time">
+        <el-form-item label="开始时间:" prop="time">
           <jat-date-picker
             width="100%"
             clearable
@@ -57,14 +43,7 @@
             v-model="addData.time"
           ></jat-date-picker>
         </el-form-item>
-        <el-form-item label="数量:" prop="count">
-          <jat-input
-            disabled
-            v-input.int
-            v-model="addData.count"
-            placeholder="请输入数量"
-          ></jat-input>
-        </el-form-item>
+
         <el-form-item label="市场价:" prop="marketPrice">
           <jat-input
             v-input.float="2"
@@ -72,13 +51,7 @@
             placeholder="请输入市场价"
           ></jat-input>
         </el-form-item>
-        <el-form-item label="成本价:" prop="costPrice">
-          <jat-input
-            v-input.float="2"
-            v-model="addData.costPrice"
-            placeholder="请输入成本价"
-          ></jat-input>
-        </el-form-item>
+
         <el-form-item label="下单者:" prop="adId">
           <el-select
             style="width: 100%;"
@@ -99,40 +72,6 @@
             >
             </el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="利润归属:" prop="profitAdId">
-          <el-select
-            style="width: 100%;"
-            size="small"
-            clearable
-            v-model="addData.profitAdId"
-            filterable
-            remote
-            placeholder="为空为当前登录账户"
-            :remote-method="(query) => remoteMethod(query, 0)"
-            :loading="remoteLoading"
-          >
-            <el-option
-              v-for="item in userAdminOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            >
-            </el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item
-          style="width: 100%"
-          label="优惠信息/订单备注:"
-          prop="remark"
-        >
-          <jat-input
-            type="textarea"
-            :rows="5"
-            v-model="addData.remark"
-            placeholder="请输入优惠信息/订单备注"
-          ></jat-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -167,7 +106,7 @@ export default {
         },
         {
           id: 2,
-          prop: "price",
+          prop: "marketPrice",
           label: "市场价",
         },
         {
@@ -178,88 +117,59 @@ export default {
       ],
       addData: {
         id: "",
-        course: {},
         adId: "",
-        costPrice: "",
-        count: 1,
         ids: "",
+        orderNum: "",
         marketPrice: "",
-        profitAdId: "",
-        remark: "",
         time: [],
       },
 
       clientRule: {
-        name: [{ required: true, message: "请输入客户名称", trigger: "blur" }],
-        costPrice: [
-          { required: true, message: "请输入成本价", trigger: "blur" },
-        ],
         adId: [{ required: true, message: "请输入下单者", trigger: "blur" }],
-        count: [{ required: true, message: "请输入数量", trigger: "blur" }],
-        time: [{ required: true, message: "请选择订单时间", trigger: "blur" }],
+        time: [{ required: true, message: "请选择开始时间", trigger: "blur" }],
         ids: [
           { required: true, message: "请输入选择套餐课程", trigger: "blur" },
         ],
         marketPrice: [
           { required: true, message: "请输入市场价", trigger: "blur" },
         ],
-        profitAdId: [
-          { required: true, message: "请选择利润归属", trigger: "blur" },
-        ],
       },
     };
   },
 
   mounted() {
-    this.getCurrentUser();
+    // this.getCurrentUser();
     this.getCategoryList();
   },
 
   methods: {
-    open() {
-      this.dialogTitle = "增加订单";
+    edit({ orderNum, courseName, courseIds, vipAdId, vipName, marketPrice }) {
+      this.dialogTitle = "开通课程";
       this.addModifyVisible = true;
-    },
-    edit({
-      id,
-      course,
-      adId,
-      costPrice,
-      count,
-      ids,
-      marketPrice,
-      profitAdId,
-      remark,
-      startTime,
-      endTime,
-    }) {
-      this.dialogTitle = "修改订单";
-      this.addModifyVisible = true;
+      this.userAllOptions = [
+        {
+          id: vipAdId,
+          name: vipName,
+        },
+      ];
       this.addData = {
-        id,
-        course,
-        adId,
-        costPrice,
-        count: count ? count : 1,
-        ids,
+        orderNum,
+        courseName,
+        courseIds,
         marketPrice,
-        profitAdId,
-        remark,
-        time: startTime && endTime ? [startTime, endTime] : [],
+        adId: vipAdId,
       };
+
+      this.getCourseList(courseIds);
     },
     close() {
       this.$refs.clientRef && this.$refs.clientRef.clearValidate();
       this.addData = {
         id: "",
-        course: {},
         adId: "",
-        costPrice: "",
-        count: 1,
         ids: "",
+        orderNum: "",
         marketPrice: "",
-        profitAdId: "",
-        remark: "",
         time: [],
       };
       this.addModifyVisible = false;
@@ -276,11 +186,11 @@ export default {
       ];
       this.addData.profitAdId = id;
     },
-    getCourseList(id) {
+    getCourseList(courseIds) {
       request.post({
-        url: "/admin/adCourse/queryCourseListByCategoryId",
+        url: "/system/sysCourseOrder/queryCourseById",
         params: {
-          categoryId: id,
+          ids: courseIds,
         },
         success: (res) => {
           this.tableData = res;
@@ -293,12 +203,6 @@ export default {
           });
         },
       });
-    },
-
-    handleCategoryChange(val) {
-      if (val) {
-        this.getCourseList(val.id);
-      }
     },
 
     getCategoryList() {
@@ -315,43 +219,22 @@ export default {
 
     handleSubmit() {
       this.$refs.clientRef.validate((valid) => {
-        const { ids, time, id, course, ...rest } = this.addData;
-
+        const { ids, time, courseName, ...rest } = this.addData;
         if (valid) {
-          if (id) {
-            request.post({
-              url: "/admin/adCustomer/edit",
-              params: {
-                id,
-                ids: JSON.stringify(ids),
-                name: course.name,
-                startTime: time && time.length > 0 ? time[0] : "",
-                endTime: time && time.length > 0 ? time[1] : "",
-                ...rest,
-              },
-              success: (res) => {
-                this.$message.success(res);
-                this.close();
-                this.$emit("success");
-              },
-            });
-          } else {
-            request.post({
-              url: "system/sysCourseOrder/quicklyPlaceOrderAdd",
-              params: {
-                ids: JSON.stringify(ids),
-                name: course.name,
-                startTime: time && time.length > 0 ? time[0] : "",
-                endTime: time && time.length > 0 ? time[1] : "",
-                ...rest,
-              },
-              success: (res) => {
-                this.$message.success(res);
-                this.close();
-                this.$emit("success");
-              },
-            });
-          }
+          request.post({
+            url: "/system/sysCourseOrder/openCourseEdit",
+            params: {
+              courseIds: JSON.stringify(ids),
+              startTime: time && time.length > 0 ? time[0] : "",
+              endTime: time && time.length > 0 ? time[1] : "",
+              ...rest,
+            },
+            success: (res) => {
+              this.$message.success(res);
+              this.close();
+              this.$emit("success");
+            },
+          });
         }
       });
     },

@@ -230,7 +230,7 @@ export default {
             url: "/admin/adCourse/bookingAdd",
             params: {
               ids,
-              startTIme: time && time.length > 0 ? time[0] : "",
+              startTime: time && time.length > 0 ? time[0] : "",
               endTime: time && time.length > 0 ? time[1] : "",
               ...rest,
             },

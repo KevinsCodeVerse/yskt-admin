@@ -49,6 +49,7 @@
           v-if="selectType === 'multi'"
           type="selection"
           :selectable="selectable"
+          :reserve-selection="reserveSelection"
           width="60px"
           fixed="left"
         />
@@ -93,7 +94,9 @@
           :width="c.width"
           :min-width="c.minWidth || ''"
           :align="c.align || 'left'"
-          :show-overflow-tooltip="c.showOverflowTooltip === false ? false  : true "
+          :show-overflow-tooltip="
+            c.showOverflowTooltip === false ? false : true
+          "
           :sortable="c.sortable || false"
           :formatter="
             (row, column, cellValue, index) => {
@@ -103,7 +106,6 @@
             }
           "
         >
-       
           <template slot-scope="{ row, column, $index }">
             <slot v-if="c.renderName" :name="c.renderName" :row="row" />
             <span v-else-if="c.type === 'date'">
@@ -229,6 +231,10 @@ export default {
     hasSort: {
       type: Boolean,
       default: true,
+    },
+    reserveSelection: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

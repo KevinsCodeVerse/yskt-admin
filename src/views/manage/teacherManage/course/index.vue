@@ -42,6 +42,34 @@
     >
     </BasicTable>
     <add-dialog @success="handleSuccess" ref="addDialog"></add-dialog>
+    <uploadVideo ref="upload"></uploadVideo>
+    <el-dialog
+      title="开播信息"
+      :close-on-click-modal="false"
+      :visible.sync="openLiveVisible"
+      width="30%"
+      @close="handleClose"
+    >
+      <div class="tipInfo">
+        您已开播成功了。请保存好推流地址和推流码！
+      </div>
+      <div class="account-box">
+        <span>推流地址：{{ openLiveData.rtmpPublishUrl }}</span>
+        <span>推流码：{{ openLiveData.code }}</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <jat-button
+          v-clipboard:copy="
+            '推流地址：' +
+              openLiveData.rtmpPublishUrl +
+              '\n推流码：' +
+              openLiveData.code
+          "
+          v-clipboard:success="onCopy"
+          >一键复制</jat-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -49,18 +77,18 @@
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 import addDialog from "./addDialog.vue";
-import {
-  hasFreeOptions,
-  positionptions,
-  tagOptions
-} from "./const";
+
+import { hasFreeOptions, positionptions, tagOptions } from "./const";
+import uploadVideo from "./uploadVideo.vue";
 export default {
   name: "myCoursePage",
-  components: { BasicTable, addDialog },
+  components: { BasicTable, addDialog, uploadVideo },
   data() {
     return {
       loading: false,
       remoteLoading: false,
+      openLiveVisible: false,
+      openLiveData: {},
       supervisorAdOptions: [],
       categoryOptions: [],
       filterOptions: {
@@ -89,13 +117,13 @@ export default {
             value: "setMealCategoryId",
             labelKey: "name",
             valueKey: "id",
-            options: []
+            options: [],
           },
           {
             type: "select",
             label: "课程标签",
             value: "tag",
-            options: tagOptions
+            options: tagOptions,
           },
           {
             type: "select",
@@ -118,7 +146,7 @@ export default {
         teacherAdId: "",
         categoryId: "",
         hasFree: "",
-        setMealCategoryId: ""
+        setMealCategoryId: "",
       },
       table: {
         columns: [
@@ -214,22 +242,42 @@ export default {
       },
       operates: [
         {
-          key: "edit",
+          key: "openLive",
           title: "一键开播",
+          btnStyle: "green",
+          permission: "",
+          action: (o, row) => {
+            this.handleOpenLive(row);
+          },
+          show: (row) => {
+            return row.hasLive === 0;
+          },
+        },
+        {
+          key: "edit",
+          title: "上传回放",
           btnStyle: "yellow",
           permission: "",
-          action: () => {
-          }
+          action: (o, row) => {
+            this.$refs.upload.open("上传录播", 1, row.id);
+          },
+          show: (row) => {
+            return row.hasLive === 1;
+          },
         },
         {
           key: "upload",
           title: "上传直播回放",
           permission: "",
-          btnStyle: "green",
-          action: () => {
+          btnStyle: "blue",
+          action: (o, row) => {
+            this.$refs.upload.open("上传直播回放", 2, row.id);
           },
-        }
-      ]
+          show: (row) => {
+            return row.hasLive === 0;
+          },
+        },
+      ],
     };
   },
   computed: {
@@ -305,21 +353,29 @@ export default {
     handleSuccess() {
       this.getList();
     },
+    onCopy() {
+      this.$message.success("复制成功");
+    },
 
-    handleDelete(row) {
-      this.$confirm("此操作将会删除该课程, 是否继续?", "提示", {
+    handleClose() {
+      this.openLiveData = {};
+    },
+
+    handleOpenLive(row) {
+      this.$confirm("确定要开播此课程, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
           request.post({
-            url: "/admin/adCourse/remove",
+            url: "/admin/adCourse/liveOpenAdd",
             params: {
               id: row.id,
             },
             success: (res) => {
-              this.$message.success(res);
+              this.openLiveData = res;
+              this.openLiveVisible = true;
               this.getList();
             },
           });
@@ -327,7 +383,7 @@ export default {
         .catch(() => {
           this.$message({
             type: "info",
-            message: "已取消删除",
+            message: "已取消开播",
           });
         });
     },
@@ -340,7 +396,7 @@ export default {
         teacherAdId: "",
         categoryId: "",
         hasFree: "",
-        setMealCategoryId: ""
+        setMealCategoryId: "",
       };
       this.searchFilter();
     },
@@ -373,8 +429,23 @@ export default {
         },
       });
     },
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>
+.tipInfo {
+  font-size: 16px;
+  margin: 10px;
+  color: #f56c6c;
+}
+.account-box {
+  // text-align: center;
+  display: flex;
+  flex-direction: column;
+  span {
+    margin: 10px 20px;
+    font-size: 16px;
+  }
+  margin: auto;
+}
 </style>

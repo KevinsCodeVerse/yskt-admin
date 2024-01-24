@@ -9,14 +9,19 @@
     >
     </jat-fillter>
     <BasicTable
+      ref="orderTable"
       :columns="table.columns"
       :headerOperates="headerOperates"
+      selectType="multi"
       :operates="operates"
       :data="table.data"
       :pageSize="table.pageSize"
       :currentPage="table.currentPage"
-      operateWidth="150px"
+      :row-key="getRowKeys"
+      operateWidth="250px"
       :total="table.total"
+      :reserveSelection="true"
+      @selection-change="handleSelectionChange"
       @current-page-change="currentPageChange"
       @size-page-change="sizePageChange"
     >
@@ -34,6 +39,7 @@
       ref="collectionDialog"
     ></create-collection-dialog>
     <order-detail ref="detailRef"></order-detail>
+    <openCourse ref="openCourse"></openCourse>
   </div>
 </template>
 
@@ -41,10 +47,11 @@
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 import addDialog from "./addDialog.vue";
-import { getDate, listToTree } from "../../../../utils/tools";
+import { getDate } from "../../../../utils/tools";
 import CreateCollectionDialog from "./createCollectionDialog.vue";
 import orderDetail from "./orderDetail.vue";
 import { orderStatus } from "../../financeCenter/receivables/const";
+import openCourse from "./openCourse.vue";
 const openStatusOptions = [
   {
     value: 0,
@@ -57,7 +64,13 @@ const openStatusOptions = [
 ];
 export default {
   name: "orderPage",
-  components: { BasicTable, addDialog, CreateCollectionDialog, orderDetail },
+  components: {
+    BasicTable,
+    addDialog,
+    CreateCollectionDialog,
+    orderDetail,
+    openCourse,
+  },
 
   data() {
     return {
@@ -111,6 +124,7 @@ export default {
           },
         ],
       },
+      selectList: [],
 
       filterData: {
         orderNum: "",
@@ -200,6 +214,7 @@ export default {
             id: 13,
             prop: "createTime",
             label: "下单时间",
+            sortable: true,
             minWidth: "180px",
             type: "date",
           },
@@ -232,10 +247,25 @@ export default {
         {
           key: "create",
           title: "创建收款",
-          btnStyle: "yellow",
+          btnStyle: "blue",
           permission: "system/sysCourseOrderBills/add",
           action: (o, row) => {
             this.$refs.collectionDialog.open(row.orderNum);
+          },
+          show: (row) => {
+            return row.openStatus === 1;
+          },
+        },
+        {
+          key: "openCourse",
+          title: "开通课程",
+          btnStyle: "yellow",
+          permission: "system/sysCourseOrder/openCourseEdit",
+          action: (o, row) => {
+            this.$refs.openCourse.edit(row);
+          },
+          show: (row) => {
+            return row.openStatus === 0;
           },
         },
         {
@@ -245,6 +275,9 @@ export default {
           // permission: "system/sysCourseOrder/detail",
           action: (o, row) => {
             this.$refs.detailRef.open(row.orderNum);
+          },
+          show: (row) => {
+            return row.openStatus === 0;
           },
         },
       ],
@@ -257,6 +290,14 @@ export default {
             this.$refs.addDialog.open();
           },
         },
+        {
+          key: "export",
+          name: "导出",
+          permission: "system/sysCourseOrder/quicklyPlaceOrderAdd",
+          action: () => {
+            this.handleExport();
+          },
+        },
       ],
     };
   },
@@ -265,6 +306,9 @@ export default {
   },
   methods: {
     searchFilter() {
+      this.$nextTick(() => {
+        this.$refs.orderTable.$refs.basicTable.$refs.multipleTable.clearSelection();
+      });
       this.table.currentPage = 1;
       this.getList();
     },
@@ -304,6 +348,27 @@ export default {
         },
       });
     },
+
+    handleExport() {
+      if (this.selectList.length < 1) {
+        this.$message.warning("请至少勾选一条数据进行导出");
+      }
+      request.post({
+        url: "/system/sysCourseOrder/exportSalesData",
+        params: {
+          objArray: JSON.stringify(this.selectList),
+        },
+        success: (res) => {
+          let downloadElement = document.createElement("a");
+          downloadElement.href = "https://" + res;
+          document.body.appendChild(downloadElement);
+          downloadElement.click(); //点击下载
+          document.body.removeChild(downloadElement); //下载完成移除元素
+          this.$message.success("导出成功");
+          this.searchFilter();
+        },
+      });
+    },
     handleSuccess() {
       this.getList();
     },
@@ -330,6 +395,13 @@ export default {
       this.table.currentPage = 1;
       this.table.pageSize = size;
       this.getList();
+    },
+
+    handleSelectionChange(val) {
+      this.selectList = val;
+    },
+    getRowKeys(row) {
+      return row.id;
     },
   },
 };

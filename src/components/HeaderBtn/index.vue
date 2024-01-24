@@ -46,6 +46,10 @@ export default {
   cursor: pointer;
 }
 
+.svg-icon {
+  margin-right: 6px;
+}
+
 .add-btn,
 .input-btn,
 .headerBtn {

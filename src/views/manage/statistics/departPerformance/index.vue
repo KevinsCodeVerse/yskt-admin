@@ -35,12 +35,6 @@ export default {
       filterOptions: {
         column: [
           {
-            type: "user",
-            userType: 0,
-            label: "销售员",
-            value: "profitAdId",
-          },
-          {
             type: "cascader",
             label: "部门",
             value: "departmentId",
@@ -63,7 +57,6 @@ export default {
       categoryOptions: [],
 
       filterData: {
-        profitAdId: "",
         departmentId: "",
         time: [
           this.$moment()
@@ -179,7 +172,6 @@ export default {
       request.post({
         url: "/admin/adDepartment/listNoPage",
         params: {
-          ...this.addData,
         },
         success: (res) => {
           this.departmentList = res;
