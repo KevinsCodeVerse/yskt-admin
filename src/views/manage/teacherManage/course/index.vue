@@ -70,6 +70,7 @@
         >
       </span>
     </el-dialog>
+    <chapters ref="chapters"></chapters>
   </div>
 </template>
 
@@ -80,9 +81,10 @@ import addDialog from "./addDialog.vue";
 
 import { hasFreeOptions, positionptions, tagOptions } from "./const";
 import uploadVideo from "./uploadVideo.vue";
+import chapters from './chapters.vue';
 export default {
   name: "myCoursePage",
-  components: { BasicTable, addDialog, uploadVideo },
+  components: { BasicTable, addDialog, uploadVideo, chapters },
   data() {
     return {
       loading: false,
@@ -276,6 +278,15 @@ export default {
           show: (row) => {
             return row.hasLive === 0;
           },
+        },
+        {
+          key: "charpter",
+          title: "章节详情",
+          permission: "admin/adCourseChapters/list",
+          btnStyle: "yellow",
+          action: (o, row) => {
+            this.$refs.chapters.open(row)
+          }
         },
       ],
     };
