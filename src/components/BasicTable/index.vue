@@ -121,6 +121,11 @@
               </el-image>
               <span v-else></span>
             </span>
+            <span v-else-if="c.type === 'video'">
+              <video v-if="row[c.prop]" :src="row[c.prop]" controls width="200">
+                <source :src="row[c.prop]" type="video/mp4" />
+              </video>
+            </span>
             <span
               v-else
               :style="{ color: c.colorRener ? c.colorRener(row) : undefined }"

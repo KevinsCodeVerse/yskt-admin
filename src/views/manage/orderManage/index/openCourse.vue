@@ -52,12 +52,12 @@
           ></jat-input>
         </el-form-item>
 
-        <el-form-item label="下单者:" prop="adId">
+        <el-form-item label="下单者:" prop="vipAdId">
           <el-select
             style="width: 100%;"
             size="small"
             clearable
-            v-model="addData.adId"
+            v-model="addData.vipAdId"
             filterable
             remote
             placeholder="代客下单选择会员账号，自己下单选择管理员账号"
@@ -117,7 +117,7 @@ export default {
       ],
       addData: {
         id: "",
-        adId: "",
+        vipAdId: "",
         ids: "",
         orderNum: "",
         marketPrice: "",
@@ -125,11 +125,8 @@ export default {
       },
 
       clientRule: {
-        adId: [{ required: true, message: "请输入下单者", trigger: "blur" }],
+        vipAdId: [{ required: true, message: "请输入下单者", trigger: "blur" }],
         time: [{ required: true, message: "请选择开始时间", trigger: "blur" }],
-        ids: [
-          { required: true, message: "请输入选择套餐课程", trigger: "blur" },
-        ],
         marketPrice: [
           { required: true, message: "请输入市场价", trigger: "blur" },
         ],
@@ -143,7 +140,8 @@ export default {
   },
 
   methods: {
-    edit({ orderNum, courseName, courseIds, vipAdId, vipName, marketPrice }) {
+    edit(row) {
+      const { orderNum, courseName, courseIds, vipAdId, vipName, marketPrice, startTime, endTime }  = row
       this.dialogTitle = "开通课程";
       this.addModifyVisible = true;
       this.userAllOptions = [
@@ -157,7 +155,8 @@ export default {
         courseName,
         courseIds,
         marketPrice,
-        adId: vipAdId,
+        time: [getDate(startTime, "yyyy-MM-dd"), getDate(endTime, "yyyy-MM-dd")],
+        vipAdId,
       };
 
       this.getCourseList(courseIds);
@@ -166,7 +165,7 @@ export default {
       this.$refs.clientRef && this.$refs.clientRef.clearValidate();
       this.addData = {
         id: "",
-        adId: "",
+        vipAdId: "",
         ids: "",
         orderNum: "",
         marketPrice: "",
@@ -220,6 +219,10 @@ export default {
     handleSubmit() {
       this.$refs.clientRef.validate((valid) => {
         const { ids, time, courseName, ...rest } = this.addData;
+        if(ids.length < 1) {
+          this.$message.error("请选择要开通的课程套餐")
+          return
+        }
         if (valid) {
           request.post({
             url: "/system/sysCourseOrder/openCourseEdit",

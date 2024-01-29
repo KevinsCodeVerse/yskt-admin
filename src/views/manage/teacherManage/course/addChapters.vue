@@ -37,6 +37,7 @@
 
       <el-form-item label="视频时长:" prop="lengthTime">
         <jat-input
+          disabled
           v-model="addData.lengthTime"
           placeholder="请输入视频时长"
         ></jat-input>
@@ -90,29 +91,29 @@ export default {
       this.addChaptersVisible = true;
     },
     edit({
-      id,
-      name,
-      advertiseCategoryId: categoryId,
-      herf: url,
-      image,
-      sort,
-      content,
-    }) {
+        name,
+        image,
+        url,
+        lengthTime,
+        id,
+    }, courseId) {
       this.dialogTitle = "编辑章节";
       this.addChaptersVisible = true;
-      this.addData = { id, name, categoryId, url, image, sort, content };
+      this.addData = {
+        name,
+        image,
+        url,
+        lengthTime,
+        id,
+        courseId
+    };
     },
     geVideoTime(videoUrl) {
-      console.log(videoUrl);
-      // http://qiniu.pengfkt.com/1391664214-1-16.mp4
-      // const videoDom = document.getElementById('video')
       const audio = new Audio(videoUrl);
       let duration = 0;
       let that = this;
       audio.addEventListener("loadedmetadata", function(e) {
         duration = audio.duration; // 通过添加监听来获取视频总时长字段，即duration
-        // console.log("视频时长为", duration);
-        // console.log(that.formatSeconds(duration));
         that.addData.lengthTime = that.formatSeconds(duration);
       });
     },
@@ -123,8 +124,7 @@ export default {
         name: "",
         image: "",
         url: "",
-        content: "",
-        sort: "",
+        lengthTime: undefined,
         id: "",
       };
       this.addChaptersVisible = false;

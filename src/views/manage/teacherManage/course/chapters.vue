@@ -4,6 +4,7 @@
     <div style="max-height: 500px;" v-loading="loading">
       <BasicTable
         :columns="table.columns"
+        height="400px"
         :operates="operates"
         operateWidth="130px"
         :hasCard="false"
@@ -54,88 +55,27 @@ export default {
         columns: [
           {
             id: 1,
-            prop: "number",
-            label: "课程编号",
+            prop: "name",
+            label: "章节名称",
           },
           {
             id: 2,
-            prop: "hasLive",
-            label: "课程类型",
-            render: (row) => {
-              const item = this.hasLiveOptions.find(
-                (item) => item.value == row.hasLive
-              );
-              return item ? item.label : "";
-            },
+            type: "image",
+            prop: "image",
+            label: "封面",
           },
           {
             id: 3,
-            prop: "setMealCategoryId",
-            label: "课程套餐",
-            render: (row) => {
-              const item = this.$refs.addDialog.MealCategoryOptions.find(
-                (item) => item.id == row.setMealCategoryId
-              );
-              return item ? item.name : "";
-            },
+            prop: "url",
+            type: "video",
+            label: "视频",
+            
           },
           {
             id: 4,
-            prop: "categoryId",
-            label: "课程类别",
-            render: (row) => {
-              const item = this.$refs.addDialog.categoryOptions.find(
-                (item) => item.id == row.categoryId
-              );
-              return item ? item.name : "";
-            },
-          },
-          {
-            id: 5,
-            prop: "tag",
-            label: "课程标签",
-            render: (row) => {
-              const item = tagOptions.find((item) => item.value == row.tag);
-              return item ? item.label : "";
-            },
-          },
-          {
-            id: 6,
-            prop: "position",
-            label: "推荐位",
-            render: (row) => {
-              const item = positionptions.find(
-                (item) => item.value == row.position
-              );
-              return item ? item.label : "";
-            },
-          },
-          {
-            id: 7,
-            prop: "teacherName",
-            label: "讲师",
-          },
-          {
-            id: 8,
-            prop: "price",
-            label: "价格",
-          },
-          {
-            id: 9,
-            prop: "createAdName",
-            label: "增加人",
-          },
-          {
-            id: 10,
-            prop: "createTime",
-            label: "增加时间",
-            type: "date",
-          },
-          {
-            id: 12,
-            prop: "sort",
-            label: "排序",
-          },
+            prop: "lengthTime",
+            label: "视频时长"
+          }
         ],
         pageSize: 20,
         currentPage: 1,
@@ -149,16 +89,16 @@ export default {
           permission: "admin/adCourseChapters/uploadCourseEdit",
           btnStyle: "yellow",
           action: (o, row) => {
-            this.$refs.addDialog.edit(row);
+            this.$refs.addChatptersDialog.edit(row, this.filterData.id);
           },
         },
         {
           key: "delete",
           title: "删除",
-          permission: "/admin/adCourseChapters/remove",
+          permission: "admin/adCourseChapters/remove",
           btnStyle: "red",
           action: (o, row) => {
-            this.handleDelete(row);
+            this.handleDelete(row)
           },
         },
       ],
