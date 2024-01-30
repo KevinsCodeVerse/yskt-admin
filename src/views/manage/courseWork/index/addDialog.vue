@@ -5,6 +5,7 @@
       :title="dialogTitle"
       :close-on-click-modal="false"
       :visible.sync="addModifyVisible"
+      :append-to-body="true"
       width="50%"
       @close="close"
     >
@@ -13,7 +14,7 @@
         :rules="workRule"
         ref="workRef"
         label-position="left"
-        label-width="90px"
+        label-width="120px"
       >
         <el-form-item label="作业标题:" prop="workName">
           <jat-input
@@ -24,26 +25,11 @@
         <el-form-item label="案例展示图:" prop="caseUrl">
           <upload-image v-model="addData.caseUrl"></upload-image>
         </el-form-item>
-        <el-form-item label="课程章节:" prop="chapterId">
-          <jat-select
-            v-model="addData.chapterId"
-            placeholder="请选择课程章节"
-            clearable
-          >
-            <el-option
-              v-for="item in chapterIdOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            >
-            </el-option>
-          </jat-select>
-        </el-form-item>
-
         <el-form-item label="提交截止时间:" prop="cutOffTime">
           <jat-date-picker
             clearable
             type="date"
+            width="100%"
             placeholder="请选择提交截止时间"
             v-model="addData.cutOffTime"
           ></jat-date-picker>
@@ -61,111 +47,72 @@
 import uploadImage from "@/components/uploadImage.vue";
 import request from "../../../../utils/request";
 import tinymceEdit from "@/components/tinymceEdit.vue";
+import { getDate } from "../../../../utils/tools";
 export default {
+  name: "addCourseWork",
   components: { uploadImage, tinymceEdit },
   data() {
     return {
       addModifyVisible: false,
       dialogTitle: "",
       addData: {
-        categoryId: "",
-        name: "",
-        image: "",
-        href: "",
-        content: "",
-        sort: undefined,
         id: "",
+        cutOffTime: "",
+        workName: "",
+        caseUrl: "",
       },
-      chapterIdOptions: [],
       workRule: {
-        categoryId: [
-          { required: true, message: "请选择广告位置", trigger: "blur" },
+        cutOffTime: [
+          { required: true, message: "请选择提交截止时间", trigger: "blur" },
         ],
-        name: [{ required: true, message: "请输入广告名称", trigger: "blur" }],
-        sort: [
-          { required: true, message: "请输入广告排序", trigger: "blur" },
-          {
-            type: "number",
-            message: "请输入整数",
-          },
+        workName: [
+          { required: true, message: "请输入作者名称", trigger: "blur" },
         ],
       },
     };
   },
 
-  mounted() {
-    // this.getCategoryList();
-  },
+  mounted() {},
 
   methods: {
-    open() {
-      this.dialogTitle = "添加广告";
-      this.addData.name = "";
+    edit(row) {
+      this.dialogTitle = "编辑作业";
+      const { id, workName, caseUrl, cutOffTime } = row;
+      this.addData = {
+        id,
+        workName,
+        caseUrl,
+        cutOffTime: getDate(cutOffTime, "yyyy-MM-dd"),
+      };
+      this.addData.id = row.workId;
       this.addModifyVisible = true;
     },
-    edit({
-      id,
-      name,
-      workiseCategoryId: categoryId,
-      herf: href,
-      image,
-      sort,
-      content,
-    }) {
-      this.dialogTitle = "编辑广告";
-      this.addModifyVisible = true;
-      this.addData = { id, name, categoryId, href, image, sort, content };
-    },
+
     close() {
       this.$refs.workRef && this.$refs.workRef.clearValidate();
       this.addData = {
-        categoryId: "",
-        name: "",
-        image: "",
-        href: "",
-        content: "",
-        sort: "",
         id: "",
+        cutOffTime: "",
+        workName: "",
+        caseUrl: "",
       };
       this.addModifyVisible = false;
-    },
-
-    getCategoryList() {
-      request.post({
-        url: "/system/sysworkise/getAllworkisingSpace",
-        params: {},
-        success: (res) => {
-          this.categoryOptions = res;
-        },
-      });
     },
 
     handleSubmit() {
       this.$refs.workRef.validate((valid) => {
         if (valid) {
-          if (this.addData.id) {
-            request.post({
-              url: "/system/sysworkise/edit",
-              params: {
-                ...this.addData,
-              },
-              success: (res) => {
-                this.$message.success(res);
-                this.close();
-                this.$emit("success");
-              },
-            });
-          } else {
-            request.post({
-              url: "/system/sysworkise/add",
-              params: this.addData,
-              success: (res) => {
-                this.$message.success(res);
-                this.close();
-                this.$emit("success");
-              },
-            });
-          }
+          request.post({
+            url: "/admin/adCourseWork/edit",
+            params: {
+              ...this.addData,
+            },
+            success: (res) => {
+              this.$message.success(res);
+              this.close();
+              this.$emit("success");
+            },
+          });
         }
       });
     },

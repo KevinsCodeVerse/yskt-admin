@@ -1,245 +1,156 @@
-<!-- 广告管理 -->
+<!-- 应收款管理 -->
 <template>
-  <div class="middle-container" v-loading="loading">
-    <jat-fillter
-      :option="filterOptions"
-      v-model="filterData"
-      @searchFilter="searchFilter"
-      @clearFilter="clearFilter"
-    ></jat-fillter>
-    <BasicTable
-      :columns="table.columns"
-      :headerOperates="headerOperates"
-      :operates="operates"
-      :data="table.data"
-      :pageSize="table.pageSize"
-      :currentPage="table.currentPage"
-      :total="table.total"
-      @current-page-change="currentPageChange"
-      @size-page-change="sizePageChange"
-    >
-    </BasicTable>
-    <add-dialog @success="handleSuccess" ref="addDialog"></add-dialog>
+  <div class="middle-container">
+    <div class="header-box">
+      <div class="BasicInfo_title" v-if="headerTab.length > 0">
+        <div
+          v-for="tab in headerTab"
+          :key="tab.id"
+          v-permission="tab.permission"
+          class="item"
+          :class="{ is_active: tab.isChecked }"
+          @click="handleTabSelect(tab)"
+        >
+          <span :class="'tab_' + tab.id">{{ tab.name }}</span>
+        </div>
+      </div>
+    </div>
+    <component :is="currentComponet"></component>
   </div>
 </template>
 
 <script>
-import BasicTable from "@/components/BasicTable/index.vue";
-import request from "../../../../utils/request";
-import addDialog from "./addDialog.vue";
+import courseWorkList from './courseWorkList.vue';
+import submittedWork from './submittedWork.vue';
+
+
 export default {
-  name: "courseWorkPage",
-  components: { BasicTable, addDialog },
+  name: "courseWork",
+  components: { courseWorkList, submittedWork },
   data() {
     return {
-      loading: false,
-      categoryOptions: [],
-      filterOptions: {
-        column: [
-          {
-            type: "input",
-            label: "章节名称",
-            value: "categoryId"
-           
-          },
-          {
-            type: "input",
-            label: "章节名称",
-            value: "name",
-          },
-        ],
-      },
-
-      filterData: {
-        categoryId: "",
-        name: "",
-      },
-      table: {
-        columns: [
-          {
-            id: 1,
-            prop: "workName",
-            label: "作业名称"
-          },
-          {
-            id: 2,
-            prop: "courseName",
-            label: "课程名称",
-          },
-          {
-            id: 3,
-            prop: "chapterName",
-            label: "章节名称",
-          },
-          {
-            id: 5,
-            type: "image",
-            prop: "caseUrl",
-            label: "作业案例展示图",
-          },
-          {
-            id: 6,
-            prop: "count",
-            label: "作业提交人数",
-          },
-          {
-            id: 7,
-            prop: "teacherName",
-            label: "老师名称",
-          },
-          {
-            id: 8,
-            prop: "createTime",
-            label: "创建时间",
-            type: "date",
-          },
-          {
-            id: 8,
-            prop: "cutoffTime",
-            label: "提交截止时间",
-            type: "date",
-          },
-        ],
-        pageSize: 20,
-        currentPage: 1,
-        data: [],
-        total: 0,
-      },
-      operates: [
+      currentComponet: courseWorkList,
+      headerTab: [
         {
-          key: "edit",
-          title: "编辑",
-          permission: "admin/adCourseWork/edit",
-          btnStyle: "yellow",
-          action: (o, row) => {
-            this.$refs.addDialog.edit(row);
-          },
+          id: 1,
+          name: "课程作业",
+          component: courseWorkList,
+          isChecked: true,
+          permission: "admin/adCourseWork/list",
         },
         {
-          key: "delete",
-          title: "删除",
-          permission: "admin/adCourseWork/remove",
-          btnStyle: "red",
-          action: (o, row) => {
-            this.handleDelete(row);
-          },
+          id: 2,
+          name: "作业提交列表",
+          component: submittedWork,
+          isChecked: false,
+          permission: "admin/adCourseWorkSubmit/list",
         },
-      ],
-      headerOperates: [
-        {
-          key: "el-icon-plus",
-          permission: "admin/adCourseWork/add",
-          name: "布置作业",
-          action: () => {
-            this.$refs.addDialog.open();
-          },
-        },
+       
       ],
     };
   },
-  created() {
-    this.getList();
-    this.getCategoryList();
+  mounted() {
+    this.init();
   },
   methods: {
-    searchFilter() {
-      this.table.currentPage = 1;
-      this.getList();
-    },
-    getList() {
-      this.loading = true,
-      request.post({
-        url: "/admin/adCourseWork/list",
-        params: {
-          pageNo: this.table.currentPage,
-          pageSize: this.table.pageSize,
-          ...this.filterData,
-        },
-        success: (res) => {
-          this.table.data = res.list;
-          this.table.total = res.total;
-          this.loading = false
-        },
-        catch: () => {
-          this.loading = false
-        }
+    handleTabSelect(tab, flag) {
+      // if() {}
+      if (tab.id == this.$route.query.type && tab.isChecked) {
+        return;
+      }
+      this.headerTab.forEach((item) => {
+        item.isChecked = item.id == tab.id;
       });
-    },
-    getCategoryList() {
-      request.post({
-        url: "/system/sysAdvertise/getAllAdvertisingSpace",
-        params: {},
-        success: (res) => {
-          this.filterOptions.column[0].options = res;
-        },
-      });
-    },
-    handleSuccess() {
-      this.getList();
-    },
-
-    handleDelete(row) {
-      this.$confirm("此操作将会删除该作业, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          request.post({
-            url: "/admin/adCourseWork/remove",
-            params: {
-              id: row.id,
-            },
-            success: (res) => {
-              this.$message.success(res);
-              this.getList();
-            },
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
+      if (!flag) {
+        this.$router.replace({
+          path: this.$router.path,
+          query: { type: tab.id },
         });
+      }
+      this.currentComponet = tab.component;
     },
-
-    clearFilter() {
-      this.filterData = {
-        name: "",
-      };
-      this.searchFilter();
+    init() {
+      const type = this.$route.query.type;
+      if (type) {
+        const dom = document.querySelector(".tab_" + type);
+        if (!dom) {
+          const currentTab = this.headerTab.find((item) => item.isChecked);
+          this.$router.replace({
+            path: this.$router.path,
+            query: { type: currentTab.id },
+          });
+          return;
+        }
+        const item = this.headerTab.find((item) => item.id == type);
+        if (item) {
+          this.handleTabSelect(item, true);
+        }
+      } else {
+        this.$router.replace({
+          path: this.$router.path,
+          query: { type: 1 },
+        });
+      }
     },
-    currentPageChange(num) {
-      this.table.currentPage = num;
-      this.getList();
+  },
+  watch: {
+    //监听路由
+    //监听路由的orderNum属性的数据变化
+    "$route.query.orderNum": function(val) {
+      if (val) {
+        this.init();
+      }
     },
-
-    sizePageChange(size) {
-      this.table.currentPage = 1;
-      this.table.pageSize = size;
-      this.getList();
+    "$route.query.type": function(val) {
+      if (val) {
+        this.init();
+      }
     },
   },
 };
 </script>
 <style lang="scss" scoped>
-.zt_colunms_box {
-  &.zt1 {
-    color: #0fba80;
+.header-box {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  border: 1px solid #a9adb5;
+  border-bottom: 1px solid #cbced2;
+  box-shadow: 0px 0px 8px 0px rgba(116, 136, 161, 0.5);
+}
+/deep/.FilterContent {
+  border-top: none;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  // box-shadow: none;
+  border-top: 1px;
+  box-shadow: 0px 5px 8px 0px rgba(116, 136, 161, 0.5);
+  padding-top: 15px;
+}
+.BasicInfo_title {
+  // display: inline-block;
+  margin: 10px 13px;
+  // margin-top: 0px;
+  font-family: PingFangSC-Regular;
+  font-size: 14px;
+  color: hwb(0 40% 60%);
+  display: inline-block;
+  background: #eceff3;
+  border-radius: 4px;
+
+  div {
     display: inline-block;
-    padding: 3px;
-    background: rgba(15, 186, 128, 0.1);
-    // border: 1px solid rgba(108, 255, 40, 0.6);
-    border-radius: 2px;
-  }
-  &.zt0 {
-    color: #ff6600;
-    display: inline-block;
-    padding: 3px;
-    background: rgba(255, 102, 0, 0.1);
-    // border: 1px solid rgba(108, 255, 40, 0.6);
-    border-radius: 2px;
+    margin: 3px 3px;
+
+    padding: 6px 12px;
+    cursor: pointer;
+    &.is_active {
+      background: #167cf3;
+      border-radius: 2px;
+      font-size: 14px;
+      color: #fff;
+      border-radius: 2;
+    }
   }
 }
 </style>
