@@ -71,6 +71,7 @@
       </span>
     </el-dialog>
     <chapters ref="chapters"></chapters>
+    <workChapters ref="workChaptersRef"></workChapters>
   </div>
 </template>
 
@@ -82,9 +83,10 @@ import addDialog from "./addDialog.vue";
 import { hasFreeOptions, positionptions, tagOptions } from "./const";
 import uploadVideo from "./uploadVideo.vue";
 import chapters from './chapters.vue';
+import workChapters from './workChapters.vue';
 export default {
   name: "myCoursePage",
-  components: { BasicTable, addDialog, uploadVideo, chapters },
+  components: { BasicTable, addDialog, uploadVideo, chapters, workChapters },
   data() {
     return {
       loading: false,
@@ -159,6 +161,12 @@ export default {
           },
           {
             id: 2,
+            prop: "name",
+            label: "课程名称",
+            width: "160px"
+          },
+          {
+            id: 3,
             prop: "hasLive",
             label: "课程类型",
             render: (row) => {
@@ -169,7 +177,7 @@ export default {
             },
           },
           {
-            id: 3,
+            id: 4,
             prop: "setMealCategoryId",
             label: "课程套餐",
             render: (row) => {
@@ -180,7 +188,7 @@ export default {
             },
           },
           {
-            id: 4,
+            id: 5,
             prop: "categoryId",
             label: "课程类别",
             render: (row) => {
@@ -191,7 +199,7 @@ export default {
             },
           },
           {
-            id: 5,
+            id: 6,
             prop: "tag",
             label: "课程标签",
             render: (row) => {
@@ -200,7 +208,7 @@ export default {
             },
           },
           {
-            id: 6,
+            id: 7,
             prop: "position",
             label: "推荐位",
             render: (row) => {
@@ -211,22 +219,22 @@ export default {
             },
           },
           {
-            id: 7,
+            id: 8,
             prop: "teacherName",
             label: "讲师",
           },
           {
-            id: 8,
+            id: 9,
             prop: "price",
             label: "价格",
           },
           {
-            id: 9,
+            id: 10,
             prop: "createAdName",
             label: "增加人",
           },
           {
-            id: 10,
+            id: 11,
             prop: "createTime",
             label: "增加时间",
             type: "date",
@@ -286,6 +294,15 @@ export default {
           btnStyle: "yellow",
           action: (o, row) => {
             this.$refs.chapters.open(row)
+          }
+        },
+        {
+          key: "courseWork",
+          title: "布置作业",
+          permission: "admin/adCourseWork/add",
+          btnStyle: "blue",
+          action: (o, row) => {
+            this.$refs.workChaptersRef.open(row)
           }
         },
       ],
