@@ -38,21 +38,15 @@
           column: [
             {
               type: "input",
-              label: "章节名称",
-              value: "categoryId"
+              label: "课程名称",
+              value: "courseName"
              
-            },
-            {
-              type: "input",
-              label: "章节名称",
-              value: "name",
-            },
+            }
           ],
         },
   
         filterData: {
-          categoryId: "",
-          name: "",
+          courseName: "",
         },
         table: {
           columns: [
@@ -197,7 +191,7 @@
   
       clearFilter() {
         this.filterData = {
-          name: "",
+            courseName: "",
         };
         this.searchFilter();
       },
