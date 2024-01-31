@@ -32,7 +32,7 @@ import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 import addDialog from "./addDialog.vue";
 export default {
-  name: "adverstPage",
+  name: "channelPage",
   components: { BasicTable, addDialog },
   data() {
     return {
@@ -41,29 +41,23 @@ export default {
       table: {
         columns: [
           {
-            id: 1,
-            prop: "advertiseCategoryId",
-            label: "广告位置"
-          },
-          {
             id: 2,
             prop: "name",
-            label: "广告名称",
+            label: "渠道名称",
           },
           {
             id: 3,
-            prop: "image",
-            label: "广告图片",
-            renderName: "image",
+            prop: "adName",
+            label: "渠道管理员",
           },
           {
             id: 4,
-            prop: "sort",
-            label: "排序",
+            prop: "content",
+            label: "渠道公告",
           },
           {
             id: 5,
-            prop: "adName",
+            prop: "createName",
             label: "创建人",
           },
           {
@@ -71,6 +65,7 @@ export default {
             prop: "createTime",
             label: "创建时间",
             type: "date",
+            width: "200px"
           },
         ],
         pageSize: 20,
@@ -82,7 +77,7 @@ export default {
         {
           key: "edit",
           title: "编辑",
-          permission: "system/sysAdvertise/edit",
+          permission: "admin/adPromotionChannel/edit",
           btnStyle: "yellow",
           action: (o, row) => {
             this.$refs.addDialog.edit(row);
@@ -91,7 +86,7 @@ export default {
         {
           key: "delete",
           title: "删除",
-          permission: "system/sysAdvertise/remove",
+          permission: "admin/adPromotionChannel/remove",
           btnStyle: "red",
           action: (o, row) => {
             this.handleDelete(row);
@@ -101,8 +96,8 @@ export default {
       headerOperates: [
         {
           key: "el-icon-plus",
-          permission: "system/sysAdvertise/add",
-          name: "增加渠道",
+          permission: "admin/adPromotionChannel/add",
+          name: "增加推广渠道",
           action: () => {
             this.$refs.addDialog.open();
           },
@@ -121,7 +116,7 @@ export default {
     getList() {
       this.loading = true,
       request.post({
-        url: "/system/sysAdvertise/list",
+        url: "/admin/adPromotionChannel/list",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,
@@ -142,14 +137,14 @@ export default {
     },
 
     handleDelete(row) {
-      this.$confirm("此操作将会删除该广告, 是否继续?", "提示", {
+      this.$confirm("此操作将会删除该渠道, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
           request.post({
-            url: "/system/sysAdvertise/remove",
+            url: "/admin/adPromotionChannel/remove",
             params: {
               id: row.id,
             },

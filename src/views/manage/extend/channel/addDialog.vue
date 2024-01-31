@@ -10,48 +10,49 @@
     >
       <el-form
         :model="addData"
-        :rules="advertRule"
-        ref="advertRef"
+        :rules="channelRules"
+        ref="channelRef"
         label-position="left"
         label-width="90px"
       >
-        <el-form-item label="广告位置:" prop="categoryId">
-          <jat-select
-            v-model="addData.categoryId"
-            placeholder="请选择广告位置"
-            clearable
-          >
-            <el-option
-              v-for="item in categoryOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            >
-            </el-option>
-          </jat-select>
-        </el-form-item>
-        <el-form-item label="广告名称:" prop="name">
+        <el-form-item label="渠道名称:" prop="name">
           <jat-input
             v-model="addData.name"
             placeholder="请输入名称"
           ></jat-input>
         </el-form-item>
-        <el-form-item label="广告图片:" prop="image">
+
+        <el-form-item label="渠道管理员:" prop="adId">
+          <el-select
+            style="width: 100%;"
+            size="small"
+            clearable
+            v-model="addData.adId"
+            filterable
+            remote
+            placeholder="为空为当前登录账户"
+            :remote-method="(query) => remoteMethod(query, 0)"
+            :loading="remoteLoading"
+          >
+            <el-option
+              v-for="item in userAdminOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="头像:" prop="image">
           <upload-image v-model="addData.image"></upload-image>
         </el-form-item>
-        <el-form-item label="广告链接:" prop="href">
+        <el-form-item label="渠道公告:" prop="content">
           <jat-input
-            v-model="addData.href"
-            placeholder="请输入广告链接"
-          ></jat-input>
-        </el-form-item>
-        <el-form-item label="广告内容:" prop="content">
-          <tinymce-edit v-model="addData.content"></tinymce-edit>
-        </el-form-item>
-        <el-form-item label="广告排序:" prop="sort">
-          <jat-input
-            v-model.number="addData.sort"
-            placeholder="请输入广告排序"
+            type="textarea"
+            :rows="5"
+            v-model="addData.content"
+            placeholder="请输入渠道公告"
           ></jat-input>
         </el-form-item>
       </el-form>
@@ -66,94 +67,98 @@
 <script>
 import uploadImage from "@/components/uploadImage.vue";
 import request from "../../../../utils/request";
-import tinymceEdit from "@/components/tinymceEdit.vue";
 export default {
-  components: { uploadImage, tinymceEdit },
+  components: { uploadImage },
   data() {
     return {
       addModifyVisible: false,
       dialogTitle: "",
+      userAdminOptions: [],
+      remoteLoading: false,
       addData: {
-        categoryId: "",
-        name: "",
-        image: "",
-        href: "",
-        content: "",
-        sort: undefined,
         id: "",
+        name: "",
+        adId: "",
+        content: "",
+        image: "",
       },
       categoryOptions: [],
-      advertRule: {
-        categoryId: [
-          { required: true, message: "请选择广告位置", trigger: "blur" },
-        ],
-        name: [{ required: true, message: "请输入广告名称", trigger: "blur" }],
-        sort: [
-          { required: true, message: "请输入广告排序", trigger: "blur" },
-          {
-            type: "number",
-            message: "请输入整数"
-          },
-        ],
+      channelRules: {
+        name: [{ required: true, message: "请输入渠道名称", trigger: "blur" }],
       },
     };
   },
 
-  mounted() {
-    this.getCategoryList();
-  },
+  mounted() {},
 
   methods: {
     open() {
-      this.dialogTitle = "添加广告";
-      this.addData.name = "";
+      this.dialogTitle = "增加推广渠道";
       this.addModifyVisible = true;
     },
-    edit({
-      id,
-      name,
-      advertiseCategoryId: categoryId,
-      herf: href,
-      image,
-      sort,
-      content,
-    }) {
-      this.dialogTitle = "编辑广告";
+    edit({ id,name, adId,adName, image, content }) {
+      this.dialogTitle = "编辑推广渠道";
       this.addModifyVisible = true;
-      this.addData = { id, name, categoryId, href, image, sort, content };
+      this.addData = {
+        id,
+        adId,
+        name,
+        adName,
+        image,
+        content,
+      };
+      this.userAdminOptions = [{
+        id: adId,
+        name: adName
+      }]
     },
     close() {
-      this.$refs.advertRef && this.$refs.advertRef.clearValidate();
+      this.$refs.channelRef && this.$refs.channelRef.clearValidate();
       this.addData = {
-        categoryId: "",
-        name: "",
-        image: "",
-        href: "",
-        content: "",
-        sort: "",
         id: "",
+        name: "",
+        adId: "",
+        content: "",
+        image: "",
       };
       this.addModifyVisible = false;
     },
 
-    getCategoryList() {
+    remoteMethod(search, type) {
+      if (!search) {
+        return;
+      }
+      this.remoteLoading = true;
       request.post({
-        url: "/system/sysAdvertise/getAllAdvertisingSpace",
-        params: {},
+        url: "/admin/adInfo/queryAdminByNameOrPhone",
+        params: {
+          search,
+          type: type,
+        },
         success: (res) => {
-          this.categoryOptions = res;
+          this.remoteLoading = false;
+          if (type === 0) {
+            this.userAdminOptions = res;
+          } else {
+            this.userAllOptions = res;
+          }
+        },
+        catch: () => {
+          this.remoteLoading = false;
         },
       });
     },
 
     handleSubmit() {
-      this.$refs.advertRef.validate((valid) => {
+      this.$refs.channelRef.validate((valid) => {
         if (valid) {
-          if (this.addData.id) {
+          const { id, ...rest } = this.addData;
+          if (id) {
             request.post({
-              url: "/system/sysAdvertise/edit",
+              url: "/admin/adPromotionChannel/edit",
               params: {
-                ...this.addData,
+                id,
+                ...rest,
               },
               success: (res) => {
                 this.$message.success(res);
@@ -163,8 +168,10 @@ export default {
             });
           } else {
             request.post({
-              url: "/system/sysAdvertise/add",
-              params: this.addData,
+              url: "/admin/adPromotionChannel/add",
+              params: {
+                ...rest
+              },
               success: (res) => {
                 this.$message.success(res);
                 this.close();

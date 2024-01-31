@@ -46,7 +46,7 @@
 <script>
 import request from "../../../../utils/request";
 export default {
-  name: "addCourseWork",
+  name: "auditWork",
   components: { },
   data() {
     return {
