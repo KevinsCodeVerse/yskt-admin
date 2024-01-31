@@ -81,17 +81,17 @@ export default {
           },
           {
             id: 2,
-            prop: "number",
+            prop: "courseNum",
             label: "课程编号",
           },
           {
             id: 4,
-            prop: "count",
+            prop: "totalCount",
             label: "总数量",
           },
           {
             id: 5,
-            prop: "totalPrice",
+            prop: "totalProfit",
             label: "总收入",
           }
         ],
@@ -126,8 +126,8 @@ export default {
           ...rest,
         },
         success: (res) => {
-          this.table.data = res.list;
-          this.table.total = res.total;
+          this.table.data = res;
+          this.table.total = res.length;
           this.loading = false;
         },
         catch: () => {

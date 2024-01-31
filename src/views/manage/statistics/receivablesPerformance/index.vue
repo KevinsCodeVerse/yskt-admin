@@ -117,25 +117,28 @@ export default {
       },
       operates: [],
       headerOperates: [],
-      currentTab: 2,
+      currentTab: 1,
       headerTab: [
         {
           id: 1,
           name: "下单客户统计",
-          isChecked: false,
-          permission: "system/sysCourseOrderBills/pressSinglePersonStatistics",
+          isChecked: true,
+          permission: "",
+          api: "system/sysCourseOrderBills/pressSinglePersonStatistics",
         },
         {
           id: 2,
           name: "销售员统计",
-          isChecked: true,
-          permission: "/system/sysCourseOrderBills/statisticsCourse",
+          isChecked: false,
+          api: "/system/sysCourseOrderBills/statisticsCourse",
+          permission: "",
         },
         {
           id: 3,
           name: "按课程统计",
           isChecked: false,
-          permission: "system/sysCourseOrderBills/statisticsCourse",
+          api: "system/sysCourseOrderBills/statisticsCourse",
+          permission: "",
         },
       ],
     };
@@ -156,7 +159,7 @@ export default {
       this.loading = true;
       const { time, ...rest } = this.filterData;
       request.post({
-        url: this.headerTab.find(item => item.isChecked).permission,
+        url: this.headerTab.find(item => item.isChecked).api,
         params: {
           startTime: time && time.length > 1 ? time[0] : "",
           endTime: time && time.length > 1 ? time[1] : "",
