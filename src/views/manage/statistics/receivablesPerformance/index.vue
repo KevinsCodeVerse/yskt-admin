@@ -166,8 +166,8 @@ export default {
           ...rest
         },
         success: (res) => {
-          this.table.data = res.list;
-          this.table.total = res.total;
+          this.table.data = res;
+          this.table.total = res.length;
           this.loading = false;
         },
         catch: () => {
