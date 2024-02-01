@@ -111,7 +111,7 @@ export default {
           key: "reserve",
           title: "立即预订",
           btnStyle: "yellow",
-          permission: "system/sysNews/edit",
+          permission: "admin/adCourse/bookingAdd",
           action: (o, row) => {
             this.$refs.bookNow.edit(row);
           },
