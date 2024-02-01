@@ -94,7 +94,7 @@
             <el-option
               v-for="item in userAllOptions"
               :key="item.id"
-              :label="item.name"
+              :label="item.name ? item.name : item.account + '(学籍未注册)'"
               :value="item.id"
             >
             </el-option>

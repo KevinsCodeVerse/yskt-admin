@@ -138,7 +138,7 @@ export default {
         {
           key: "audit",
           title: "审核",
-          permission: "admin/adCourseWork/edit",
+          permission: "admin/adCourseWorkSubmit/auditWorkEdit",
           btnStyle: "yellow",
           action: (o, row) => {
             this.$refs.audit.open(row);
