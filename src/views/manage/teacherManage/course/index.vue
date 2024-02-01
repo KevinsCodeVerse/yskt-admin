@@ -260,7 +260,19 @@ export default {
             this.handleOpenLive(row);
           },
           show: (row) => {
-            return row.hasLive === 0;
+            return row.hasLive === 0  && row.liveStatus === 0;
+          },
+        },
+        {
+          key: "closeLive",
+          title: "一键关播",
+          btnStyle: "red",
+          permission: "",
+          action: (o, row) => {
+            this.handleCloseLive(row);
+          },
+          show: (row) => {
+            return row.hasLive === 0 && row.liveStatus === 1;
           },
         },
         {
@@ -412,6 +424,30 @@ export default {
           this.$message({
             type: "info",
             message: "已取消开播",
+          });
+        });
+    },
+    handleCloseLive(){
+      this.$confirm("确定要关闭该场直播, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          request.post({
+            url: "/admin/adCourse/closeLiveEdit",
+            params: {
+              courseId: row.id,
+            },
+            success: () => {
+              this.getList();
+            },
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消关播",
           });
         });
     },

@@ -130,7 +130,7 @@ export default {
           id: 2,
           name: "销售员统计",
           isChecked: false,
-          api: "/system/sysCourseOrderBills/statisticsCourse",
+          api: "/system/sysCourseOrderBills/statisticsSalesperson",
           permission: "",
         },
         {
@@ -173,6 +173,9 @@ export default {
         catch: () => {
           this.loading = false;
         },
+        finally: () => {
+          this.loading = false;
+        }
       });
     },
 
@@ -207,7 +210,7 @@ export default {
         url: "/admin/adDepartment/listNoPage",
         params: {},
         success: (res) => {
-          this.filterOptions.column[2].options = listToTree(res);
+          this.filterOptions.column[1].options = listToTree(res);
         },
       });
     },
@@ -247,6 +250,8 @@ export default {
         });
       }
       this.currentTab = tab.id;
+      this.table.data = []
+      this.table.total = 0
       this.clearFilter()
     },
     init() {
