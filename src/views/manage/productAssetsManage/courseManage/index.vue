@@ -131,6 +131,12 @@ export default {
           },
           {
             id: 2,
+            prop: "name",
+            label: "课程名称",
+            width: "160px"
+          },
+          {
+            id: 3,
             prop: "hasLive",
             label: "课程类型",
             render: (row) => {
@@ -141,18 +147,29 @@ export default {
             },
           },
           {
-            id: 3,
+            id: 4,
+            prop: "tag",
+            label: "课程标签",
+            render: (row) => {
+              const item = tagOptions.find(
+                (item) => item.value == row.hasLive
+              );
+              return item ? item.label : "";
+            },
+          },
+          {
+            id: 5,
             prop: "setMealCategoryId",
             label: "课程套餐",
             render: (row) => {
               const item = this.$refs.addDialog.MealCategoryOptions.find(
                 (item) => item.id == row.setMealCategoryId
               );
-              return item ? item.name : "";
+              return item ? item.name : "无";
             },
           },
           {
-            id: 4,
+            id: 6,
             prop: "categoryId",
             label: "课程类别",
             render: (row) => {
@@ -163,7 +180,7 @@ export default {
             },
           },
           {
-            id: 5,
+            id: 7,
             prop: "tag",
             label: "课程标签",
             render: (row) => {
@@ -172,7 +189,7 @@ export default {
             },
           },
           {
-            id: 6,
+            id: 8,
             prop: "position",
             label: "推荐位",
             render: (row) => {
@@ -183,28 +200,28 @@ export default {
             },
           },
           {
-            id: 7,
+            id: 9,
             prop: "teacherName",
             label: "讲师",
           },
           {
-            id: 8,
+            id: 10,
             prop: "price",
             label: "价格",
           },
           {
-            id: 9,
+            id: 11,
             prop: "createAdName",
             label: "增加人",
           },
           {
-            id: 10,
+            id: 12,
             prop: "createTime",
             label: "增加时间",
             type: "date",
           },
           {
-            id: 12,
+            id: 13,
             prop: "sort",
             label: "排序",
           },

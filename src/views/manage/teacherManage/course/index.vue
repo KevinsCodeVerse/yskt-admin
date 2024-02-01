@@ -178,17 +178,28 @@ export default {
           },
           {
             id: 4,
+            prop: "tag",
+            label: "课程标签",
+            render: (row) => {
+              const item = tagOptions.find(
+                (item) => item.value == row.hasLive
+              );
+              return item ? item.label : "";
+            },
+          },
+          {
+            id: 5,
             prop: "setMealCategoryId",
             label: "课程套餐",
             render: (row) => {
               const item = this.$refs.addDialog.MealCategoryOptions.find(
                 (item) => item.id == row.setMealCategoryId
               );
-              return item ? item.name : "";
+              return item ? item.name : "无";
             },
           },
           {
-            id: 5,
+            id: 6,
             prop: "categoryId",
             label: "课程类别",
             render: (row) => {
@@ -199,7 +210,7 @@ export default {
             },
           },
           {
-            id: 6,
+            id: 7,
             prop: "tag",
             label: "课程标签",
             render: (row) => {
@@ -208,7 +219,7 @@ export default {
             },
           },
           {
-            id: 7,
+            id: 8,
             prop: "position",
             label: "推荐位",
             render: (row) => {
@@ -219,28 +230,28 @@ export default {
             },
           },
           {
-            id: 8,
+            id: 9,
             prop: "teacherName",
             label: "讲师",
           },
           {
-            id: 9,
+            id: 10,
             prop: "price",
             label: "价格",
           },
           {
-            id: 10,
+            id: 11,
             prop: "createAdName",
             label: "增加人",
           },
           {
-            id: 11,
+            id: 12,
             prop: "createTime",
             label: "增加时间",
             type: "date",
           },
           {
-            id: 12,
+            id: 13,
             prop: "sort",
             label: "排序",
           },
@@ -427,7 +438,7 @@ export default {
           });
         });
     },
-    handleCloseLive(){
+    handleCloseLive(row){
       this.$confirm("确定要关闭该场直播, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -445,6 +456,7 @@ export default {
           });
         })
         .catch(() => {
+          // this.$message
           this.$message({
             type: "info",
             message: "已取消关播",

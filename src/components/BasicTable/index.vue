@@ -91,8 +91,7 @@
           :key="c.id"
           :prop="c.prop"
           :label="c.label"
-          :width="c.width"
-          :min-width="c.minWidth || ''"
+          :min-width="c.width || '150px'"
           :align="c.align || 'left'"
           :show-overflow-tooltip="
             c.showOverflowTooltip === false ? false : true

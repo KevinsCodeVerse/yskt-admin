@@ -14,14 +14,15 @@ import './assets/fonts/icon.css' // 自定义 svg转font字体样式
 import "@/utils/directive"
 // element-ui
 import '@/plugins/element/element.js'
-// import ElementUI from 'element-ui' // element-ui 组件库
+import ElementUI from 'element-ui' // element-ui 组件库
 // import '@/assets/scss/element-variables.scss' // 自定义 element-ui 主题
 // import { initThemeColor } from '@/utils/themeColorClient' // 动态切换主题色
 import routerUtil from '@/router/routerUtil' // 动态路由
-import message from './utils/message'
+// import message from './utils/message'
 import MainHead from "./components/models/MainHead";
 import MainContent from "./components/models/MainContent";
 import JATUI from "./jat-component/index"
+// import ElementUI from 'element-ui';
 import VueClipboards from 'vue-clipboard2'
 Vue.use(VueClipboards);
 import * as echarts from "echarts"
@@ -29,6 +30,7 @@ import "./icons"
 Vue.prototype.$echarts = echarts
 
 import qs from 'qs'
+import { Message } from 'element-ui';
 Vue.prototype.$qs = qs
 
 Object.keys(filters).forEach(key => {
@@ -42,14 +44,14 @@ Vue.use(JATUI)
 
 Vue.component('main-head', MainHead)
 Vue.component('main-content', MainContent)
-// Vue.use(ElementUI)
+Vue.use(ElementUI)
 Vue.prototype.$envConfig = envConfig
 Vue.prototype.$axios = axios
 Vue.prototype.$moment = moment
 Vue.prototype.$request = request
 Vue.prototype.$common = common
 Vue.prototype.$pubsub = pubsub
-Vue.prototype.$message = message
+// Vue.prototype.$message = Message
 Vue.config.productionTip = false
 
 // 按扭权限指令
