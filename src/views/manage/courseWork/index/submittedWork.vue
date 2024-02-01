@@ -21,7 +21,7 @@
     </BasicTable>
     <add-dialog @success="handleSuccess" ref="addDialog"></add-dialog>
     <auditWork ref="audit"></auditWork>
-    <submittedWorkDetail ref="submittedDetail"></submittedWorkDetail>
+    <submittedWorkDetail @success="handleSuccess"  ref="submittedDetail"></submittedWorkDetail>
   </div>
 </template>
 

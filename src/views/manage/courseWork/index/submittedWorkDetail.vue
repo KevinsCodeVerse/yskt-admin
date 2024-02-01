@@ -2,7 +2,7 @@
 <template>
   <div>
     <el-drawer :visible.sync="drawer" title="详情">
-      <el-descriptions class="margin-top" :column="1">
+      <el-descriptions class="margin-top" :column="1" border>
         <el-descriptions-item>
           <template slot="label">
             课程名称
@@ -58,6 +58,13 @@
             :preview-src-list="[info.workUrl]"
             :lazy="true"
           ></el-image>
+        </el-descriptions-item>
+
+        <el-descriptions-item v-if="info.comment">
+          <template slot="label">
+            点评
+          </template>
+          {{ info.comment }}
         </el-descriptions-item>
      
      
