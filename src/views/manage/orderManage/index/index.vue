@@ -39,7 +39,7 @@
       ref="collectionDialog"
     ></create-collection-dialog>
     <order-detail ref="detailRef"></order-detail>
-    <openCourse ref="openCourse"></openCourse>
+    <openCourse @success="handleSuccess"  ref="openCourse"></openCourse>
   </div>
 </template>
 

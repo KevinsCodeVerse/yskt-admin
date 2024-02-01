@@ -21,6 +21,7 @@
     </BasicTable>
     <add-dialog @success="handleSuccess" ref="addDialog"></add-dialog>
     <auditWork ref="audit"></auditWork>
+    <submittedWorkDetail ref="submittedDetail"></submittedWorkDetail>
   </div>
 </template>
 
@@ -29,10 +30,10 @@ import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 import addDialog from "./addDialog.vue";
 import auditWork from './auditWork.vue';
-
+import submittedWorkDetail from './submittedWorkDetail.vue';
 export default {
   name: "courseWorkPage",
-  components: { BasicTable, addDialog, auditWork},
+  components: { BasicTable, addDialog, auditWork, submittedWorkDetail},
   data() {
     return {
       loading: false,
@@ -142,7 +143,16 @@ export default {
           btnStyle: "yellow",
           action: (o, row) => {
             this.$refs.audit.open(row);
-          },
+          }
+        },
+        {
+          key: "detail",
+          title: "详情",
+          permission: "",
+          btnStyle: "green",
+          action: (o, row) => {
+            this.$refs.submittedDetail.open(row);
+          }
         },
       ],
       headerOperates: [],
