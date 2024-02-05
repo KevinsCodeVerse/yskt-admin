@@ -18,7 +18,7 @@
         <el-form-item style="width: 100%;" label="产品名称" prop="courseName">
           {{ addData.courseName }}
         </el-form-item>
-        <el-form-item style="width: 100%" label="课程套餐:" prop="ids">
+        <el-form-item style="width: 100%; height: 330px; overflow: hidden;" label="课程套餐:" prop="ids">
           <BasicTable
             v-model="addData.ids"
             height="300px"
@@ -281,5 +281,11 @@ export default {
   .el-form-item {
     width: 48%;
   }
+}
+@media only screen and (max-width: 479px) {
+    .el-form-item {
+      width: 100% !important;
+    }
+  
 }
 </style>
