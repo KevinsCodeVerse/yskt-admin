@@ -13,6 +13,7 @@
         :rules="clientRule"
         ref="clientRef"
         label-position="right"
+        class="course-form-box"
         label-width="150px"
       >
         <el-form-item style="width: 100%;" label="套餐分类" prop="course">
@@ -394,6 +395,14 @@ export default {
   justify-content: space-between;
   .el-form-item {
     width: 48%;
+  }
+}
+
+@media only screen and (max-width: 479px) {
+  .course-form-box {
+    .el-form-item {
+      width: 100% !important;
+    }
   }
 }
 </style>

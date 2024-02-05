@@ -9,9 +9,9 @@
         >{{ tab.name }}</span
       >
     </div>
-    <div v-if="!FilterCollapse">
+    <div v-if="!FilterCollapse" class="filter-content">
       <div
-        class="display-inline-block text-align-center margin-bottom-20"
+        class="display-inline-block text-align-center margin-bottom-20 filter_content_item"
         :style="{ width: 100 / 5 + '%' }"
         v-for="opt in option.column"
         :class="{
@@ -130,7 +130,7 @@
         class="Width-Twenty-Percent display-inline-block text-align-center margin-bottom-20"
       ></div> -->
       <div
-        class="display-inline-block text-align-right borderbox serachBtn"
+        class="display-inline-block text-align-right borderbox serachBtn filter-btn"
         :style="{ width: (5 - (option.column.length % 5)) * 20 + '%' }"
       >
         <span class="searchBtn" @click="searchFilter">查询</span>
@@ -454,6 +454,23 @@ export default {
 
   100% {
     top: 3px;
+  }
+}
+@media only screen and (max-width: 479px) {
+  .FilterContent {
+    max-height: 100px;
+    overflow: auto;
+  }
+  .filter-content {
+    display: flex;
+    flex-direction: column;
+
+    .filter_content_item {
+      width: 100% !important;
+    }
+  }
+  .filter-btn{
+    width: 100% !important;
   }
 }
 </style>

@@ -32,7 +32,7 @@
           v-if="selectType === 'single'"
           width="60px"
           label="选择"
-          fixed="left"
+          :fixed="getWidth > 479 ? 'left' : false"
           :key="new Date().getTime()"
         >
           <template slot-scope="scope">
@@ -51,14 +51,14 @@
           :selectable="selectable"
           :reserve-selection="reserveSelection"
           width="60px"
-          fixed="left"
+          :fixed="getWidth > 479 ? 'left' : false"
         />
         <template v-if="hasPage">
           <el-table-column
             v-if="hasSort"
             type="index"
             label="序号"
-            fixed="left"
+            :fixed="getWidth > 479 ? 'left' : false"
             align="center"
           >
             <template slot-scope="scope">
@@ -73,19 +73,10 @@
             v-if="hasSort"
             type="index"
             label="序号"
-            fixed="left"
+            :fixed="getWidth > 479 ? 'left' : false"
           />
         </template>
-        <el-table-column
-          v-if="operates"
-          label="操作"
-          :min-width="operateWidth"
-          fixed="right"
-        >
-          <template slot-scope="scope">
-            <ListOperate :operates="showOperates(scope)" :curRow="scope.row" />
-          </template>
-        </el-table-column>
+       
         <el-table-column
           v-for="c in columns"
           :key="c.id"
@@ -144,6 +135,16 @@
                 }}
               </span>
             </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          v-if="operates"
+          label="操作"
+          :min-width="operateWidth"
+          :fixed="getWidth > 479 ? 'right' : false"
+        >
+          <template slot-scope="scope">
+            <ListOperate :operates="showOperates(scope)" :curRow="scope.row" />
           </template>
         </el-table-column>
       </jat-table>
@@ -245,6 +246,11 @@ export default {
     return {
       curRow: "",
     };
+  },
+  computed: {
+    getWidth() {
+      return window.innerWidth
+    }
   },
   methods: {
     formdatetime(data, formate) {
