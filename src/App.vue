@@ -63,7 +63,7 @@ body {
   }
 
   .el-dialog {
-    width: 80% !important;
+    width: 90% !important;
   }
 
   .el-dialog .el-form-item__label {

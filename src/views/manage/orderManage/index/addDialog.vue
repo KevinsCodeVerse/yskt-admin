@@ -12,7 +12,7 @@
         :model="addData"
         :rules="clientRule"
         ref="clientRef"
-        label-position="right"
+        label-position="top"
         class="course-form-box"
         label-width="150px"
       >
@@ -33,7 +33,7 @@
             </el-option>
           </jat-select>
         </el-form-item>
-        <el-form-item style="width: 100%" label="课程套餐:" prop="ids">
+        <el-form-item style="width: 100%; height: 330px" label="课程套餐:" prop="ids">
           <BasicTable
             v-model="addData.ids"
             height="300px"
