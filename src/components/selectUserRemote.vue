@@ -3,6 +3,7 @@
   <div class="user-search" style="width: 100%;">
     <el-select
       style="width: 85%;"
+      ref="selectFilter"
       size="small"
       clearable
       v-model="userId"
@@ -11,6 +12,8 @@
       remote
       :remote-method="remoteMethod"
       :loading="remoteLoading"
+      @hook:mounted="cancalReadOnly"
+      @visible-change="cancalReadOnly"
       v-bind="$attrs"
       v-on="$listeners"
     >
@@ -52,6 +55,10 @@ export default {
     this.getCurrentUser;
   },
 
+  mounted() {
+    this.cancalReadOnly()
+  },
+
   methods: {
     remoteMethod(search) {
       if (!search) {
@@ -75,6 +82,15 @@ export default {
     },
     handleChange(val) {
       this.$emit("update:id", val);
+    },
+    cancalReadOnly(onOff) {
+      this.$nextTick(() => {
+        if (!onOff) {
+          const { selectFilter } = this.$refs;
+          const input = selectFilter.$el.querySelector(".el-input__inner");
+          input.removeAttribute("readonly");
+        }
+      });
     },
   },
   watch: {

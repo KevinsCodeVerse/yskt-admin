@@ -85,6 +85,9 @@
             style="width: 100%;"
             size="small"
             clearable
+            ref="select1"
+            @hook:mounted="cancalReadOnly"
+            @visible-change="cancalReadOnly"
             v-model="addData.adId"
             filterable
             remote
@@ -106,6 +109,9 @@
             style="width: 100%;"
             size="small"
             clearable
+            ref="select2"
+            @hook:mounted="cancalReadOnly"
+            @visible-change="cancalReadOnly"
             v-model="addData.profitAdId"
             filterable
             remote
@@ -214,12 +220,14 @@ export default {
   mounted() {
     this.getCurrentUser();
     this.getCategoryList();
+   
   },
 
   methods: {
     open() {
       this.dialogTitle = "增加订单";
       this.addModifyVisible = true;
+      this.cancalReadOnly()
     },
     edit({
       id,
@@ -248,6 +256,7 @@ export default {
         remark,
         time: startTime && endTime ? [startTime, endTime] : [],
       };
+      this.cancalReadOnly()
     },
     close() {
       this.$refs.clientRef && this.$refs.clientRef.clearValidate();
@@ -264,6 +273,18 @@ export default {
         time: [],
       };
       this.addModifyVisible = false;
+    },
+    cancalReadOnly(onOff) {
+      this.$nextTick(() => {
+        if (!onOff) {
+          const { select1, select2 } = this.$refs;
+          
+          const input1 = select1.$el.querySelector(".el-input__inner");
+          const input2 = select2.$el.querySelector(".el-input__inner");
+          input1.removeAttribute("readonly");
+          input2.removeAttribute("readonly");
+        }
+      });
     },
     getCurrentUser() {
       const id = sessionStorage.getItem("id")

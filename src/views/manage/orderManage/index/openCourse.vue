@@ -56,6 +56,9 @@
           <el-select
             style="width: 100%;"
             size="small"
+            ref="selectOpenCourse"
+            @hook:mounted="cancalReadOnly"
+            @visible-change="cancalReadOnly"
             clearable
             v-model="addData.vipAdId"
             filterable
@@ -137,6 +140,7 @@ export default {
   mounted() {
     // this.getCurrentUser();
     this.getCategoryList();
+    
   },
 
   methods: {
@@ -160,6 +164,7 @@ export default {
       };
 
       this.getCourseList(courseIds);
+      this.cancalReadOnly()
     },
     close() {
       this.$refs.clientRef && this.$refs.clientRef.clearValidate();
@@ -213,6 +218,17 @@ export default {
         success: (res) => {
           this.categoryOptions = res;
         },
+      });
+    },
+
+    cancalReadOnly(onOff) {
+      this.$nextTick(() => {
+        if (!onOff) {
+          const { selectOpenCourse } = this.$refs;
+          console.log(selectOpenCourse, "selectOpenCourse///");
+          const input = selectOpenCourse.$el.querySelector(".el-input__inner");
+          input.removeAttribute("readonly");
+        }
       });
     },
 
