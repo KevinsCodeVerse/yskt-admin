@@ -2,7 +2,7 @@
 <template>
   <div class="user-search" style="width: 100%;">
     <el-select
-      style="width: 85%;"
+      :style="'width:' + width "
       ref="selectFilter"
       size="small"
       clearable
@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { stringify } from "qs";
 import request from "../utils/request";
 
 export default {
@@ -41,6 +42,10 @@ export default {
       type: [Number, String],
     },
     type: [Number, String],
+    width: {
+      type: String,
+      default: "85%"
+    },
   },
   data() {
     return {
