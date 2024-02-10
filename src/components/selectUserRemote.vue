@@ -29,7 +29,6 @@
 </template>
 
 <script>
-import { stringify } from "qs";
 import request from "../utils/request";
 
 export default {

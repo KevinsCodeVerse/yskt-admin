@@ -18,29 +18,17 @@
       @current-page-change="currentPageChange"
       @size-page-change="sizePageChange"
     >
-      <div slot="image" slot-scope="scope">
-        <el-image
-          v-if="scope.row.image"
-          style="width: 50px"
-          :src="scope.row.image"
-          :preview-src-list="[scope.row.image]"
-        >
-        </el-image>
-        <span v-else></span>
-      </div>
     </BasicTable>
-    <add-dialog @success="handleSuccess" ref="addDialog"></add-dialog>
   </div>
 </template>
 
 <script>
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
-import addDialog from "./addDialog.vue";
-import { degreeOptions, genderOptions, getPromotionChannel } from "./const";
+import { degreeOptions, genderOptions, getPromotionChannel } from "../data/const";
 export default {
   name: "adverstPage",
-  components: { BasicTable, addDialog },
+  components: { BasicTable },
   data() {
     return {
       loading: false,
@@ -208,7 +196,7 @@ export default {
       this.loading = true;
       const { time, ...rest } =  this.filterData
       request.post({
-        url: "/admin/adPromotionData/list",
+        url: "/admin/adPromotionData/promoterStatisticsList",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,

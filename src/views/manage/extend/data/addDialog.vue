@@ -35,6 +35,7 @@
             width="100%"
             v-model="addData.promoterId"
             :type="0"
+            ref="selectUser"
             placeholder="销售员"
           ></select-user-remote>
         </el-form-item>
@@ -195,7 +196,8 @@ export default {
       });
     },
     edit({
-      id,
+      id: dataId,
+      age,
       avatar,
       degree,
       gender,
@@ -205,9 +207,13 @@ export default {
       wechat,
       channelId,
       promoterId,
+      promoterName,
     }) {
       this.dialogTitle = "编辑推广数据";
       this.addModifyVisible = true;
+      getPromotionChannel((res) => {
+        this.channelIdOptions = res;
+      });
       this.addData = {
         dataId,
         avatar,
@@ -215,12 +221,17 @@ export default {
         gender,
         name,
         phone,
+        age,
         qq,
         wechat,
         channelId,
         promoterId,
       };
-      getPromotionChannel(this.promotionChannelOptions);
+      this.$nextTick(() => {
+        this.$refs.selectUser.userOptions = [
+          { name: promoterName, id: promoterId },
+        ];
+      });
     },
     close() {
       this.$refs.promotionRef && this.$refs.promotionRef.clearValidate();

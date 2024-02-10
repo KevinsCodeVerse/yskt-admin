@@ -3,41 +3,41 @@ import request from "../../../../utils/request";
 export const degreeOptions = [
     {
         label: "小学",
-        vaue: 0
+        value: 0
     },
     {
         label: "初中",
-        vaue: 1
+        value: 1
     },
     {
 
         label: "高中",
-        vaue: 2
+        value: 2
     },
     {
 
         label: "中专",
-        vaue: 3
+        value: 3
     },
     {
 
         label: "专科",
-        vaue: 4
+        value: 4
     },
     {
 
         label: "本科",
-        vaue: 5
+        value: 5
     },
     {
 
         label: "硕士",
-        vaue: 6
+        value: 6
     },
     {
 
         label: "博士",
-        vaue: 7
+        value: 7
     }
 ]
 
@@ -45,12 +45,12 @@ export const genderOptions = [
     {
 
         label: "男",
-        vaue: 1
+        value: 1
     },
     {
 
         label: "女",
-        vaue: 2
+        value: 2
     }
 ]
 
