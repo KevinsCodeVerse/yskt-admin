@@ -73,12 +73,7 @@ export default {
             label: "产品名称",
             value: "courseName",
           },
-          {
-            type: "user",
-            userType: 0,
-            label: "收款人",
-            value: "createAdId",
-          },
+
           {
             type: "user",
             userType: 0,
@@ -156,6 +151,12 @@ export default {
             label: "应收金额",
             minWidth: "100px",
           },
+		  {
+		    id: 13,
+		    prop: "pendingTrialPrice",
+		    label: "待审金额",
+		    minWidth: "100px",
+		  },
           {
             id: 8,
             prop: "receivedPrice",
@@ -186,17 +187,12 @@ export default {
             label: "下单人",
             minWidth: "120px",
           },
-          {
-            id: 13,
-            prop: "collectionName",
-            label: "收款人",
-            minWidth: "100px",
-          },
+
           {
             id: 14,
             prop: "profitAdName",
             label: "销售人",
-            minWidth: "100px",
+            minWidth: "180px",
           },
         ],
         pageSize: 20,

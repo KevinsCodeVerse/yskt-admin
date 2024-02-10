@@ -55,7 +55,7 @@ export default {
         },
         {
           id: 4,
-          name: "已取消",
+          name: "已取消订单",
           component: Canceled,
           permission: "system/sysCourseOrderBills/cancelBillsList",
           isChecked: false,

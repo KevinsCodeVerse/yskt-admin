@@ -91,7 +91,7 @@ export default {
           },
           {
             id: 6,
-            prop: "count",
+            prop: "orderCount",
             label: "订单数",
           },
           {

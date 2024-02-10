@@ -87,7 +87,7 @@ export default {
 
   methods: {
     open() {
-      this.dialogTitle = "添加分了";
+      this.dialogTitle = "添加分类";
       this.addData.name = "";
       this.addModifyVisible = true;
     },

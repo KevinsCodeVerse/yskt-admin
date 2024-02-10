@@ -141,8 +141,9 @@ import rsa from '@/utils/rsa'
 				})
 			},
 			exit(){
+			    sessionStorage.removeItem('adminToken');
 				this.$confirm('确认退出登录?', '提示').then(()=>{
-					location.href = '/'
+					location.href = '/admin'
 				})
 			}
 		}

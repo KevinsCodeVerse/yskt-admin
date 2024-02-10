@@ -129,6 +129,11 @@ export default {
             prop: "number",
             label: "课程编号",
           },
+		  {
+		    id: 13,
+		    prop: "name",
+		    label: "课程名称",
+		  },
           {
             id: 2,
             prop: "name",
@@ -219,11 +224,13 @@ export default {
             prop: "createTime",
             label: "增加时间",
             type: "date",
+			width: 180
           },
           {
             id: 13,
             prop: "sort",
             label: "排序",
+
           },
         ],
         pageSize: 20,
@@ -386,10 +393,11 @@ export default {
       this.getList();
     },
     remoteMethod(search) {
+		
       if (!search) {
         return;
       }
-      this.remoteLoading = true;
+      this.remoteLoading = true;    
       request.post({
         url: "/admin/adInfo/queryAdminByNameOrPhone",
         params: {

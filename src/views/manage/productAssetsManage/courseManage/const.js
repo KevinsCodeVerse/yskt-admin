@@ -23,7 +23,7 @@ export const tagOptions = [
     },
     {
         value: 2,
-        label: "单品课程",
+        label: "vip课程",
     },
 ]
 export const hasLiveOptions = [

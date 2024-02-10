@@ -143,7 +143,7 @@
           ></jat-date-picker>
           <div class="wram-box">
             <i class="el-icon-info"></i
-            >如果有直播频道号和直播回放链接，直播时间必填，正在直播会进行直播，没有直播会播放录播链接
+            >该开播时间为会员可看到的课程开播时间，实际时间以讲师开播为准
           </div>
         </el-form-item>
 
@@ -184,7 +184,7 @@
           ></uploadFile>
           <div class="wram-box">
             <i class="el-icon-info"></i
-            >未设置课程套餐时直播频道号和录播链接必须选择一个，设置课程套餐时直播频道号和录播链接不需要填写
+            >课程类型为录播时需上传该录播链接
           </div>
         </el-form-item>
 
@@ -601,10 +601,11 @@ export default {
         return;
       }
       this.remoteLoading = true;
+	  var type=0;
       request.post({
         url: "/admin/adInfo/queryAdminByNameOrPhone",
         params: {
-          search,
+          search,type,
         },
         success: (res) => {
           this.remoteLoading = false;

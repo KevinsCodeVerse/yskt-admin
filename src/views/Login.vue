@@ -134,9 +134,7 @@ export default {
     var pfremeber = localStorage.getItem("pfremeber");
     if (this.$common.checkNull(pfaccount, pfpwd)) {
       this.params.account = pfaccount;
-      this.params.password = pfpwd;
-      console.log("记住:", this.remember);
-      console.log("记住2:", pfremeber);
+      this.params.password = pfpwd;      
       if (pfremeber) {
         this.remember = true;
       }

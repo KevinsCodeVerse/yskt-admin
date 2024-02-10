@@ -267,7 +267,8 @@ export default {
 
     getcanSeeDepartmentList() {
       request.post({
-        url: "/admin/adDepartment/listNoPage",
+        // url: "/admin/adDepartment/listNoPage",
+        url: "admin/adInfo/canChooseCanSeeDepartmentList",
         params: {},
         success: (res) => {
           this.canSeeDepartmentList = listToTree(res);

@@ -184,7 +184,7 @@
           ></uploadFile>
           <div class="wram-box">
             <i class="el-icon-info"></i
-            >未设置课程套餐时直播频道号和录播链接必须选择一个，设置课程套餐时直播频道号和录播链接不需要填写
+            >课程类型为录播时需上传该录播链接
           </div>
         </el-form-item>
 

@@ -56,12 +56,12 @@ module.exports = {
 		proxy: {
 			// 接口代理
 			"/api": {
-				// target: "http://127.0.0.1:9000/", // 目标代理接口地址
+				target: "http://127.0.0.1:9000/", // 目标代理接口地址
 				// target: "http://192.168.1.38:9013/", // 本地目标代理接口地址
-				target: "http://www.pengfkt.com/apiV2/", // 线上目标代理接口地址
+				// target: "https://pengfkt.com/apiV2/", // 线上目标代理接口地址
 				secure: false,
 				changeOrigin: true, // 开启代理，在本地创建一个虚拟服务端
-				// ws: true, // 是否启用webso ckets 代理
+				// ws: true, // 是否启用websockets 代理
 					pathRewrite: {
 						"^/api": "/"
 					}

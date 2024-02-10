@@ -100,7 +100,7 @@ export default {
   },
 
   mounted() {
-    this.getCategoryList();
+    // this.getCategoryList();
   },
 
   methods: {

@@ -81,6 +81,7 @@ export default {
             type: "input",
             label: "订单号",
             value: "orderNum",
+			
           },
           {
             type: "user",
@@ -143,11 +144,12 @@ export default {
             prop: "orderNum",
             minWidth: "160px",
             label: "订单号",
+			width: 200
           },
           {
             id: 2,
             prop: "courseName",
-            label: "课程名称",
+            label: "套餐名称",
             minWidth: "180px",
           },
           {
@@ -156,11 +158,16 @@ export default {
             label: "客户名称",
             minWidth: "100px",
           },
+		  {
+		    id: 14,
+		    prop: "profitAdName",
+		    label: "利润归属",
+		  },
           {
             id: 4,
             prop: "count",
             label: "数量",
-            minWidth: "100px",
+            widht: 10
           },
           {
             id: 6,
@@ -232,11 +239,7 @@ export default {
                 : "";
             },
           },
-          {
-            id: 14,
-            prop: "profitAdName",
-            label: "利润归属",
-          },
+          
         ],
         pageSize: 20,
         currentPage: 1,
@@ -253,7 +256,8 @@ export default {
             this.$refs.collectionDialog.open(row.orderNum);
           },
           show: (row) => {
-            return row.openStatus === 1;
+            // return row.openStatus === 1;
+            return true;
           },
         },
         {

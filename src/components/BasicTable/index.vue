@@ -83,7 +83,7 @@
           :prop="c.prop"
           :label="c.label"
           :min-width="c.width || '150px'"
-          :align="c.align || 'left'"
+          :align="c.align || 'center'"
           :show-overflow-tooltip="
             c.showOverflowTooltip === false ? false : true
           "
