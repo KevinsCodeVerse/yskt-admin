@@ -175,7 +175,7 @@ export default {
         },
         success: (res) => {
           this.departmentList = res;
-          this.filterOptions.column[1].options = listToTree(res);
+          this.filterOptions.column[0].options = listToTree(res);
         },
       });
     },

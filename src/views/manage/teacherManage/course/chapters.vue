@@ -5,13 +5,13 @@
       <BasicTable
         :columns="table.columns"
         height="400px"
-        :operates="operates"
+        :operates="isWrite ? operates : undefined"
         operateWidth="130px"
         :hasCard="false"
         :data="table.data"
         :pageSize="table.pageSize"
         :currentPage="table.currentPage"
-        :headerOperates="headerOperates"
+        :headerOperates="isWrite ? headerOperates : undefined"
         :total="table.total"
         @current-page-change="currentPageChange"
         @size-page-change="sizePageChange"
@@ -30,6 +30,12 @@ import { hasFreeOptions, positionptions, tagOptions } from "./const";
 import uploadVideo from "./uploadVideo.vue";
 import addChapters from './addChapters.vue';
 export default {
+  props: {
+    isWrite: {
+      type: Boolean,
+      default: true
+    }
+  },
   name: "chaptersPage",
   components: { BasicTable, addChapters, uploadVideo },
   data() {

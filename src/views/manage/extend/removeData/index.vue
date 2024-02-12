@@ -79,6 +79,11 @@ export default {
             label: ["添加开始时间", "添加结束时间"],
             value: "time",
           },
+          {
+            type: "timeAll",
+            label: ["删除开始时间", "删除结束时间"],
+            value: "rmTime",
+          },
         ],
       },
 
@@ -88,6 +93,7 @@ export default {
         promoterId: "",
         createAdId: "",
         time: [],
+        rmTime: [],
       },
       table: {
         columns: [
@@ -158,45 +164,8 @@ export default {
         data: [],
         total: 0,
       },
-      operates: [
-        {
-          key: "edit",
-          title: "编辑",
-          permission: "admin/adPromotionData/edit",
-          btnStyle: "yellow",
-          action: (o, row) => {
-            this.$refs.addDialog.edit(row);
-          },
-        },
-        // {
-        //   key: "delete",
-        //   title: "删除",
-        //   permission: "admin/adPromotionData/deleteList",
-        //   btnStyle: "red",
-        //   action: (o, row) => {
-        //     this.handleDelete(row);
-        //   },
-        // },
-        {
-          key: "logicDelete",
-          title: "删除",
-          permission: "admin/adPromotionData/logicRemove",
-          btnStyle: "red",
-          action: (o, row) => {
-            this.handleLogicDelete(row);
-          },
-        },
-      ],
-      headerOperates: [
-        {
-          key: "el-icon-plus",
-          permission: "admin/adPromotionData/add",
-          name: "添加推广数据",
-          action: () => {
-            this.$refs.addDialog.open();
-          },
-        },
-      ],
+      operates: [],
+      headerOperates: [],
     };
   },
   created() {
@@ -213,15 +182,17 @@ export default {
     },
     getList() {
       this.loading = true;
-      const { time, ...rest } =  this.filterData
+      const { time, rmTime, ...rest } = this.filterData;
       request.post({
-        url: "/admin/adPromotionData/list",
+        url: "/admin/adPromotionData/deleteList",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,
-          startTime:time && time.length > 1 ? time[0] : "",
+          startTime: time && time.length > 1 ? time[0] : "",
           endTime: time && time.length > 1 ? time[1] : "",
-          ...rest
+          rmStartTime: rmTime && rmTime.length > 1 ? rmTime[0] : "",
+          rmEndTime: rmTime && rmTime.length > 1 ? rmTime[1] : "",
+          ...rest,
         },
         success: (res) => {
           this.table.data = res.list;
@@ -239,58 +210,6 @@ export default {
     handleSuccess() {
       this.getList();
     },
-    handleLogicDelete(row){
-      this.$confirm("此操作将会逻辑删除该推广数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          request.post({
-            url: "/admin/adPromotionData/logicRemove",
-            params: {
-              id: row.id,
-            },
-            success: (res) => {
-              this.$message.success(res);
-              this.getList();
-            },
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
-    },
-
-    handleDelete(row) {
-      this.$confirm("此操作将会删除该推广数据, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          request.post({
-            url: "/admin/adPromotionData/deleteList",
-            params: {
-              id: row.id,
-            },
-            success: (res) => {
-              this.$message.success(res);
-              this.getList();
-            },
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
-    },
-
     clearFilter() {
       this.filterData = {
         search: "",
@@ -298,6 +217,7 @@ export default {
         promoterId: "",
         createAdId: "",
         time: [],
+        rmTime: [],
       };
       this.searchFilter();
     },

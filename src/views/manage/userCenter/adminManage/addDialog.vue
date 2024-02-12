@@ -269,7 +269,9 @@ export default {
       request.post({
         // url: "/admin/adDepartment/listNoPage",
         url: "admin/adInfo/canChooseCanSeeDepartmentList",
-        params: {},
+        params: {
+          id: sessionStorage.getItem("id")
+        },
         success: (res) => {
           this.canSeeDepartmentList = listToTree(res);
           this.departmentOptions = this.canSeeDepartmentList;
@@ -278,10 +280,9 @@ export default {
     },
     getRolesOptions() {
       request.post({
-        url: "/admin/adRole/listNoPage",
+        url: "/admin/adInfo/canChooseRoleList",
         params: {
-          pageNo: 1,
-          pageSize: 50,
+          id: sessionStorage.getItem("id")
         },
         success: (res) => {
           this.rolesOptions = res;

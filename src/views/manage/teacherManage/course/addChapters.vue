@@ -10,8 +10,8 @@
   >
     <el-form
       :model="addData"
-      :rules="advertRule"
-      ref="advertRef"
+      :rules="addChapterRule"
+      ref="addChapterRef"
       label-position="left"
       label-width="90px"
     >
@@ -69,15 +69,8 @@ export default {
         id: "",
       },
       categoryOptions: [],
-      advertRule: {
-        name: [{ required: true, message: "请输入广告名称", trigger: "blur" }],
-        sort: [
-          { required: true, message: "请输入广告排序", trigger: "blur" },
-          {
-            type: "number",
-            message: "请输入整数",
-          },
-        ],
+      addChapterRule: {
+        name: [{ required: true, message: "请输入章节名称", trigger: "blur" }]
       },
     };
   },
@@ -118,7 +111,7 @@ export default {
       });
     },
     close() {
-      this.$refs.advertRef && this.$refs.advertRef.clearValidate();
+      this.$refs.addChapterRef && this.$refs.addChapterRef.clearValidate();
       this.addData = {
         courseId: "",
         name: "",
@@ -159,7 +152,7 @@ export default {
     },
 
     handleSubmit() {
-      this.$refs.advertRef.validate((valid) => {
+      this.$refs.addChapterRef.validate((valid) => {
         if (valid) {
           const { id, ...rest } = this.addData;
           if (id) {

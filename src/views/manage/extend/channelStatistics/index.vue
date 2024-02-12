@@ -24,9 +24,9 @@
 <script>
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
-import {  getPromotionChannel } from "../data/const";
+// import {  getPromotionChannel } from "../data/const";
 export default {
-  name: "adverstPage",
+  name: "channelStatistics",
   components: { BasicTable },
   data() {
     return {
@@ -35,46 +35,24 @@ export default {
 
       filterOptions: {
         column: [
-          {
-            type: "select",
-            label: "推广渠道",
-            value: "channelId",
-            valueKey: "id",
-            labelKey: "name",
-            options: [],
-          },
-
-          {
-            type: "user",
-            userType: 0,
-            label: "推广员",
-            value: "createAdId",
-          },
+        
           {
             type: "timeAll",
-            label: ["添加开始时间", "添加结束时间"],
+            label: ["开始时间", "结束时间"],
             value: "time",
-          },
-          {
-            type: "timeAll",
-            label: ["删除开始时间", "删除结束时间"],
-            value: "rmTime",
-          },
+          }
         ],
       },
 
       filterData: {
-        channelId: "",
-        createAdId: "",
         time: [],
-        rmTime: [],
       },
       table: {
         columns: [
           {
             id: 2,
             prop: "name",
-            label: "推广员",
+            label: "推广渠道",
           },
           {
             id: 3,
@@ -119,9 +97,9 @@ export default {
   },
   created() {
     this.getList();
-    getPromotionChannel((res) => {
-      this.filterOptions.column[1].options = res;
-    });
+    // getPromotionChannel((res) => {
+    //   this.filterOptions.column[1].options = res;
+    // });
   },
   methods: {
     searchFilter() {
@@ -130,16 +108,14 @@ export default {
     },
     getList() {
       this.loading = true;
-      const { time, rmTime, ...rest } =  this.filterData
+      const { time, ...rest } =  this.filterData
       request.post({
-        url: "/admin/adPromotionData/promoterStatisticsList",
+        url: "/admin/adPromotionData/promotionChannelStatisticsList",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,
           startTime:time && time.length > 1 ? time[0] : "",
           endTime: time && time.length > 1 ? time[1] : "",
-          rmStartTime: rmTime && rmTime.length > 1 ? rmTime[0] : "",
-          rmEndTime: rmTime && rmTime.length > 1 ? rmTime[1] : "",
           ...rest
         },
         success: (res) => {
@@ -161,10 +137,7 @@ export default {
 
     clearFilter() {
       this.filterData = {
-        channelId: "",
-        createAdId: "",
         time: [],
-        rmTime: [],
       };
       this.searchFilter();
     },

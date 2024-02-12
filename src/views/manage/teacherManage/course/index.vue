@@ -70,7 +70,7 @@
         >
       </span>
     </el-dialog>
-    <chapters ref="chapters"></chapters>
+    <chapters :isWrite="false" ref="chapters"></chapters>
     <workChapters ref="workChaptersRef"></workChapters>
   </div>
 </template>

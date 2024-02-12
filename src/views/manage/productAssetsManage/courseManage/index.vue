@@ -43,6 +43,7 @@
     >
     </BasicTable>
     <add-dialog @success="handleSuccess" ref="addDialog"></add-dialog>
+    <chapters ref="chapters"></chapters>
   </div>
 </template>
 
@@ -54,11 +55,12 @@ import {
   hasFreeOptions,
   hasLiveOptions,
   positionptions,
-  tagOptions
+  tagOptions,
 } from "./const";
+import chapters from "../../teacherManage/course/chapters.vue";
 export default {
   name: "adverstPage",
-  components: { BasicTable, addDialog },
+  components: { BasicTable, addDialog, chapters },
   data() {
     return {
       loading: false,
@@ -91,13 +93,13 @@ export default {
             value: "setMealCategoryId",
             labelKey: "name",
             valueKey: "id",
-            options: []
+            options: [],
           },
           {
             type: "select",
             label: "课程标签",
             value: "tag",
-            options: tagOptions
+            options: tagOptions,
           },
           {
             type: "select",
@@ -120,7 +122,7 @@ export default {
         teacherAdId: "",
         categoryId: "",
         hasFree: "",
-        setMealCategoryId: ""
+        setMealCategoryId: "",
       },
       table: {
         columns: [
@@ -129,16 +131,16 @@ export default {
             prop: "number",
             label: "课程编号",
           },
-		  {
-		    id: 13,
-		    prop: "name",
-		    label: "课程名称",
-		  },
+          {
+            id: 14,
+            prop: "name",
+            label: "课程名称",
+          },
           {
             id: 2,
             prop: "name",
             label: "课程名称",
-            width: "160px"
+            width: "160px",
           },
           {
             id: 3,
@@ -156,9 +158,7 @@ export default {
             prop: "tag",
             label: "课程标签",
             render: (row) => {
-              const item = tagOptions.find(
-                (item) => item.value == row.hasLive
-              );
+              const item = tagOptions.find((item) => item.value == row.hasLive);
               return item ? item.label : "";
             },
           },
@@ -224,13 +224,12 @@ export default {
             prop: "createTime",
             label: "增加时间",
             type: "date",
-			width: 180
+            width: 180,
           },
           {
             id: 13,
             prop: "sort",
             label: "排序",
-
           },
         ],
         pageSize: 20,
@@ -255,6 +254,15 @@ export default {
           btnStyle: "red",
           action: (o, row) => {
             this.handleDelete(row);
+          },
+        },
+        {
+          key: "charpter",
+          title: "章节详情",
+          permission: "admin/adCourseChapters/list",
+          btnStyle: "yellow",
+          action: (o, row) => {
+            this.$refs.chapters.open(row);
           },
         },
       ],
@@ -378,7 +386,7 @@ export default {
         teacherAdId: "",
         categoryId: "",
         hasFree: "",
-        setMealCategoryId: ""
+        setMealCategoryId: "",
       };
       this.searchFilter();
     },
@@ -393,11 +401,10 @@ export default {
       this.getList();
     },
     remoteMethod(search) {
-		
       if (!search) {
         return;
       }
-      this.remoteLoading = true;    
+      this.remoteLoading = true;
       request.post({
         url: "/admin/adInfo/queryAdminByNameOrPhone",
         params: {
@@ -412,7 +419,7 @@ export default {
         },
       });
     },
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>

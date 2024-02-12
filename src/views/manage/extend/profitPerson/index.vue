@@ -26,7 +26,7 @@ import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 import {  getPromotionChannel } from "../data/const";
 export default {
-  name: "adverstPage",
+  name: "profitPersonPage",
   components: { BasicTable },
   data() {
     return {
@@ -47,8 +47,8 @@ export default {
           {
             type: "user",
             userType: 0,
-            label: "推广员",
-            value: "createAdId",
+            label: "推广销售员",
+            value: "profitAdId",
           },
           {
             type: "timeAll",
@@ -65,7 +65,7 @@ export default {
 
       filterData: {
         channelId: "",
-        createAdId: "",
+        profitAdId: "",
         time: [],
         rmTime: [],
       },
@@ -74,7 +74,7 @@ export default {
           {
             id: 2,
             prop: "name",
-            label: "推广员",
+            label: "推广销售员",
           },
           {
             id: 3,
@@ -132,7 +132,7 @@ export default {
       this.loading = true;
       const { time, rmTime, ...rest } =  this.filterData
       request.post({
-        url: "/admin/adPromotionData/promoterStatisticsList",
+        url: "/admin/adPromotionData/promoteSalespersonStatisticsList",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,
@@ -162,7 +162,7 @@ export default {
     clearFilter() {
       this.filterData = {
         channelId: "",
-        createAdId: "",
+        profitAdId: "",
         time: [],
         rmTime: [],
       };
