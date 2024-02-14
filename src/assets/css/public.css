@@ -11,21 +11,24 @@
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 12px;
+  z-index:5;
 }
 ::-webkit-scrollbar-thumb {
-  width: 8px;
+  width: 12px;
   margin: 0 auto;
   background-color: rgb(235, 239, 244);
-  border-radius: 8px;
+  border-radius: 12px;
+  z-index:5;
 }
 
 
 ::-webkit-scrollbar-track,
 ::-webkit-scrollbar-corner {
   background: transparent;
-  border-radius: 8px;
+  border-radius: 12px;
+  z-index:5;
 }
 /* 主题色 */
 .primary-color {

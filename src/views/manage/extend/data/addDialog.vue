@@ -151,6 +151,8 @@ export default {
                 } else {
                   callback(new Error("格式不正确"));
                 }
+              } else {
+                callback()
               }
             },
             trigger: "blur",
@@ -252,6 +254,7 @@ export default {
 
     handleSubmit() {
       this.$refs.promotionRef.validate((valid) => {
+        console.log(valid, "valid");
         if (valid) {
           if (this.addData.dataId) {
             request.post({

@@ -281,7 +281,7 @@ export default {
             this.$refs.detailRef.open(row.orderNum);
           },
           show: (row) => {
-            return row.openStatus === 0;
+            return row.openStatus === 1;
           },
         },
       ],

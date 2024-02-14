@@ -35,12 +35,11 @@ export default {
 
       filterOptions: {
         column: [
-        
           {
             type: "timeAll",
             label: ["开始时间", "结束时间"],
             value: "time",
-          }
+          },
         ],
       },
 
@@ -78,21 +77,15 @@ export default {
             id: 7,
             prop: "removeCount",
             label: "今日删除",
-           
-          }
+          },
         ],
         pageSize: 20,
         currentPage: 1,
         data: [],
         total: 0,
       },
-      operates: [
-      
-       
-      ],
-      headerOperates: [
-  
-      ],
+      operates: [],
+      headerOperates: [],
     };
   },
   created() {
@@ -108,19 +101,23 @@ export default {
     },
     getList() {
       this.loading = true;
-      const { time, ...rest } =  this.filterData
+      const { time, ...rest } = this.filterData;
       request.post({
         url: "/admin/adPromotionData/promotionChannelStatisticsList",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,
-          startTime:time && time.length > 1 ? time[0] : "",
+          startTime: time && time.length > 1 ? time[0] : "",
           endTime: time && time.length > 1 ? time[1] : "",
-          ...rest
+          ...rest,
         },
         success: (res) => {
-          this.table.data = res;
-          this.table.total = res.total;
+          this.table.data = res.slice(
+            (this.table.currentPage - 1) * this.table.pageSize,
+            (this.table.currentPage - 1) * this.table.pageSize +
+              this.table.pageSize
+          );
+          this.table.total = res.length;
           this.loading = false;
         },
         catch: () => {
@@ -154,5 +151,4 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

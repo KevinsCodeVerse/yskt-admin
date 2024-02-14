@@ -266,7 +266,7 @@ export default {
           },
           // 已收、取消、回退
           show: (row) => {
-            return row.type !== -1;
+            return row.status == 0 && row.type !== -1;
           },
         },
         {

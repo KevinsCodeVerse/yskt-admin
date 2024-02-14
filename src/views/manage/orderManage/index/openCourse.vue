@@ -225,7 +225,6 @@ export default {
       this.$nextTick(() => {
         if (!onOff) {
           const { selectOpenCourse } = this.$refs;
-          console.log(selectOpenCourse, "selectOpenCourse///");
           const input = selectOpenCourse.$el.querySelector(".el-input__inner");
           input.removeAttribute("readonly");
         }
@@ -243,10 +242,11 @@ export default {
           request.post({
             url: "/system/sysCourseOrder/openCourseEdit",
             params: {
+              ...rest,
               courseIds: JSON.stringify(ids),
               startTime: time && time.length > 0 ? time[0] : "",
               endTime: time && time.length > 0 ? time[1] : "",
-              ...rest,
+             
             },
             success: (res) => {
               this.$message.success(res);
