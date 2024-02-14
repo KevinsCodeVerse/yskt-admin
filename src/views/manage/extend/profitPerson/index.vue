@@ -143,7 +143,7 @@ export default {
           ...rest
         },
         success: (res) => {
-          this.table.data = res.records;
+          this.table.data = res.list;
           this.table.total = res.total;
           this.loading = false;
         },

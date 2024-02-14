@@ -106,6 +106,11 @@ export default {
             prop: "promoterName",
             label: "销售员",
           },
+		  {
+		    id: 13,
+		    prop: "createAdName",
+		    label: "推广员",		    
+		  },
           {
             id: 5,
             prop: "qq",
@@ -151,7 +156,7 @@ export default {
             prop: "createTime",
             label: "添加时间",
             type: "date",
-          },
+          },		
         ],
         pageSize: 20,
         currentPage: 1,
