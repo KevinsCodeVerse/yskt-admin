@@ -156,49 +156,50 @@ export default {
             id: 3,
             prop: "vipName",
             label: "客户名称",
-            minWidth: "100px",
+            width: "80px"
           },
 		  {
 		    id: 14,
 		    prop: "profitAdName",
 		    label: "利润归属",
+		    width: "80px"
 		  },
           {
             id: 4,
             prop: "count",
             label: "数量",
-            widht: 10
+            width: "50px"
           },
           {
             id: 6,
             prop: "marketPrice",
             label: "总销售价",
             renderName: "marketPrice",
-            minWidth: "100px",
+             width: "120px"
           },
           {
             id: 7,
             prop: "marketPrice",
             label: "总结算价",
-            minWidth: "100px",
+            width: "80px"
           },
           {
             id: 8,
             prop: "vipName",
             label: "下单人",
-            minWidth: "100px",
+            width: "100px"
           },
           {
             id: 9,
             prop: "profitAdName",
             label: "销售人员",
-            minWidth: "100px",
+            width: "80px"
           },
           {
             id: 10,
             prop: "createAdName",
             label: "操作人员",
-            minWidth: "100px",
+           width: "80px"
           },
           {
             id: 11,
@@ -208,6 +209,7 @@ export default {
               const item = orderStatus.find((item) => item.value == row.status);
               return item ? item.label : "";
             },
+            width: "80px"
           },
           {
             id: 12,
@@ -216,6 +218,7 @@ export default {
             render: (row) => {
               return row.openStatus == 1 ? "已开通" : "未开通";
             },
+            width: "80px"
           },
           {
             id: 13,
@@ -224,6 +227,7 @@ export default {
             sortable: true,
             minWidth: "180px",
             type: "date",
+            width: "180px"
           },
           {
             id: 15,
@@ -238,6 +242,7 @@ export default {
                   )}`
                 : "";
             },
+            width: "180px"
           },
           
         ],
