@@ -34,6 +34,9 @@
             v-model="addData.cutOffTime"
           ></jat-date-picker>
         </el-form-item>
+        <el-form-item label="附件:" prop="material">
+          <uploadFile :limit="1" v-model="addData.material"></uploadFile>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <jat-button plain @click="close">取 消</jat-button>
@@ -47,9 +50,10 @@
 import uploadImage from "@/components/uploadImage.vue";
 import request from "../../../../utils/request";
 import tinymceEdit from "@/components/tinymceEdit.vue";
+import uploadFile from "../../../../components/uploadFile.vue";
 export default {
   name: "addCourseWork",
-  components: { uploadImage, tinymceEdit },
+  components: { uploadImage, tinymceEdit, uploadFile },
   data() {
     return {
       addModifyVisible: false,
@@ -59,6 +63,7 @@ export default {
         cutOffTime: "",
         workName: "",
         caseUrl: "",
+        material: [],
       },
       workRule: {
         cutOffTime: [
@@ -87,6 +92,7 @@ export default {
         cutOffTime: "",
         workName: "",
         caseUrl: "",
+        material: [],
       };
       this.addModifyVisible = false;
     },
@@ -94,10 +100,12 @@ export default {
     handleSubmit() {
       this.$refs.workRef.validate((valid) => {
         if (valid) {
+          const {material, ...rest} = this.addData
           request.post({
             url: "admin/adCourseWork/add",
             params: {
-              ...this.addData,
+              ...rest,
+              material: material && material.length > 0 ? material[0].url : ""
             },
             success: (res) => {
               this.$message.success("布置成功！可在课程作业中查看");

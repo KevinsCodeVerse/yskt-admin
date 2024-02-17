@@ -34,7 +34,11 @@
             v-model="addData.cutOffTime"
           ></jat-date-picker>
         </el-form-item>
+        <el-form-item label="附件:" prop="material">
+          <uploadFile :limit="1" v-model="addData.material"></uploadFile>
+        </el-form-item>
       </el-form>
+
       <span slot="footer" class="dialog-footer">
         <jat-button plain @click="close">取 消</jat-button>
         <jat-button @click="handleSubmit">确 定</jat-button>
@@ -48,9 +52,10 @@ import uploadImage from "@/components/uploadImage.vue";
 import request from "../../../../utils/request";
 import tinymceEdit from "@/components/tinymceEdit.vue";
 import { getDate } from "../../../../utils/tools";
+import uploadFile from "../../../../components/uploadFile.vue";
 export default {
   name: "addCourseWork",
-  components: { uploadImage, tinymceEdit },
+  components: { uploadImage, tinymceEdit, uploadFile },
   data() {
     return {
       addModifyVisible: false,
@@ -60,6 +65,7 @@ export default {
         cutOffTime: "",
         workName: "",
         caseUrl: "",
+        material: "",
       },
       workRule: {
         cutOffTime: [
@@ -77,11 +83,12 @@ export default {
   methods: {
     edit(row) {
       this.dialogTitle = "编辑作业";
-      const { id, workName, caseUrl, cutOffTime } = row;
+      const { id, workName, material, caseUrl, cutOffTime } = row;
       this.addData = {
         id,
         workName,
         caseUrl,
+        material,
         cutOffTime: getDate(cutOffTime, "yyyy-MM-dd"),
       };
       this.addData.id = row.workId;
@@ -95,17 +102,24 @@ export default {
         cutOffTime: "",
         workName: "",
         caseUrl: "",
+        material: "",
       };
       this.addModifyVisible = false;
     },
 
     handleSubmit() {
       this.$refs.workRef.validate((valid) => {
+        const { material, ...rest } = this.addData;
+        console.log(material);
         if (valid) {
           request.post({
             url: "/admin/adCourseWork/edit",
             params: {
-              ...this.addData,
+              ...rest,
+              material:
+                Array.isArray(material) && material.length > 0
+                  ? material[0].url
+                  : material,
             },
             success: (res) => {
               this.$message.success(res);
