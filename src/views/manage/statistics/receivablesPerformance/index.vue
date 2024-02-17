@@ -55,18 +55,18 @@ export default {
             label: "销售员",
             value: "profitAdId",
           },
-          {
-            type: "cascader",
-            label: "部门",
-            value: "departmentId",
-            options: [],
-            props: {
-              value: "id",
-              label: "name",
-              emitPath: false,
-              checkStrictly: true,
-            },
-          },
+          // {
+          //   type: "cascader",
+          //   label: "部门",
+          //   value: "departmentId",
+          //   options: [],
+          //   props: {
+          //     value: "id",
+          //     label: "name",
+          //     emitPath: false,
+          //     checkStrictly: true,
+          //   },
+          // },
           {
             type: "timeAll",
             label: ["开始日期", "结束日期"],

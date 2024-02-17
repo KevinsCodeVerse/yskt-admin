@@ -102,7 +102,7 @@ export default {
             id: 1,
             prop: "orderNum",
             label: "订单号",
-            minWidth: "200px",
+            width: "200px"
           },
           {
             id: 2,
@@ -114,6 +114,7 @@ export default {
               );
               return item ? item.label : "";
             },
+            width: "80px"
           },
           {
             id: 3,
@@ -134,52 +135,55 @@ export default {
                   )}`
                 : "";
             },
+            width: "200px"
           },
           {
             id: 5,
             prop: "collectionUnit",
             label: "收款单位",
+            width: "80px"
           },
           {
             id: 6,
             prop: "count",
             label: "数量",
+            width: "80px"
           },
           {
             id: 7,
             prop: "receivablePrice",
             label: "应收金额",
-            minWidth: "100px",
+             width: "80px"
           },
 		  {
 		    id: 13,
 		    prop: "pendingTrialPrice",
 		    label: "待审金额",
-		    minWidth: "100px",
+		  width: "80px"
 		  },
           {
             id: 8,
             prop: "receivedPrice",
             label: "已收金额",
-            minWidth: "100px",
+            width: "80px"
           },
           {
             id: 9,
             prop: "unReceivedPrice",
             label: "未收金额",
-            minWidth: "100px",
+            width: "80px"
           },
           {
             id: 10,
             prop: "pendingTrialPrice",
             label: "待审金额",
-            minWidth: "100px",
+            width: "80px"
           },
           {
             id: 11,
             prop: "invoicedPrice",
             label: "已开票金额",
-            minWidth: "100px",
+            width: "80px"
           },
           {
             id: 12,
