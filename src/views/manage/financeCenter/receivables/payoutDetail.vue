@@ -1,37 +1,37 @@
-<!-- 应收款管理 -->
+<!-- 收款明细管理 -->
 <template>
   <div class="middle-container" v-loading="loading">
     <jat-fillter
-      :option="filterOptions"
-      v-model="filterData"
-      @searchFilter="searchFilter"
-      @clearFilter="clearFilter"
+        :option="filterOptions"
+        v-model="filterData"
+        @searchFilter="searchFilter"
+        @clearFilter="clearFilter"
     ></jat-fillter>
     <BasicTable
-      :columns="table.columns"
-      :headerOperates="headerOperates"
-      :operates="operates"
-      operateWidth="280px"
-      :data="table.data"
-      :pageSize="table.pageSize"
-      :currentPage="table.currentPage"
-      :total="table.total"
-      @current-page-change="currentPageChange"
-      @size-page-change="sizePageChange"
+        :columns="table.columns"
+        :headerOperates="headerOperates"
+        :operates="operates"
+        operateWidth="280px"
+        :data="table.data"
+        :pageSize="table.pageSize"
+        :currentPage="table.currentPage"
+        :total="table.total"
+        @current-page-change="currentPageChange"
+        @size-page-change="sizePageChange"
     >
       <div slot="image" slot-scope="scope">
         <el-image
-          v-if="scope.row.image"
-          style="width: 50px"
-          :src="scope.row.image"
-          :preview-src-list="[scope.row.image]"
+            v-if="scope.row.image"
+            style="width: 50px"
+            :src="scope.row.image"
+            :preview-src-list="[scope.row.image]"
         >
         </el-image>
         <span v-else></span>
       </div>
     </BasicTable>
     <add-dialog @success="handleSuccess" ref="addDialog"></add-dialog>
-	<detail-drawer ref="drawerRef"></detail-drawer>
+    <detail-drawer ref="drawerRef"></detail-drawer>
   </div>
 </template>
 
@@ -39,15 +39,16 @@
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 import addDialog from "./addDialog.vue";
-import { getDate } from "../../../../utils/tools";
-import { collectionStatus, orderStatus } from "./const";
+import {getDate} from "../../../../utils/tools";
+import {collectionStatus, orderStatus} from "./const";
 import detailDrawer from './detailDrawer.vue';
+
 export default {
   name: "receivablesPage",
   components: {
     BasicTable,
     addDialog,
-	detailDrawer
+    detailDrawer
   },
   data() {
     return {
@@ -138,11 +139,11 @@ export default {
             minWidth: "210px",
             render: (row) => {
               return row.startTime
-                ? `${getDate(row.startTime, "yyyy-MM-dd")} 至 ${getDate(
-                    row.endTime,
-                    "yyyy-MM-dd"
+                  ? `${getDate(row.startTime, "yyyy-MM-dd")} 至 ${getDate(
+                      row.endTime,
+                      "yyyy-MM-dd"
                   )}`
-                : "";
+                  : "";
             },
           },
           {
@@ -168,19 +169,19 @@ export default {
               return row.type == -1 ? "#C00063" : "";
             },
           },
-		  {
+          {
             id: 13,
             prop: "status",
             label: "收款状态",
             render: (row) => {
               const item = collectionStatus.find(
-                (item) => item.value == row.status
+                  (item) => item.value == row.status
               );
               return item ? item.label : "";
             },
             colorRener: (row) => {
               const item = collectionStatus.find(
-                (item) => item.value == row.status
+                  (item) => item.value == row.status
               );
               return item ? item.color : "";
             },
@@ -222,7 +223,7 @@ export default {
             minWidth: "170px",
             type: "date",
           },
-          
+
           {
             id: 14,
             prop: "colectionNumber",
@@ -251,7 +252,12 @@ export default {
           show: (row) => {
             return row.status == 0 || row.status == 1;
           },
-		  action: (o, row) => {
+          action: (o, row) => {
+            console.log("row",row)
+            row.name=row.categoryName
+            row.count=1
+            row.vipName=row.collectionUnit
+            row.receivablePrice=row.receivable
             this.$refs.drawerRef.open(row);
             // this.handleDelete(row);
           },
@@ -303,10 +309,10 @@ export default {
           },
           show: (row) => {
             return (
-              row.status == 0 ||
-              row.status == 1 ||
-              row.status == 2 ||
-              row.status == 3
+                row.status == 0 ||
+                row.status == 1 ||
+                row.status == 2 ||
+                row.status == 3
             );
           },
         },
@@ -323,8 +329,18 @@ export default {
           },
         },
       ],
-      headerOperates: [],
+      headerOperates: [
+        {
+          key: "export",
+          name: "导出",
+          permission: "system/sysCourseOrderBills/collectionDetailListExport",
+          action: () => {
+            this.handleExport();
+          },
+        },
+      ],
     };
+
   },
   created() {
     if (this.$route.query.orderNum) {
@@ -334,13 +350,48 @@ export default {
     this.getCategoryList();
   },
   methods: {
+    handleExport() {
+      this.$confirm('确定导出收款明细吗？导出的时候请等待页面下载自动开始，如果数据量大，可能会等待稍长时间，请不要关闭或者刷新页面', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message.warning("请耐心等待，表格正在导出中......");
+        const {openTime, endTime, createTime, ...rest} = this.filterData;
+        request.post({
+          url: "/system/sysCourseOrderBills/collectionDetailListExport",
+          params: {
+            ...rest,
+            openStartTime: openTime && openTime.length > 0 ? openTime[0] : "",
+            openEndTime: openTime && openTime.length > 0 ? openTime[1] : "",
+            createStartTime:
+                createTime && createTime.length > 0 ? createTime[0] : "",
+            createEndTime:
+                createTime && createTime.length > 0 ? createTime[1] : "",
+            endStartTime: endTime && endTime.length > 0 ? endTime[0] : "",
+            endEndTime: endTime && endTime.length > 0 ? endTime[1] : "",
+          },
+          success: (res) => {
+            let downloadElement = document.createElement("a");
+            downloadElement.href = "https://" + res;
+            document.body.appendChild(downloadElement);
+            downloadElement.click(); //点击下载
+            document.body.removeChild(downloadElement); //下载完成移除元素
+            this.$message.success("导出成功");
+            this.searchFilter();
+          },
+        });
+      }).catch(() => {
+        this.$message.info("已取消导出");
+      });
+    },
     searchFilter() {
       this.table.currentPage = 1;
       this.getList();
     },
     getList() {
       this.loading = true;
-      const { openTime, endTime, createTime, ...rest } = this.filterData;
+      const {openTime, endTime, createTime, ...rest} = this.filterData;
       request.post({
         url: "/system/sysCourseOrderBills/collectionDetailList",
         params: {
@@ -350,9 +401,9 @@ export default {
           openStartTime: openTime && openTime.length > 0 ? openTime[0] : "",
           openEndTime: openTime && openTime.length > 0 ? openTime[1] : "",
           createStartTime:
-            createTime && createTime.length > 0 ? createTime[0] : "",
+              createTime && createTime.length > 0 ? createTime[0] : "",
           createEndTime:
-            createTime && createTime.length > 0 ? createTime[1] : "",
+              createTime && createTime.length > 0 ? createTime[1] : "",
           endStartTime: endTime && endTime.length > 0 ? endTime[0] : "",
           endEndTime: endTime && endTime.length > 0 ? endTime[1] : "",
         },
@@ -388,24 +439,24 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       })
-        .then(() => {
-          request.post({
-            url: "/system/sysCourseOrderBills/receivedEdit",
-            params: {
-              billsId: row.billsId,
-            },
-            success: (res) => {
-              this.$message.success(res);
-              this.getList();
-            },
+          .then(() => {
+            request.post({
+              url: "/system/sysCourseOrderBills/receivedEdit",
+              params: {
+                billsId: row.billsId,
+              },
+              success: (res) => {
+                this.$message.success(res);
+                this.getList();
+              },
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消操作",
+            });
           });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消操作",
-          });
-        });
     },
     //财务审核
     handleFinancialAudits(row) {
@@ -414,25 +465,25 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       })
-        .then(() => {
-          request.post({
-            url: "/system/sysCourseOrderBills/financialAuditEdit",
-            params: {
-              billsId: row.billsId,
-            },
-            success: (res) => {
-              this.$message.success(res);
-              this.getList();
-            },
+          .then(() => {
+            request.post({
+              url: "/system/sysCourseOrderBills/financialAuditEdit",
+              params: {
+                billsId: row.billsId,
+              },
+              success: (res) => {
+                this.$message.success(res);
+                this.getList();
+              },
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+            this.$message({
+              type: "info",
+              message: "已取消操作",
+            });
           });
-        })
-        .catch((error) => {
-          console.log(error);
-          this.$message({
-            type: "info",
-            message: "已取消操作",
-          });
-        });
     },
     //取消
     handleCancle(row) {
@@ -441,24 +492,24 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       })
-        .then(() => {
-          request.post({
-            url: "/system/sysCourseOrderBills/cancelEdit",
-            params: {
-              billsId: row.billsId,
-            },
-            success: (res) => {
-              this.$message.success(res);
-              this.getList();
-            },
+          .then(() => {
+            request.post({
+              url: "/system/sysCourseOrderBills/cancelEdit",
+              params: {
+                billsId: row.billsId,
+              },
+              success: (res) => {
+                this.$message.success(res);
+                this.getList();
+              },
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消操作",
+            });
           });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消操作",
-          });
-        });
     },
     //入账
     handleRecorded(row) {
@@ -467,24 +518,24 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       })
-        .then(() => {
-          request.post({
-            url: "/system/sysCourseOrderBills/enterBillEdit",
-            params: {
-              billsId: row.billsId,
-            },
-            success: (res) => {
-              this.$message.success(res);
-              this.getList();
-            },
+          .then(() => {
+            request.post({
+              url: "/system/sysCourseOrderBills/enterBillEdit",
+              params: {
+                billsId: row.billsId,
+              },
+              success: (res) => {
+                this.$message.success(res);
+                this.getList();
+              },
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消操作",
+            });
           });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消操作",
-          });
-        });
     },
     //回退
     handleFallback(row) {
@@ -493,24 +544,24 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       })
-        .then(() => {
-          request.post({
-            url: "/system/sysCourseOrderBills/fallbackEdit",
-            params: {
-              billsId: row.billsId,
-            },
-            success: (res) => {
-              this.$message.success(res);
-              this.getList();
-            },
+          .then(() => {
+            request.post({
+              url: "/system/sysCourseOrderBills/fallbackEdit",
+              params: {
+                billsId: row.billsId,
+              },
+              success: (res) => {
+                this.$message.success(res);
+                this.getList();
+              },
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消操作",
+            });
           });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消操作",
-          });
-        });
     },
 
     clearFilter() {

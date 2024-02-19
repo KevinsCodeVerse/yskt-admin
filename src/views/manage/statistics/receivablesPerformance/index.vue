@@ -4,32 +4,72 @@
     <div class="header-box">
       <div class="BasicInfo_title" v-if="headerTab.length > 0">
         <div
-          v-for="tab in headerTab"
-          :key="tab.id"
-          v-permission="tab.permission"
-          class="item"
-          :class="{ is_active: tab.isChecked }"
-          @click="handleTabSelect(tab)"
+            v-for="tab in headerTab"
+            :key="tab.id"
+            v-permission="tab.permission"
+            class="item"
+            :class="{ is_active: tab.isChecked }"
+            @click="handleTabSelect(tab)"
         >
           <span :class="'tab_' + tab.id">{{ tab.name }}</span>
         </div>
       </div>
     </div>
     <jat-fillter
-      :option="filterOptions"
-      v-model="filterData"
-      @searchFilter="searchFilter"
-      @clearFilter="clearFilter"
+        :option="filterOptions"
+        v-model="filterData"
+        @searchFilter="searchFilter"
+        @clearFilter="clearFilter"
+        v-if="tagCheck===1"
+    ></jat-fillter>
+    <jat-fillter
+        :option="filterOptions1"
+        v-model="filterData"
+        @searchFilter="searchFilter"
+        @clearFilter="clearFilter"
+        v-if="tagCheck===2"
+    ></jat-fillter>
+    <jat-fillter
+        :option="filterOptions2"
+        v-model="filterData"
+        @searchFilter="searchFilter"
+        @clearFilter="clearFilter"
+        v-if="tagCheck===3"
     ></jat-fillter>
     <BasicTable
-      :columns="table.columns"
-      :headerOperates="headerOperates"
-      :data="table.data"
-      :pageSize="table.pageSize"
-      :currentPage="table.currentPage"
-      :total="table.total"
-      @current-page-change="currentPageChange"
-      @size-page-change="sizePageChange"
+        :columns="table.columns"
+        :headerOperates="headerOperates"
+        :data="table.data"
+        :pageSize="table.pageSize"
+        :currentPage="table.currentPage"
+        :total="table.total"
+        @current-page-change="currentPageChange"
+        @size-page-change="sizePageChange"
+        v-if="tagCheck===1"
+    >
+    </BasicTable>
+    <BasicTable
+        :columns="table.columns"
+        :headerOperates="headerOperates1"
+        :data="table.data"
+        :pageSize="table.pageSize"
+        :currentPage="table.currentPage"
+        :total="table.total"
+        @current-page-change="currentPageChange"
+        @size-page-change="sizePageChange"
+        v-if="tagCheck===2"
+    >
+    </BasicTable>
+    <BasicTable
+        :columns="table.columns"
+        :headerOperates="headerOperates2"
+        :data="table.data"
+        :pageSize="table.pageSize"
+        :currentPage="table.currentPage"
+        :total="table.total"
+        @current-page-change="currentPageChange"
+        @size-page-change="sizePageChange"
+        v-if="tagCheck===3"
     >
     </BasicTable>
   </div>
@@ -38,35 +78,24 @@
 <script>
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
-import { listToTree } from "../../../../utils/tools";
+import {listToTree} from "../../../../utils/tools";
+
 export default {
   name: "personPerformance",
-  components: { BasicTable },
+  components: {BasicTable},
   data() {
     return {
+      tagCheck: 1,
       loading: false,
       categoryOptions: [],
       filterOptions: {
         column: [
-       
           {
             type: "user",
-            userType: 0,
-            label: "销售员",
-            value: "profitAdId",
+            userType: 1,
+            label: "下单客户",
+            value: "vipId",
           },
-          // {
-          //   type: "cascader",
-          //   label: "部门",
-          //   value: "departmentId",
-          //   options: [],
-          //   props: {
-          //     value: "id",
-          //     label: "name",
-          //     emitPath: false,
-          //     checkStrictly: true,
-          //   },
-          // },
           {
             type: "timeAll",
             label: ["开始日期", "结束日期"],
@@ -75,7 +104,32 @@ export default {
           },
         ],
       },
-      categoryOptions: [],
+      filterOptions1: {
+        column: [
+          {
+            type: "user",
+            userType: 0,
+            label: "销售员",
+            value: "profitAdId",
+          },
+          {
+            type: "timeAll",
+            label: ["开始日期", "结束日期"],
+            value: "time",
+            clearable: false,
+          },
+        ],
+      },
+      filterOptions2: {
+        column: [
+          {
+            type: "timeAll",
+            label: ["开始日期", "结束日期"],
+            value: "time",
+            clearable: false,
+          },
+        ],
+      },
 
       filterData: {
         profitAdId: "",
@@ -116,7 +170,36 @@ export default {
         total: 0,
       },
       operates: [],
-      headerOperates: [],
+      headerOperates: [
+        {
+          key: "export",
+          name: "导出",
+          permission: "system/sysCourseOrderBills/pressSinglePersonStatisticsExport",
+          action: () => {
+            this.handleExport(0);
+          },
+        },
+      ],
+      headerOperates1: [
+        {
+          key: "export",
+          name: "导出",
+          permission: "system/sysCourseOrderBills/statisticsSalespersonExport",
+          action: () => {
+            this.handleExport(1);
+          },
+        },
+      ],
+      headerOperates2: [
+        {
+          key: "export",
+          name: "导出",
+          permission: "system/sysCourseOrderBills/statisticsCourseExport",
+          action: () => {
+            this.handleExport(2);
+          },
+        },
+      ],
       currentTab: 1,
       headerTab: [
         {
@@ -151,13 +234,57 @@ export default {
     this.init();
   },
   methods: {
+    handleExport(e) {
+      var exportUrl = "";
+      var title = "";
+      if (e === 0) {
+        exportUrl = "system/sysCourseOrderBills/pressSinglePersonStatisticsExport"
+        title="下单客户统计列表"
+      }
+      if (e === 1) {
+        exportUrl = "system/sysCourseOrderBills/statisticsSalespersonExport"
+        title="销售员统计列表"
+      }
+      if (e === 2) {
+        exportUrl = "system/sysCourseOrderBills/statisticsCourseExport"
+        title="课程统计列表"
+      }
+
+      this.$confirm('确定导出' + title + '吗？导出的时候请等待页面下载自动开始，如果数据量大，可能会等待稍长时间，请不要关闭或者刷新页面', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message.warning("请耐心等待，表格正在导出中......");
+        const {time, ...rest} = this.filterData;
+        request.post({
+          url: exportUrl,
+          params: {
+            startTime: time && time.length > 1 ? time[0] : "",
+            endTime: time && time.length > 1 ? time[1] : "",
+            ...rest
+          },
+          success: (res) => {
+            let downloadElement = document.createElement("a");
+            downloadElement.href = "https://" + res;
+            document.body.appendChild(downloadElement);
+            downloadElement.click(); //点击下载
+            document.body.removeChild(downloadElement); //下载完成移除元素
+            this.$message.success("导出成功");
+            this.searchFilter();
+          },
+        });
+      }).catch(() => {
+        this.$message.info("已取消导出");
+      });
+    },
     searchFilter() {
       this.table.currentPage = 1;
       this.getList();
     },
     getList() {
       this.loading = true;
-      const { time, ...rest } = this.filterData;
+      const {time, ...rest} = this.filterData;
       request.post({
         url: this.headerTab.find(item => item.isChecked).api,
         params: {
@@ -236,6 +363,8 @@ export default {
     },
 
     handleTabSelect(tab, flag) {
+      console.log("213132")
+      this.tagCheck = tab.id
       // if() {}
       if (tab.id == this.$route.query.type && tab.isChecked) {
         return;
@@ -246,7 +375,7 @@ export default {
       if (!flag) {
         this.$router.replace({
           path: this.$router.path,
-          query: { type: tab.id },
+          query: {type: tab.id},
         });
       }
       this.currentTab = tab.id;
@@ -262,7 +391,7 @@ export default {
           const currentTab = this.headerTab.find((item) => item.isChecked);
           this.$router.replace({
             path: this.$router.path,
-            query: { type: currentTab.id },
+            query: {type: currentTab.id},
           });
           return;
         }
@@ -273,7 +402,7 @@ export default {
       } else {
         this.$router.replace({
           path: this.$router.path,
-          query: { type: 1 },
+          query: {type: 1},
         });
       }
     },
@@ -289,7 +418,8 @@ export default {
   border-bottom: 1px solid #cbced2;
   box-shadow: 0px 0px 8px 0px rgba(116, 136, 161, 0.5);
 }
-/deep/.FilterContent {
+
+/deep/ .FilterContent {
   border-top: none;
   border-top-left-radius: 0px;
   border-top-right-radius: 0px;
@@ -298,6 +428,7 @@ export default {
   box-shadow: 0px 5px 8px 0px rgba(116, 136, 161, 0.5);
   padding-top: 15px;
 }
+
 .BasicInfo_title {
   // display: inline-block;
   margin: 10px 13px;
@@ -315,6 +446,7 @@ export default {
 
     padding: 6px 12px;
     cursor: pointer;
+
     &.is_active {
       background: #167cf3;
       border-radius: 2px;

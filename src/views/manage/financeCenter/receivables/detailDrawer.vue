@@ -58,6 +58,7 @@ export default {
 
   methods: {
     open(row) {
+      console.log("row",row)
       this.info = row
       this.drawer = true;
     },

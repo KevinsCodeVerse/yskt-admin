@@ -194,6 +194,14 @@ export default {
       ],
       headerOperates: [
         {
+          key: "export",
+          permission: "admin/adPromotionData/listExport",
+          name: "导出",
+          action: () => {
+            this.handleExport();
+          },
+        },
+        {
           key: "el-icon-plus",
           permission: "admin/adPromotionData/add",
           name: "添加推广数据",
@@ -201,6 +209,7 @@ export default {
             this.$refs.addDialog.open();
           },
         },
+
       ],
     };
   },
@@ -212,6 +221,35 @@ export default {
     });
   },
   methods: {
+    handleExport(){
+      this.$confirm('确定导出推广数据吗？导出的时候请等待页面下载自动开始，如果数据量大，可能会等待稍长时间，请不要关闭或者刷新页面', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message.warning("请耐心等待，表格正在导出中......");
+        const { time, ...rest } =  this.filterData
+        request.post({
+          url: "/admin/adPromotionData/listExport",
+          params: {
+            startTime:time && time.length > 1 ? time[0] : "",
+            endTime: time && time.length > 1 ? time[1] : "",
+            ...rest
+          },
+          success: (res) => {
+            let downloadElement = document.createElement("a");
+            downloadElement.href = "https://" + res;
+            document.body.appendChild(downloadElement);
+            downloadElement.click(); //点击下载
+            document.body.removeChild(downloadElement); //下载完成移除元素
+            this.$message.success("导出成功");
+            this.searchFilter();
+          },
+        });
+      }).catch(() => {
+        this.$message.info("已取消导出");
+      });
+    },
     searchFilter() {
       this.table.currentPage = 1;
       this.getList();

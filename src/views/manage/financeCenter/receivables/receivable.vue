@@ -31,8 +31,8 @@
       </div>
     </BasicTable>
     <add-dialog @success="handleSuccess" ref="addDialog"></add-dialog>
-    <create-collection-dialog ref="collectionRef" @success="handleSuccess">
-    </create-collection-dialog>
+    <ling-kuan ref="collectionRef" @success="handleSuccess">
+    </ling-kuan>
     <detail-drawer ref="drawerRef"></detail-drawer>
     <refund  @success="handleSuccess"  ref="refundRef"></refund>
   </div>
@@ -45,6 +45,7 @@ import addDialog from "./addDialog.vue";
 import { getDate } from "../../../../utils/tools";
 import { orderStatus } from "./const";
 import createCollectionDialog from "../../orderManage/index/createCollectionDialog.vue";
+import lingKuan from "@/views/manage/financeCenter/receivables/lingKuan";
 import DetailDrawer from "./detailDrawer.vue";
 import refund from "./refund.vue";
 export default {
@@ -55,9 +56,11 @@ export default {
     createCollectionDialog,
     DetailDrawer,
     refund,
+    lingKuan,
   },
   data() {
     return {
+
       loading: false,
       categoryOptions: [],
       orderStatus: orderStatus,
@@ -70,7 +73,7 @@ export default {
           },
           {
             type: "input",
-            label: "产品名称",
+            label: "课程名称",
             value: "courseName",
           },
 
@@ -257,13 +260,48 @@ export default {
         //   },
         // },
       ],
-      headerOperates: [],
+      headerOperates: [
+        {
+          key: "export",
+          name: "导出",
+          permission: "system/sysCourseOrderBills/receivablesListExport",
+          action: () => {
+            this.handleExport();
+          },
+        },
+      ],
     };
   },
   created() {
     this.getList();
   },
   methods: {
+    handleExport(){
+      this.$confirm('确定导出应收款列表吗？导出的时候请等待页面下载自动开始，如果数据量大，可能会等待稍长时间，请不要关闭或者刷新页面', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message.warning("请耐心等待，表格正在导出中......");
+        request.post({
+          url: "/system/sysCourseOrderBills/receivablesListExport",
+          params: {
+            ...this.filterData,
+          },
+          success: (res) => {
+            let downloadElement = document.createElement("a");
+            downloadElement.href = "https://" + res;
+            document.body.appendChild(downloadElement);
+            downloadElement.click(); //点击下载
+            document.body.removeChild(downloadElement); //下载完成移除元素
+            this.$message.success("导出成功");
+            this.searchFilter();
+          },
+        });
+      }).catch(() => {
+        this.$message.info("已取消导出");
+      });
+    },
     searchFilter() {
       this.table.currentPage = 1;
       this.getList();

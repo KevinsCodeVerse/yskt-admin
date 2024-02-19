@@ -106,7 +106,16 @@ export default {
         total: 0,
       },
       operates: [],
-      headerOperates: [],
+      headerOperates: [
+        {
+          key: "export",
+          name: "导出",
+          permission: "system/sysCourseOrderBills/departmentalPerformanceStatisticsListExport",
+          action: () => {
+            this.handleExport();
+          },
+        },
+      ],
     };
   },
   created() {
@@ -115,6 +124,35 @@ export default {
     console.log(this.startTime);
   },
   methods: {
+    handleExport(){
+      this.$confirm('确定导出部门业绩统计列表吗？导出的时候请等待页面下载自动开始，如果数据量大，可能会等待稍长时间，请不要关闭或者刷新页面', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message.warning("请耐心等待，表格正在导出中......");
+        const { time, ...rest } = this.filterData;
+        request.post({
+          url: "/system/sysCourseOrderBills/departmentalPerformanceStatisticsListExport",
+          params: {
+            createTimeSt: time[0],
+            createTimeEt: time[1],
+            ...rest,
+          },
+          success: (res) => {
+            let downloadElement = document.createElement("a");
+            downloadElement.href = "https://" + res;
+            document.body.appendChild(downloadElement);
+            downloadElement.click(); //点击下载
+            document.body.removeChild(downloadElement); //下载完成移除元素
+            this.$message.success("导出成功");
+            this.searchFilter();
+          },
+        });
+      }).catch(() => {
+        this.$message.info("已取消导出");
+      });
+    },
     searchFilter() {
       this.table.currentPage = 1;
       this.getList();

@@ -128,7 +128,7 @@ export default {
             id: 1,
             prop: "orderNum",
             label: "订单号",
-            minWidth: "200px",
+            width:"200px"
           },
           {
             id: 2,
@@ -140,6 +140,7 @@ export default {
               );
               return item ? item.label : "";
             },
+            width:"80px"
           },
           {
             id: 3,
@@ -151,7 +152,7 @@ export default {
             id: 4,
             prop: "time",
             label: "开始/结束日期",
-            minWidth: "200px",
+
             render: (row) => {
               return row.startTime
                 ? `${getDate(row.startTime, "yyyy-MM-dd")} 至 ${getDate(
@@ -160,64 +161,67 @@ export default {
                   )}`
                 : "";
             },
+            width:"200px"
           },
           {
             id: 5,
             prop: "collectionUnit",
             label: "收款单位",
+            width:"80px"
           },
           {
             id: 6,
             prop: "count",
             label: "数量",
+            width:"80px"
           },
           {
             id: 7,
             prop: "receivablePrice",
             label: "应收金额",
-            minWidth: "100px",
+            width:"80px"
           },
           {
             id: 8,
             prop: "receivedPrice",
             label: "已收金额",
-            minWidth: "100px",
+            width:"80px"
           },
           {
             id: 9,
             prop: "unReceivedPrice",
             label: "未收金额",
-            minWidth: "100px",
+            width:"80px"
           },
           {
             id: 10,
             prop: "pendingTrialPrice",
             label: "待审金额",
-            minWidth: "100px",
+            width:"80px"
           },
           {
             id: 11,
             prop: "invoicedPrice",
             label: "已开票金额",
-            minWidth: "100px",
+            width:"100px"
           },
           {
             id: 12,
             prop: "vipName",
             label: "下单人",
-            minWidth: "120px",
+            width:"120px"
           },
           {
             id: 13,
             prop: "collectionName",
             label: "收款人",
-            minWidth: "100px",
+            width:"80px"
           },
           {
             id: 14,
             prop: "profitAdName",
             label: "销售人",
-            minWidth: "100px",
+            width:"80px"
           },
         ],
         pageSize: 20,
@@ -285,7 +289,16 @@ export default {
         //   },
         // },
       ],
-      headerOperates: [],
+      headerOperates: [
+        {
+          key: "export",
+          name: "导出",
+          permission: "system/sysCourseOrderBills/outstandingAccountsListExport",
+          action: () => {
+            this.handleExport();
+          },
+        },
+      ],
     };
   },
   created() {
@@ -296,6 +309,41 @@ export default {
     this.getCategoryList();
   },
   methods: {
+    handleExport(){
+      this.$confirm('确定导出未结清订单列表吗？导出的时候请等待页面下载自动开始，如果数据量大，可能会等待稍长时间，请不要关闭或者刷新页面', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message.warning("请耐心等待，表格正在导出中......");
+        const { openTime, endTime, createTime, ...rest } = this.filterData;
+        request.post({
+          url: "/system/sysCourseOrderBills/outstandingAccountsListExport",
+          params: {
+            ...rest,
+            openStartTime: openTime && openTime.length > 0 ? openTime[0] : "",
+            openEndTime: openTime && openTime.length > 0 ? openTime[1] : "",
+            createStartTime:
+                createTime && createTime.length > 0 ? createTime[0] : "",
+            createEndTime:
+                createTime && createTime.length > 0 ? createTime[1] : "",
+            endStartTime: endTime && endTime.length > 0 ? endTime[0] : "",
+            endEndTime: endTime && endTime.length > 0 ? endTime[1] : "",
+          },
+          success: (res) => {
+            let downloadElement = document.createElement("a");
+            downloadElement.href = "https://" + res;
+            document.body.appendChild(downloadElement);
+            downloadElement.click(); //点击下载
+            document.body.removeChild(downloadElement); //下载完成移除元素
+            this.$message.success("导出成功");
+            this.searchFilter();
+          },
+        });
+      }).catch(() => {
+        this.$message.info("已取消导出");
+      });
+    },
     searchFilter() {
       this.table.currentPage = 1;
       this.getList();

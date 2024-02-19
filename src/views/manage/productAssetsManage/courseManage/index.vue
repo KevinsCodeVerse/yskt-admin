@@ -138,8 +138,8 @@ export default {
           },
           {
             id: 2,
-            prop: "name",
-            label: "课程名称",
+            prop: "setMealName",
+            label: "所属套餐名称",
             width: "160px",
           },
           {
@@ -150,15 +150,6 @@ export default {
               const item = this.hasLiveOptions.find(
                 (item) => item.value == row.hasLive
               );
-              return item ? item.label : "";
-            },
-          },
-          {
-            id: 4,
-            prop: "tag",
-            label: "课程标签",
-            render: (row) => {
-              const item = tagOptions.find((item) => item.value == row.hasLive);
               return item ? item.label : "";
             },
           },
@@ -259,7 +250,7 @@ export default {
         {
           key: "charpter",
           title: "章节详情",
-          permission: "admin/adCourseChapters/list",
+          permission: "admin/adCourseChapters/courseList",
           btnStyle: "yellow",
           action: (o, row) => {
             this.$refs.chapters.open(row);
