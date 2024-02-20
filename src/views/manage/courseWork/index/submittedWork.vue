@@ -94,12 +94,12 @@ export default {
             label: "作业标题",
             width: "180px"
           },
-          {
-            id: 9,
-            prop: "workUrl",
-            type: "image",
-            label: "作业图片",
-          },
+          // {
+          //   id: 9,
+          //   prop: "workUrl",
+          //   type: "image",
+          //   label: "作业图片",
+          // },
           {
             id: 10,
             prop: "status",
@@ -142,6 +142,7 @@ export default {
           permission: "admin/adCourseWorkSubmit/auditWorkEdit",
           btnStyle: "yellow",
           action: (o, row) => {
+            console.log("aaa:",row)
             this.$refs.audit.open(row);
           }
         },

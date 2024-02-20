@@ -288,7 +288,8 @@ export default {
             this.$refs.detailRef.open(row.orderNum);
           },
           show: (row) => {
-            return row.openStatus === 1;
+            return true;
+            // return row.openStatus === 1;
           },
         },
       ],
