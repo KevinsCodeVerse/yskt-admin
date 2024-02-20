@@ -207,8 +207,10 @@ export default {
 
     getcanSeeDepartmentList() {
       request.post({
-        url: "/admin/adDepartment/listNoPage",
-        params: {},
+        url: "/admin/adInfo/canChooseCanSeeDepartmentList",
+        params: {
+          id: sessionStorage.getItem("id")
+        },
         success: (res) => {
           this.canSeeDepartmentList = listToTree(res);
           this.departmentOptions = this.canSeeDepartmentList;

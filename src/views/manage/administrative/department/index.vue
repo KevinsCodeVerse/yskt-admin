@@ -59,8 +59,10 @@ export default {
   methods: {
     getTreeList() {
       request.post({
-        url: "/admin/adDepartment/listNoPage",
-        params: {},
+        url: "/admin/adInfo/canChooseCanSeeDepartmentList",
+        params: {
+          id: sessionStorage.getItem("id")
+        },
         success: (res) => {
           this.departmentData = listToTree(res);
           

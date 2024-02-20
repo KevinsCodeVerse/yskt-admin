@@ -208,7 +208,7 @@ export default {
 
     getDepartmentList() {
       request.post({
-        url: "/admin/adDepartment/listNoPage",
+        url: "/admin/adInfo/canChooseCanSeeDepartmentList",
         params: {
         },
         success: (res) => {

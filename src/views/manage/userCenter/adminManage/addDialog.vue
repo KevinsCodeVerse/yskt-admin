@@ -268,7 +268,7 @@ export default {
     getcanSeeDepartmentList() {
       request.post({
         // url: "/admin/adDepartment/listNoPage",
-        url: "admin/adInfo/canChooseCanSeeDepartmentList",
+        url: "/admin/adInfo/canChooseCanSeeDepartmentList",
         params: {
           id: sessionStorage.getItem("id")
         },

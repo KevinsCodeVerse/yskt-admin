@@ -287,9 +287,10 @@
 			},
 			getDepartmentList() {
 				request.post({
-					url: "/admin/adDepartment/listNoPage",
+					url: "/admin/adInfo/canChooseCanSeeDepartmentList",
 					params: {
 						...this.addData,
+						id: sessionStorage.getItem("id")
 					},
 					success: (res) => {
 						this.departmentList = res;
