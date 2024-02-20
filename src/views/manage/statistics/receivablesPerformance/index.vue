@@ -67,6 +67,7 @@
         :pageSize="table.pageSize"
         :currentPage="table.currentPage"
         :total="table.total"
+        table-remark="注：由于一个订单套餐会包含多个课程，所以该统计只统计包含了该课程的订单数量，不统计相关订单金额"
         @current-page-change="currentPageChange"
         @size-page-change="sizePageChange"
         v-if="tagCheck===3"
@@ -227,7 +228,7 @@ export default {
     };
   },
   created() {
-    this.getDepartmentList();
+    // this.getDepartmentList();
     this.getList();
   },
   mounted() {

@@ -122,7 +122,7 @@ export default {
           },
           {
             type: "timeAll",
-            label: ["核销开始时间", "核销开始时间"],
+            label: ["订单开始时间", "订单结束时间"],
             value: "writeOffTime",
           },
         ],

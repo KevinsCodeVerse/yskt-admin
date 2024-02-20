@@ -6,6 +6,7 @@
     <!-- 顶部操作，描述 -->
     <div class="table-header" v-if="isShowTableHead">
       <div class="table-header-title">{{ tableTitle }}</div>
+      <span style="color: red;font-size: 10px;position: absolute;left: 100px;bottom: 15px">{{tableRemark}}</span>
       <div class="table-header-operate">
         <HeaderOperate :operates="headerOperates" />
       </div>
@@ -204,6 +205,10 @@ export default {
       type: String,
       default: "列表",
     },
+    tableRemark:{
+      type: String,
+      default:"",
+    },
     selectType: {
       type: String,
       default: "none",
@@ -303,6 +308,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: relative;
   .table-header-title {
     margin-left: 15px;
     font-family: PingFangSC-Medium;

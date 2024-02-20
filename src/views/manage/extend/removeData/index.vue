@@ -113,6 +113,11 @@ export default {
             label: "销售员",
           },
           {
+            id: 10,
+            prop: "createAdName",
+            label: "推广员",
+          },
+          {
             id: 5,
             prop: "qq",
             label: "QQ",
@@ -142,6 +147,9 @@ export default {
             prop: "degree",
             label: "学历",
             render: (row) => {
+              if(!row.degree){
+                return "未填写"
+              }
               return degreeOptions.find((item) => item.value === row.degree)[
                 "label"
               ];
