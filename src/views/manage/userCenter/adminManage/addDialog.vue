@@ -118,15 +118,15 @@
         <span>账号：{{ accountInfo.account }}</span>
         <span>密码：{{ accountInfo.password }}</span>
       </div>
-      <span slot="footer" class="dialog-footer">
-        <jat-button
-          v-clipboard:copy="
-            '账号：' + accountInfo.account + '\n密码：' + accountInfo.password
-          "
-          v-clipboard:success="onCopy"
-          >一键复制</jat-button
-        >
-      </span>
+<!--      <span slot="footer" class="dialog-footer">-->
+<!--        <jat-button-->
+<!--          v-clipboard:copy="-->
+<!--            '账号：' + accountInfo.account + '\n密码：' + accountInfo.password-->
+<!--          "-->
+<!--          v-clipboard:success="onCopy"-->
+<!--          >一键复制</jat-button-->
+<!--        >-->
+<!--      </span>-->
     </el-dialog>
   </div>
 </template>

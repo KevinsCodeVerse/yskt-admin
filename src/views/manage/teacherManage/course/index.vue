@@ -58,16 +58,16 @@
         <span>推流码：{{ openLiveData.code }}</span>
       </div>
       <span slot="footer" class="dialog-footer">
-        <jat-button
-          v-clipboard:copy="
-            '推流地址：' +
-              openLiveData.rtmpPublishUrl +
-              '\n推流码：' +
-              openLiveData.code
-          "
-          v-clipboard:success="onCopy"
-          >一键复制</jat-button
-        >
+<!--        <jat-button-->
+<!--          v-clipboard:copy="-->
+<!--            '推流地址：' +-->
+<!--              openLiveData.rtmpPublishUrl +-->
+<!--              '\n推流码：' +-->
+<!--              openLiveData.code-->
+<!--          "-->
+<!--          v-clipboard:success="onCopy"-->
+<!--          >一键复制</jat-button-->
+<!--        >-->
       </span>
     </el-dialog>
     <chapters :isWrite="false" ref="chapters"></chapters>
