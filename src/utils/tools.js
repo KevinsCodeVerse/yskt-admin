@@ -327,6 +327,7 @@ export function listToTree(list) {
       }
       info[node.parentId].children.push(node);
     }
-    return node.parentId == -1;
+    return info[node.parentId] === undefined;
+    // return node.parentId == -1;
   });
 }
