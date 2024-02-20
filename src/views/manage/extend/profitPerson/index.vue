@@ -127,7 +127,7 @@ export default {
   created() {
     this.getList();
     getPromotionChannel((res) => {
-      this.filterOptions.column[1].options = res;
+      this.filterOptions.column[0].options = res;
     });
   },
   methods: {
