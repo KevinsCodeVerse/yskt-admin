@@ -13,8 +13,11 @@
       :rules="addChapterRule"
       ref="addChapterRef"
       label-position="left"
-      label-width="90px"
+      label-width="100px"
     >
+      <el-form-item label="父章节名称:" prop="name">
+        {{ parentInfo.name }}
+      </el-form-item>
       <el-form-item label="章节名称:" prop="name">
         <jat-input v-model="addData.name" placeholder="请输入名称"></jat-input>
       </el-form-item>
@@ -60,6 +63,7 @@ export default {
     return {
       addChaptersVisible: false,
       dialogTitle: "",
+      parentInfo: {},
       addData: {
         courseId: "",
         name: "",
@@ -70,7 +74,7 @@ export default {
       },
       categoryOptions: [],
       addChapterRule: {
-        name: [{ required: true, message: "请输入章节名称", trigger: "blur" }]
+        name: [{ required: true, message: "请输入章节名称", trigger: "blur" }],
       },
     };
   },
@@ -78,28 +82,24 @@ export default {
   mounted() {},
 
   methods: {
-    open(id) {
+    open(row, id) {
       this.dialogTitle = "添加章节";
+      this.parentInfo = row;
       this.addData.courseId = id;
       this.addChaptersVisible = true;
     },
-    edit({
-        name,
-        image,
-        url,
-        lengthTime,
-        id,
-    }, courseId) {
+    edit({ name, image, url, lengthTime, id, parentInfo }, courseId) {
       this.dialogTitle = "编辑章节";
       this.addChaptersVisible = true;
+      this.parentInfo = parentInfo;
       this.addData = {
         name,
         image,
         url,
         lengthTime,
         id,
-        courseId
-    };
+        courseId,
+      };
     },
     geVideoTime(videoUrl) {
       const audio = new Audio(videoUrl);
@@ -160,6 +160,7 @@ export default {
               url: "/admin/adCourseChapters/uploadCourseEdit",
               params: {
                 id,
+                parentId: this.parentInfo.id,
                 ...rest,
               },
               success: (res) => {
@@ -172,6 +173,7 @@ export default {
             request.post({
               url: "/admin/adCourseChapters/uploadCourseAdd",
               params: {
+                parentId: this.parentInfo.id,
                 ...rest,
               },
               success: (res) => {

@@ -33,7 +33,33 @@
             </el-option>
           </jat-select>
         </el-form-item>
-        <el-form-item style="width: 100%; height: 330px; overflow: hidden;" label="课程套餐:" prop="ids">
+        <el-form-item
+          style="width: 100%; height: 330px; overflow: hidden;"
+          label="课程套餐:"
+          class="filter-form-item"
+          prop="ids"
+        >
+          <div class="filter-table">
+            <jat-select
+              class="filterBox"
+              style="width: 80%;"
+              v-model="filterSelectData"
+              value-key="id"
+              multiple
+              placeholder="根据课程名称进行搜索"
+              @change="handleFilterChange"
+              clearable
+              filterable
+            >
+              <el-option
+                v-for="item in selectDataList"
+                :key="item.id"
+                :label="item.name"
+                :value="item"
+              >
+              </el-option>
+            </jat-select>
+          </div>
           <BasicTable
             v-model="addData.ids"
             height="300px"
@@ -45,6 +71,8 @@
             :hasSort="false"
             :columns="columns"
             :isShowTableHead="false"
+            :reserveSelection="true"
+            row-key="id"
             :data="tableData"
           ></BasicTable>
         </el-form-item>
@@ -164,6 +192,8 @@ export default {
       dialogTitle: "",
       tableData: [],
       userAdminOptions: [],
+      filterSelectData: [],
+      selectDataList: [],
       userAllOptions: [],
       categoryOptions: [],
       columns: [
@@ -220,14 +250,13 @@ export default {
   mounted() {
     this.getCurrentUser();
     this.getCategoryList();
-   
   },
 
   methods: {
     open() {
       this.dialogTitle = "增加订单";
       this.addModifyVisible = true;
-      this.cancalReadOnly()
+      this.cancalReadOnly();
     },
     edit({
       id,
@@ -256,7 +285,7 @@ export default {
         remark,
         time: startTime && endTime ? [startTime, endTime] : [],
       };
-      this.cancalReadOnly()
+      this.cancalReadOnly();
     },
     close() {
       this.$refs.clientRef && this.$refs.clientRef.clearValidate();
@@ -278,7 +307,7 @@ export default {
       this.$nextTick(() => {
         if (!onOff) {
           const { select1, select2 } = this.$refs;
-          
+
           const input1 = select1.$el.querySelector(".el-input__inner");
           const input2 = select2.$el.querySelector(".el-input__inner");
           input1.removeAttribute("readonly");
@@ -306,6 +335,7 @@ export default {
         },
         success: (res) => {
           this.tableData = res;
+          this.selectDataList = res;
           this.$nextTick(() => {
             this.tableData.forEach((row) => {
               this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.toggleRowSelection(
@@ -333,6 +363,13 @@ export default {
           this.categoryOptions = res;
         },
       });
+    },
+    handleFilterChange(list) {
+      if (list && list.length > 0) {
+        this.tableData = list;
+      } else {
+        this.tableData = this.selectDataList;
+      }
     },
 
     handleSubmit() {
@@ -414,8 +451,22 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  .filter-form-item {
+    position: relative;
+    /deep/.el-form-item__content {
+      position: unset;
+    }
+
+    .filterBox {
+      top: -5px;
+      left: 90px;
+      position: absolute;
+    }
+
+  }
   .el-form-item {
     width: 48%;
+    
   }
 }
 

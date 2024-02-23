@@ -215,7 +215,9 @@ export default {
     line-height: 30px;
     color: @fontColor;
     background: @bgInput;
-    border-color: @borderColor;
+    
+    // border-color: @borderColor;
+    border-color: #307afc;
     border-radius: 4px;
     box-shadow: none;
     box-sizing: border-box;
@@ -254,7 +256,6 @@ export default {
     cursor: not-allowed;
     background-color: @bgInput;
     border-color: @borderColor;
-
     &::-webkit-input-placeholder {
       color: @disabled;
     }
@@ -278,15 +279,16 @@ export default {
       line-height: 14px;
       color: @fontColor;
       background: @bgInput;
-      border: 1px solid @borderColor;
+      border: 2px solid @borderColor;
+      border: 2px solid #307afc;
       border-radius: 4px;
 
       &:hover {
-        border: 1px solid @hoverColor;
+        border: 2px solid @hoverColor;
       }
 
       &:focus {
-        border: 1px solid @inputFocusColor;
+        border: 2px solid @inputFocusColor;
       }
 
       &::-webkit-input-placeholder {
@@ -322,7 +324,7 @@ export default {
 
   &.nodata {
     .el-textarea__inner {
-      border: 1px solid @error !important;
+      border: 2px solid @error !important;
 
       &:hover {
         border-color: @errorHover !important;
@@ -330,7 +332,7 @@ export default {
     }
 
     .el-input__inner {
-      border: 1px solid @error !important;
+      border: 2px solid @error !important;
 
       &:hover {
         border-color: @errorHover !important;

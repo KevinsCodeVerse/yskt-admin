@@ -1,5 +1,6 @@
 <template>
   <div :class="FilterCollapse && 'FilterCollapse'" class="FilterContent">
+    <div class="header-title">筛选条件</div>
     <div class="BasicInfo_title" v-if="header_tab.length > 0">
       <span
         v-for="tab in header_tab"
@@ -242,6 +243,30 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.header-title {
+    padding: 5px 15px;
+    margin-bottom: 15px;
+    font-family: PingFangSC-Medium;
+    font-size: 20px;
+    background: #167cf3;
+    color: #fff;
+  //   color: #333333;
+  //   letter-spacing: 0;
+  //   line-height: 28px;
+  //   font-weight: bold;
+  //   position: relative;
+  //   &::before {
+  //     content: "";
+  //     position: absolute;
+  //     width: 5px;
+  //     height: 100%;
+  //     left: -10px;
+  //     // bottom: -3px;
+  //     background: #167cf3;
+  //     // background: url("@/assets/img/title_bg.png") no-repeat center;
+  //   }
+  }
+
 .searchBtn {
   font-family: PingFangSC-Medium;
   font-size: 14px;
@@ -360,7 +385,7 @@ export default {
   flex-shrink: 0;
   height: auto;
   max-height: 300px;
-  padding: 20px 0 0;
+  // padding: 20px 0 0;
   margin-bottom: 16px;
   overflow: hidden;
   background: #fff;

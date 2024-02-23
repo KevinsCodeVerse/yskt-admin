@@ -3,6 +3,11 @@
     class="app-main-container"
     :class="{ 'main-container-no-card': hasCard === false }"
   >
+    <!-- :headerCellStyle="{
+          background: '#EBEFF4',
+          fontWeight: '600',
+          color: '#333333',
+        }" -->
     <!-- 顶部操作，描述 -->
     <div class="table-header" v-if="isShowTableHead">
       <div class="table-header-title">{{ tableTitle }}</div>
@@ -20,9 +25,9 @@
         stripe
         :highlightCurrentRow="true"
         :headerCellStyle="{
-          background: '#EBEFF4',
+          background: '#0579df',
           fontWeight: '600',
-          color: '#333333',
+          color: '#fff',
         }"
         :loading="loading"
         v-bind="$attrs"
@@ -76,7 +81,7 @@
             :fixed="getWidth > 479 ? 'left' : false"
           />
         </template>
-       
+
         <el-table-column
           v-for="c in columns"
           :key="c.id"
@@ -249,8 +254,8 @@ export default {
   },
   computed: {
     getWidth() {
-      return window.innerWidth
-    }
+      return window.innerWidth;
+    },
   },
   methods: {
     formdatetime(data, formate) {

@@ -21,6 +21,8 @@
   border-radius: 4px;
   box-shadow: none;
   box-sizing: border-box;
+  border-color: #167cf3 !important;
+  border-width: 2px !important;
 }
 .el-input__inner::-webkit-input-placeholder,
 .el-range-input::-webkit-input-placeholder {
@@ -54,3 +56,5 @@
 .el-date-editor .el-range-input:focus {
   border-color: rgba(45, 125, 255, 0.8) !important;
 }
+
+

@@ -29,10 +29,10 @@
   border-top-color: #a2a4ad;
 }
 .jat_table .el-table .ascending .sort-caret.ascending {
-  border-bottom-color: #167cf3;
+  border-bottom-color: #fff;
 }
 .jat_table .el-table .descending .sort-caret.descending {
-  border-top-color: #167cf3;
+  border-top-color: #fff;
 }
 .jat_table .el-table,
 .jat_table .el-table__expanded-cell {
