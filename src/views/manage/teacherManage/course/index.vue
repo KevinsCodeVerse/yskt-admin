@@ -295,7 +295,8 @@ export default {
             this.$refs.upload.open("上传录播", 1, row.id);
           },
           show: (row) => {
-            return row.hasLive === 1;
+            // return row.hasLive === 1;
+            return false;
           },
         },
         {
@@ -307,7 +308,8 @@ export default {
             this.$refs.upload.open("上传直播回放", 2, row.id);
           },
           show: (row) => {
-            return row.hasLive === 0;
+            // return row.hasLive === 0;
+            return false;
           },
         },
         {

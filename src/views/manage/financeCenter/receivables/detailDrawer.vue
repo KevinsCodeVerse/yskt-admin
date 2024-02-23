@@ -28,7 +28,7 @@
           </template>
           {{ info.receivablePrice }}
         </el-descriptions-item>
-        <el-descriptions-item>
+        <el-descriptions-item v-if="info.aa">
           <template slot="label">
             收款明细
           </template>
@@ -39,6 +39,17 @@
             收款备注
           </template>
           {{ info.remark }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            水单
+          </template>
+          <el-image
+              style="width: 50px"
+              :src="info.receiptUrl"
+              :preview-src-list="info.imageArr"
+          >
+          </el-image>
         </el-descriptions-item>
       </el-descriptions>
     </el-drawer>

@@ -210,6 +210,7 @@ export default {
       request.post({
         url: "/admin/adInfo/canChooseCanSeeDepartmentList",
         params: {
+          id:sessionStorage.getItem("id")
         },
         success: (res) => {
           this.departmentList = res;

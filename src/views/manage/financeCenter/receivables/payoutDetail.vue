@@ -250,7 +250,8 @@ export default {
           btnStyle: "green",
           // 已收、取消、回退
           show: (row) => {
-            return row.status == 0 || row.status == 1;
+            // return row.status == 0 || row.status == 1;
+            return true;
           },
           action: (o, row) => {
             console.log("row",row)
@@ -258,6 +259,9 @@ export default {
             row.count=1
             row.vipName=row.collectionUnit
             row.receivablePrice=row.receivable
+            var imageArr=[]
+            imageArr.push(row.receiptUrl)
+            row.imageArr=imageArr
             this.$refs.drawerRef.open(row);
             // this.handleDelete(row);
           },

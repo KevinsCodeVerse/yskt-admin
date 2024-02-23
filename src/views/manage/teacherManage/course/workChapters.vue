@@ -83,7 +83,7 @@
           {
             key: "edit",
             title: "布置作业",
-            permission: "admin/adCourseChapters/uploadCourseEdit",
+            permission: "admin/adCourseChapters/add",
             btnStyle: "yellow",
             action: (o, row) => {
               this.$refs.addWordDia.open(row);

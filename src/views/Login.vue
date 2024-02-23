@@ -182,7 +182,7 @@ export default {
               if (res.id === 1) {
                 // this.$router.push("/index");
                 this.$router.push({
-                  path: this.redirect || "/index",
+                  path: this.redirect || "/orderManage/index",
                   query: this.otherQuery,
                 });
               } else {
@@ -192,7 +192,7 @@ export default {
                 if (index !== -1) {
                   // this.$router.push("/index");
                   this.$router.push({
-                    path: this.redirect || "/index",
+                    path: this.redirect || "/orderManage/index",
                     query: this.otherQuery,
                   });
                 } else {

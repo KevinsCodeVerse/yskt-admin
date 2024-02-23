@@ -141,6 +141,9 @@ export default {
             prop: "degree",
             label: "学历",
             render: (row) => {
+              if(!row.degree){
+                return "未填写"
+              }
               return degreeOptions.find((item) => item.value === row.degree)[
                 "label"
               ];
