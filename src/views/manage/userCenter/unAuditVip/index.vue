@@ -188,6 +188,7 @@ export default {
             label: "注册时间",
             type: "date",
           },
+
         ],
         pageSize: 20,
         currentPage: 1,
@@ -197,18 +198,11 @@ export default {
       operates: [
         {
           key: "edit",
-          title: "编辑",
+          title: "审核",
           btnStyle: "yellow",
+          // permission: "admin/adInfo/auditVip",
           action: (o, row) => {
             this.$refs.addDialog.edit(row);
-          },
-        },
-        {
-          key: "detail",
-          title: "详情",
-          btnStyle: "green",
-          action: (o, row) => {
-            this.$refs.drawer.open(row, this.departmentList);
           },
         },
       ],

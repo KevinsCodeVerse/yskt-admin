@@ -57,15 +57,15 @@
             <svg-icon icon-class="department"></svg-icon>
             部门
           </template>
-          {{ info.departmentId }}
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template slot="label">
-            <svg-icon icon-class="department"></svg-icon>
-            可查看部门
-          </template>
           {{ info.departments }}
         </el-descriptions-item>
+<!--        <el-descriptions-item>-->
+<!--          <template slot="label">-->
+<!--            <svg-icon icon-class="department"></svg-icon>-->
+<!--            可查看部门-->
+<!--          </template>-->
+<!--          {{ info.departments }}-->
+<!--        </el-descriptions-item>-->
 
         <el-descriptions-item>
           <template slot="label">
