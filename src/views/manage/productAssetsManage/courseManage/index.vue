@@ -57,7 +57,7 @@ import {
   positionptions,
   tagOptions,
 } from "./const";
-import chapters from "../../teacherManage/course/courseChapters.vue";
+import chapters from "../../teacherManage/course/chapters.vue";
 export default {
   name: "adverstPage",
   components: { BasicTable, addDialog, chapters },
