@@ -162,7 +162,7 @@ export default {
     getList() {
       this.loading = true;
       request.post({
-        url: "/admin/adCourseChapters/list",
+        url: this.isWrite ? "/admin/adCourseChapters/list" : "/admin/adCourseChapters/courseList",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,
