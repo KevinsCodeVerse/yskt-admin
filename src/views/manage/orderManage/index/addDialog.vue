@@ -223,7 +223,7 @@ export default {
         marketPrice: "",
         profitAdId: "",
         remark: "",
-        time: [],
+        time: [this.$moment().format("YYYY-MM-DD"), this.$moment().add(1, 'y').format("YYYY-MM-DD")],
       },
 
       clientRule: {
@@ -417,6 +417,16 @@ export default {
 
     handleSelectionChange(itemList) {
       this.addData.ids = itemList.map((item) => item.id);
+      this.addData.costPrice = itemList.reduce(
+        (accumulator, currentValue) => accumulator + currentValue.costPrice,
+        0
+      );
+      this.addData.marketPrice = itemList.reduce(
+        (accumulator, currentValue) => accumulator + currentValue.price,
+        0
+      );
+    
+      
     },
 
     remoteMethod(search, type) {
@@ -462,11 +472,9 @@ export default {
       left: 90px;
       position: absolute;
     }
-
   }
   .el-form-item {
     width: 48%;
-    
   }
 }
 
