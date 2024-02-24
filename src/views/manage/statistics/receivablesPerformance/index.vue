@@ -294,9 +294,16 @@ export default {
           ...rest
         },
         success: (res) => {
-          this.table.data = res;
+          this.table.data = res.slice(
+            (this.table.currentPage - 1) * this.table.pageSize,
+            (this.table.currentPage - 1) * this.table.pageSize +
+              this.table.pageSize
+          );
           this.table.total = res.length;
+          // this.table.data = res;
+          // this.table.total = res.length;
           this.loading = false;
+          
         },
         catch: () => {
           this.loading = false;
@@ -367,7 +374,6 @@ export default {
     },
 
     handleTabSelect(tab, flag) {
-      console.log("213132")
       this.tagCheck = tab.id
       // if() {}
       if (tab.id == this.$route.query.type && tab.isChecked) {
