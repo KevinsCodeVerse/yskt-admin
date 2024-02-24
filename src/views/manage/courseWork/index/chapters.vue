@@ -1,6 +1,6 @@
 <!-- 章节列表 -->
 <template>
-  <el-dialog title="布置作业" width="60%" :visible.sync="chaptersVisible">
+  <el-dialog title="布置作11业" width="60%" :visible.sync="chaptersVisible">
     <div style="max-height: 500px;" v-loading="loading">
       <BasicTable
         :columns="table.columns"
@@ -13,6 +13,8 @@
         :pageSize="table.pageSize"
         :currentPage="table.currentPage"
         :total="table.total"
+        default-expand-all
+        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
         @current-page-change="currentPageChange"
         @size-page-change="sizePageChange"
       >
@@ -106,15 +108,25 @@ export default {
     getList() {
       this.loading = true;
       request.post({
-        url: "/admin/adCourseChapters/list",
+        url: "/admin/adCourseChapters/courseList",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,
           ...this.filterData,
         },
         success: (res) => {
-          this.table.data = res.list;
-          this.table.total = res.total;
+          this.table.data = res.map((item) => {
+            return {
+              ...item.parent,
+
+              children: item.sonList.map((son) => {
+                return {
+                  ...son,
+                  parentInfo: item.parent,
+                };
+              }),
+            };
+          });
           this.loading = false;
         },
         catch: () => {

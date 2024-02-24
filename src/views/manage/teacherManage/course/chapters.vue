@@ -175,7 +175,6 @@ export default {
           ...this.filterData,
         },
         success: (res) => {
-          console.log(res);
           this.table.data = res.map((item) => {
             return {
               ...item.parent,

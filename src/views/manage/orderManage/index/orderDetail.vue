@@ -8,6 +8,8 @@
       width="70%"
       @close="handleClose"
     >
+    
+   
       <el-descriptions
         class="margin-top"
         title="订单信息"
@@ -17,6 +19,9 @@
         size="medium"
         border
       >
+      <template slot="extra">
+      <jat-button @click="handleUpdateTime">修改订单时间</jat-button>
+    </template>
         <el-descriptions-item
           v-for="(order, index) in orderList"
           :key="order.id"
@@ -43,6 +48,30 @@
         :data="tableData"
       ></BasicTable>
     </el-dialog>
+    <el-dialog
+      title="修改订单时间"
+      :close-on-click-modal="false"
+      :visible.sync="timelVisible"
+      width="40%"
+      @close="handleTimeClose"
+    >
+    <el-form :model="diaData" ref="timeForm" :rules="rules" label-width="100px" :inline="false" size="normal">
+        <el-form-item label="订单时间:" prop="time">
+          <jat-date-picker
+            width="100%"
+            clearable
+            type="daterange"
+            placeholder="请选择订单时间"
+            size="small"
+            v-model="diaData.time"
+          ></jat-date-picker>
+        </el-form-item>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+        <jat-button plain @click="handleTimeClose">取 消</jat-button>
+        <jat-button @click="handleSubmit">确 定</jat-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -59,7 +88,11 @@ export default {
     return {
       getDate,
       detailVisible: false,
+      timelVisible: false,
       info: {},
+      diaData: {
+        time: []
+      },
       tableData: [],
       orderList: [
         {
@@ -168,6 +201,9 @@ export default {
           label: "创建人",
         },
       ],
+      rules: {
+        time: [{ required: true, message: "请选择订单时间", trigger: "blur" }]
+      }
     };
   },
 
@@ -178,6 +214,36 @@ export default {
     },
     handleClose() {
       this.detailVisible = false;
+    },
+    handleTimeClose() {
+      this.timelVisible = false
+      this.diaData.time = []
+    }
+  ,
+    handleUpdateTime() {
+      this.timelVisible = true
+      this.diaData.time = [this.getDate(this.info.startTime), this.getDate(this.info.endTime)]
+    },
+    handleSubmit() {
+      this.$refs.timeForm.validate((valid) => {
+        const { time } = this.diaData;
+        if (valid) {
+            request.post({
+              url: "/system/sysCourseOrder/orderTimeEdit",
+              params: {
+                orderNum: this.info.orderNum,
+                startTime: time && time.length > 0 ? time[0] : "",
+                endTime: time && time.length > 0 ? time[1] : "",
+              },
+              success: (res) => {
+                this.$message.success(res);
+                this.handleTimeClose()
+                this.getDetailInfo(this.info.orderNum)
+              },
+            });
+         
+        }
+      });
     },
     getDetailInfo(orderNum) {
       request.post({
@@ -217,7 +283,7 @@ export default {
 }
 
 /deep/.el-dialog__body {
-  height: 500px;
+  max-height: 500px;
   overflow: auto;
 }
 </style>
