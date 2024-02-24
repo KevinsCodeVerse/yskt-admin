@@ -282,49 +282,52 @@ export default {
     getList() {
       const { registerTime, ...rest } = this.filterData;
       this.loading = true;
-      this.$nextTick(() => {      
-
-      const department = this.$refs.filter.$refs.departmentRef[0].getCheckedNodes().map(item => item.data.id);
-
-      request.post({
-        url: "/admin/adInfo/adList",
-        params: {
-          pageNo: this.table.currentPage,
-          pageSize: this.table.pageSize,
-          ...rest,
-          departmentId: department && department.length > 0 ? JSON.stringify(department) : "",
-          startTime:
-            registerTime && registerTime.length > 0 ? registerTime[0] : "",
-          endTime:
-            registerTime && registerTime.length > 0
-              ? this.$moment(registerTime[1])
-                  .add(1, "days")
-                  .format("YYYY-MM-DD")
-              : "",
-        },
-        success: (res) => {
-          this.loading = false;
-          this.table.data = res.list;
-          this.table.total = res.total;
-          console.log("da:", this.table.data);
-          this.table.data.forEach((item) => {
-            if (!this.$common.checkNull(item.qq)) {
-              item.qq = "暂未填写qq";
-            }
-            if (!this.$common.checkNull(item.wechat)) {
-              item.wechat = "暂未填写微信号";
-            }
-            if (!this.$common.checkNull(item.canSeeDepartmentName)) {
-              item.canSeeDepartmentName = "无";
-            }
-          });
-        },
-        catch: () => {
-          this.loading = false;
-        },
+      this.$nextTick(() => {
+        const department = this.$refs.filter.$refs.departmentRef[0]
+          .getCheckedNodes()
+          .map((item) => item.data.id);
+        request.post({
+          url: "/admin/adInfo/adList",
+          params: {
+            pageNo: this.table.currentPage,
+            pageSize: this.table.pageSize,
+            ...rest,
+            departmentId:
+              department && department.length > 0
+                ? JSON.stringify(department)
+                : "",
+            startTime:
+              registerTime && registerTime.length > 0 ? registerTime[0] : "",
+            endTime:
+              registerTime && registerTime.length > 0
+                ? this.$moment(registerTime[1])
+                    .add(1, "days")
+                    .format("YYYY-MM-DD")
+                : "",
+          },
+          success: (res) => {
+            this.loading = false;
+            this.table.data = res.list;
+            this.table.total = res.total;
+            console.log("da:", this.table.data);
+            this.table.data.forEach((item) => {
+              if (!this.$common.checkNull(item.qq)) {
+                item.qq = "暂未填写qq";
+              }
+              if (!this.$common.checkNull(item.wechat)) {
+                item.wechat = "暂未填写微信号";
+              }
+              if (!this.$common.checkNull(item.canSeeDepartmentName)) {
+                item.canSeeDepartmentName = "无";
+              }
+            });
+          },
+          catch: () => {
+            this.loading = false;
+          },
+        });
       });
-	});
-	},
+    },
     getDepartmentList() {
       request.post({
         url: "/admin/adInfo/canChooseCanSeeDepartmentList",

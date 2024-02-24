@@ -4,6 +4,7 @@
     <jat-fillter
       :option="filterOptions"
       v-model="filterData"
+      ref="filter"
       @searchFilter="searchFilter"
       @clearFilter="clearFilter"
     ></jat-fillter>
@@ -24,7 +25,7 @@
 <script>
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
-import { listToTree } from '../../../../utils/tools';
+import { listToTree } from "../../../../utils/tools";
 export default {
   name: "personPerformance",
   components: { BasicTable },
@@ -44,27 +45,34 @@ export default {
             type: "cascader",
             label: "部门",
             value: "departmentId",
+            ref: "departmentRef",
             options: [],
             props: {
               value: "id",
               label: "name",
-              emitPath: false,
-              checkStrictly: true,
+              multiple: true,
             },
           },
           {
             type: "timeAll",
             label: ["开始日期", "结束日期"],
             value: "time",
-            clearable: false
+            clearable: false,
           },
         ],
       },
-      
+
       filterData: {
         profitAdId: "",
-        departmentId: "",
-        time: [this.$moment().startOf("month").format("YYYY-MM-DD"), this.$moment().endOf("month").format("YYYY-MM-DD")]
+        departmentId: [],
+        time: [
+          this.$moment()
+            .startOf("month")
+            .format("YYYY-MM-DD"),
+          this.$moment()
+            .endOf("month")
+            .format("YYYY-MM-DD"),
+        ],
       },
       table: {
         columns: [
@@ -114,13 +122,12 @@ export default {
         data: [],
         total: 0,
       },
-      operates: [
-        
-      ],
+      operates: [],
       headerOperates: [
         {
           key: "export",
-          permission: "system/sysCourseOrderBills/individualPerformanceStatisticsListExport",
+          permission:
+            "system/sysCourseOrderBills/individualPerformanceStatisticsListExport",
           name: "导出",
           action: () => {
             this.handleExport();
@@ -130,39 +137,46 @@ export default {
     };
   },
   created() {
-    this.getDepartmentList()
+    this.getDepartmentList();
     this.getList();
     console.log(this.startTime);
   },
   methods: {
-    handleExport(){
-      this.$confirm('确定导出个人业绩统计列表吗？导出的时候请等待页面下载自动开始，如果数据量大，可能会等待稍长时间，请不要关闭或者刷新页面', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message.warning("请耐心等待，表格正在导出中......");
-        const {time, ...rest} = this.filterData
-        request.post({
-          url: "/system/sysCourseOrderBills/individualPerformanceStatisticsListExport",
-          params: {
-            createTimeSt: time[0],
-            createTimeEt: time[1],
-            ...rest
-          },
-          success: (res) => {
-            let downloadElement = document.createElement("a");
-            downloadElement.href = "https://" + res;
-            document.body.appendChild(downloadElement);
-            downloadElement.click(); //点击下载
-            document.body.removeChild(downloadElement); //下载完成移除元素
-            this.$message.success("导出成功");
-            this.searchFilter();
-          },
+    handleExport() {
+      this.$confirm(
+        "确定导出个人业绩统计列表吗？导出的时候请等待页面下载自动开始，如果数据量大，可能会等待稍长时间，请不要关闭或者刷新页面",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }
+      )
+        .then(() => {
+          this.$message.warning("请耐心等待，表格正在导出中......");
+          const { time, ...rest } = this.filterData;
+          request.post({
+            url:
+              "/system/sysCourseOrderBills/individualPerformanceStatisticsListExport",
+            params: {
+              createTimeSt: time[0],
+              createTimeEt: time[1],
+              ...rest,
+            },
+            success: (res) => {
+              let downloadElement = document.createElement("a");
+              downloadElement.href = "https://" + res;
+              document.body.appendChild(downloadElement);
+              downloadElement.click(); //点击下载
+              document.body.removeChild(downloadElement); //下载完成移除元素
+              this.$message.success("导出成功");
+              this.searchFilter();
+            },
+          });
+        })
+        .catch(() => {
+          this.$message.info("已取消导出");
         });
-      }).catch(() => {
-        this.$message.info("已取消导出");
-      });
     },
     searchFilter() {
       this.table.currentPage = 1;
@@ -170,28 +184,38 @@ export default {
     },
     getList() {
       this.loading = true;
-      const {time, ...rest} = this.filterData
-      request.post({
-        url: "/system/sysCourseOrderBills/individualPerformanceStatisticsList",
-        params: {
-          pageNo: this.table.currentPage,
-          pageSize: this.table.pageSize,
-          createTimeSt: time[0],
-          createTimeEt: time[1],
-          ...rest
-        },
-        success: (res) => {
-          this.table.data = res.list;
-          this.table.total = res.total;
-          this.loading = false;
-        },
-        catch: () => {
-          this.loading = false;
-        },
+      this.$nextTick(() => {
+        console.log(this.$refs.filter.$refs.departmentRef[0]
+          .getCheckedNodes());
+        const department = this.$refs.filter.$refs.departmentRef[0]
+          .getCheckedNodes()
+          .map((item) => item.data.id);
+        const { time, ...rest } = this.filterData;
+        request.post({
+          url:
+            "/system/sysCourseOrderBills/individualPerformanceStatisticsList",
+          params: {
+            pageNo: this.table.currentPage,
+            pageSize: this.table.pageSize,
+            createTimeSt: time[0],
+            createTimeEt: time[1],
+            ...rest,
+            departmentId:
+              department && department.length > 0
+                ? JSON.stringify(department)
+                : "",
+          },
+          success: (res) => {
+            this.table.data = res.list;
+            this.table.total = res.total;
+            this.loading = false;
+          },
+          catch: () => {
+            this.loading = false;
+          },
+        });
       });
     },
-
-   
 
     handleDelete(row) {
       this.$confirm("此操作将会删除该新闻, 是否继续?", "提示", {
@@ -223,7 +247,7 @@ export default {
       request.post({
         url: "/admin/adInfo/canChooseCanSeeDepartmentList",
         params: {
-          id: sessionStorage.getItem("id")
+          id: sessionStorage.getItem("id"),
         },
         success: (res) => {
           this.departmentList = res;
@@ -236,7 +260,14 @@ export default {
       this.filterData = {
         profitAdId: "",
         departmentId: "",
-        time: [this.$moment().startOf("month").format("YYYY-MM-DD"), this.$moment().endOf("month").format("YYYY-MM-DD")]
+        time: [
+          this.$moment()
+            .startOf("month")
+            .format("YYYY-MM-DD"),
+          this.$moment()
+            .endOf("month")
+            .format("YYYY-MM-DD"),
+        ],
       };
       this.searchFilter();
     },

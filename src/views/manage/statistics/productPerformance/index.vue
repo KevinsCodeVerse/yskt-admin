@@ -4,6 +4,7 @@
     <jat-fillter
       :option="filterOptions"
       v-model="filterData"
+      ref="filter"
       @searchFilter="searchFilter"
       @clearFilter="clearFilter"
     ></jat-fillter>
@@ -49,12 +50,12 @@ export default {
             type: "cascader",
             label: "部门",
             value: "departmentId",
+            ref: "departmentRef",
             options: [],
             props: {
               value: "id",
               label: "name",
-              emitPath: false,
-              checkStrictly: true,
+              multiple: true,
             },
           },
           {
@@ -92,7 +93,7 @@ export default {
             id: 5,
             prop: "totalProfit",
             label: "总收入",
-          }
+          },
         ],
         pageSize: 20,
         currentPage: 1,
@@ -104,7 +105,8 @@ export default {
         {
           key: "export",
           name: "导出",
-          permission: "system/sysCourseOrderBills/coursePerformanceStatisticsExport",
+          permission:
+            "system/sysCourseOrderBills/coursePerformanceStatisticsExport",
           action: () => {
             this.handleExport();
           },
@@ -117,34 +119,41 @@ export default {
     this.getList();
   },
   methods: {
-    handleExport(){
-      this.$confirm('确定导出课程业绩统计列表吗？导出的时候请等待页面下载自动开始，如果数据量大，可能会等待稍长时间，请不要关闭或者刷新页面', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message.warning("请耐心等待，表格正在导出中......");
-        const { time, ...rest } = this.filterData;
-        request.post({
-          url: "/system/sysCourseOrderBills/coursePerformanceStatisticsExport",
-          params: {
-            startTime: time && time.length > 1 ? time[0] : "",
-            endTime: time && time.length > 1 ? time[1] : "",
-            ...rest,
-          },
-          success: (res) => {
-            let downloadElement = document.createElement("a");
-            downloadElement.href = "https://" + res;
-            document.body.appendChild(downloadElement);
-            downloadElement.click(); //点击下载
-            document.body.removeChild(downloadElement); //下载完成移除元素
-            this.$message.success("导出成功");
-            this.searchFilter();
-          },
+    handleExport() {
+      this.$confirm(
+        "确定导出课程业绩统计列表吗？导出的时候请等待页面下载自动开始，如果数据量大，可能会等待稍长时间，请不要关闭或者刷新页面",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }
+      )
+        .then(() => {
+          this.$message.warning("请耐心等待，表格正在导出中......");
+          const { time, ...rest } = this.filterData;
+          request.post({
+            url:
+              "/system/sysCourseOrderBills/coursePerformanceStatisticsExport",
+            params: {
+              startTime: time && time.length > 1 ? time[0] : "",
+              endTime: time && time.length > 1 ? time[1] : "",
+              ...rest,
+            },
+            success: (res) => {
+              let downloadElement = document.createElement("a");
+              downloadElement.href = "https://" + res;
+              document.body.appendChild(downloadElement);
+              downloadElement.click(); //点击下载
+              document.body.removeChild(downloadElement); //下载完成移除元素
+              this.$message.success("导出成功");
+              this.searchFilter();
+            },
+          });
+        })
+        .catch(() => {
+          this.$message.info("已取消导出");
         });
-      }).catch(() => {
-        this.$message.info("已取消导出");
-      });
     },
     searchFilter() {
       this.table.currentPage = 1;
@@ -153,23 +162,32 @@ export default {
     getList() {
       this.loading = true;
       const { time, ...rest } = this.filterData;
-      request.post({
-        url: "/system/sysCourseOrderBills/coursePerformanceStatistics",
-        params: {
-          pageNo: this.table.currentPage,
-          pageSize: this.table.pageSize,
-          startTime: time && time.length > 1 ? time[0] : "",
-          endTime: time && time.length > 1 ? time[1] : "",
-          ...rest,
-        },
-        success: (res) => {
-          this.table.data = res;
-          this.table.total = res.length;
-          this.loading = false;
-        },
-        catch: () => {
-          this.loading = false;
-        },
+      this.$nextTick(() => {
+        const department = this.$refs.filter.$refs.departmentRef[0]
+          .getCheckedNodes()
+          .map((item) => item.data.id);
+        request.post({
+          url: "/system/sysCourseOrderBills/coursePerformanceStatistics",
+          params: {
+            pageNo: this.table.currentPage,
+            pageSize: this.table.pageSize,
+            startTime: time && time.length > 1 ? time[0] : "",
+            endTime: time && time.length > 1 ? time[1] : "",
+            ...rest,
+            departmentId:
+              department && department.length > 0
+                ? JSON.stringify(department)
+                : "",
+          },
+          success: (res) => {
+            this.table.data = res;
+            this.table.total = res.length;
+            this.loading = false;
+          },
+          catch: () => {
+            this.loading = false;
+          },
+        });
       });
     },
 
@@ -203,7 +221,7 @@ export default {
       request.post({
         url: "/admin/adInfo/canChooseCanSeeDepartmentList",
         params: {
-          id: sessionStorage.getItem("id")
+          id: sessionStorage.getItem("id"),
         },
         success: (res) => {
           this.filterOptions.column[2].options = listToTree(res);
