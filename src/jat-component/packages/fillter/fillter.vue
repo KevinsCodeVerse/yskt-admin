@@ -53,8 +53,10 @@
             v-else-if="opt.type === 'cascader'"
             size="small"
             :placeholder="opt.label"
+            collapse-tags
             clearable
             v-model="FilterData[opt.value]"
+            :ref="opt.ref || ''"
             :options="opt.options"
             :props="opt.props"
           ></el-cascader>
@@ -243,13 +245,17 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+/deep/.el-cascader__tags {
+  flex-wrap: nowrap;
+  right: 70px;
+}
 .header-title {
-    padding: 5px 15px;
-    margin-bottom: 15px;
-    font-family: PingFangSC-Medium;
-    font-size: 20px;
-    background: #167cf3;
-    color: #fff;
+  padding: 5px 15px;
+  margin-bottom: 15px;
+  font-family: PingFangSC-Medium;
+  font-size: 20px;
+  background: #167cf3;
+  color: #fff;
   //   color: #333333;
   //   letter-spacing: 0;
   //   line-height: 28px;
@@ -265,7 +271,7 @@ export default {
   //     background: #167cf3;
   //     // background: url("@/assets/img/title_bg.png") no-repeat center;
   //   }
-  }
+}
 
 .searchBtn {
   font-family: PingFangSC-Medium;
@@ -493,7 +499,7 @@ export default {
       width: 100% !important;
     }
   }
-  .filter-btn{
+  .filter-btn {
     width: 100% !important;
   }
 }

@@ -45,6 +45,13 @@
           placeholder="请输入视频时长"
         ></jat-input>
       </el-form-item>
+      <el-form-item label="排序:" prop="sort">
+        <jat-input
+          v-input.int
+          v-model="addData.sort"
+          placeholder="请输入排序"
+        ></jat-input>
+      </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <jat-button plain @click="close">取 消</jat-button>
@@ -70,6 +77,7 @@ export default {
         image: "",
         url: "",
         lengthTime: undefined,
+        sort: 255,
         id: "",
       },
       categoryOptions: [],
@@ -88,7 +96,7 @@ export default {
       this.addData.courseId = id;
       this.addChaptersVisible = true;
     },
-    edit({ name, image, url, lengthTime, id, parentInfo }, courseId) {
+    edit({ name, image, url, lengthTime, id, parentInfo, sort }, courseId) {
       this.dialogTitle = "编辑章节";
       this.addChaptersVisible = true;
       this.parentInfo = parentInfo;
@@ -96,6 +104,7 @@ export default {
         name,
         image,
         url,
+        sort,
         lengthTime,
         id,
         courseId,
@@ -117,6 +126,7 @@ export default {
         name: "",
         image: "",
         url: "",
+        sort: 255,
         lengthTime: undefined,
         id: "",
       };

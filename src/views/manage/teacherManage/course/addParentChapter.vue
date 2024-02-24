@@ -18,6 +18,13 @@
       <el-form-item label="章节名称:" prop="name">
         <jat-input v-model="addData.name" placeholder="请输入名称"></jat-input>
       </el-form-item>
+      <el-form-item label="排序:" prop="sort">
+          <jat-input
+            v-input.int
+            v-model="addData.sort"
+            placeholder="请输入排序"
+          ></jat-input>
+        </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <jat-button plain @click="close">取 消</jat-button>
@@ -39,6 +46,7 @@ export default {
       addData: {
         name: "",
         courseId: "",
+        sort: 255,
         id: "",
       },
       categoryOptions: [],
@@ -56,12 +64,13 @@ export default {
       this.addData.courseId = id;
       this.addChaptersVisible = true;
     },
-    edit({ name, id }, courseId) {
+    edit({ name, id, sort }, courseId) {
       this.dialogTitle = "编辑父章节";
       this.addChaptersVisible = true;
       this.addData = {
         name,
         id,
+        sort,
         courseId,
       };
     },
@@ -70,6 +79,7 @@ export default {
       this.addData = {
         courseId: "",
         name: "",
+        sort: 255,
         id: "",
       };
       this.addChaptersVisible = false;

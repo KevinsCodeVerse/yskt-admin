@@ -1,6 +1,6 @@
 <!-- 章节列表 -->
 <template>
-  <el-dialog title="章节列表" width="60%" :visible.sync="chaptersVisible">
+  <el-dialog title="章节列表" width="80%" :visible.sync="chaptersVisible">
     <div style="max-height: 500px;" v-loading="loading">
       <BasicTable
         :columns="table.columns"
@@ -69,6 +69,7 @@ export default {
             id: 1,
             prop: "name",
             label: "章节名称",
+            align: "left"
           },
           {
             id: 2,
@@ -87,6 +88,11 @@ export default {
             prop: "lengthTime",
             label: "视频时长",
           },
+          {
+            id: 5,
+            prop: "sort",
+            label: "排序",
+          }
         ],
         pageSize: 20,
         currentPage: 1,
@@ -247,6 +253,12 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+/deep/.el-table__row:not([class*='el-table__row--level-']) {
+  td:first-child {
+    padding-left: 24px;
+  }
+}
+
 .tipInfo {
   font-size: 16px;
   margin: 10px;
