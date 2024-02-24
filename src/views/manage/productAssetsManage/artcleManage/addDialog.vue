@@ -170,10 +170,10 @@ export default {
         categoryId: [
           { required: true, message: "请选择文章分类", trigger: "blur" },
         ],
-        imgUrl: [
-          { required: true, message: "请上传文章封面", trigger: "blur" },
-        ],
-        href: [{ required: true, message: "请输入文章外链", trigger: "blur" }],
+        // imgUrl: [
+        //   { required: true, message: "请上传文章封面", trigger: "blur" },
+        // ],
+        // href: [{ required: true, message: "请输入文章外链", trigger: "blur" }],
         content: [
           { required: true, message: "请输入文章详细描述", trigger: "blur" },
         ],

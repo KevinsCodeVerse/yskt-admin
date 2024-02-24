@@ -1,4 +1,4 @@
-<!-- 添加广告 -->
+<!--  -->
 <template>
   <div>
     <el-dialog
@@ -223,7 +223,12 @@ export default {
         marketPrice: "",
         profitAdId: "",
         remark: "",
-        time: [this.$moment().format("YYYY-MM-DD"), this.$moment().add(1, 'y').format("YYYY-MM-DD")],
+        time: [
+          this.$moment().format("YYYY-MM-DD"),
+          this.$moment()
+            .add(1, "y")
+            .format("YYYY-MM-DD"),
+        ],
       },
 
       clientRule: {
@@ -337,6 +342,7 @@ export default {
           this.tableData = res;
           this.selectDataList = res;
           this.$nextTick(() => {
+            this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.clearSelection();
             this.tableData.forEach((row) => {
               this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.toggleRowSelection(
                 row
@@ -425,8 +431,6 @@ export default {
         (accumulator, currentValue) => accumulator + currentValue.price,
         0
       );
-    
-      
     },
 
     remoteMethod(search, type) {
