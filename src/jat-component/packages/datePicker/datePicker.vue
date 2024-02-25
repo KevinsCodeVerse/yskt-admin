@@ -48,7 +48,7 @@ export default {
   name: "jat-date-picker",
   props: {
     value: {
-      type: [Object, Array, String],
+      type: [Object, Array, String, Number],
     },
     /** year/month/date/dates/months/years week/datetime/datetimerange/ daterange/monthrange */
     type: {

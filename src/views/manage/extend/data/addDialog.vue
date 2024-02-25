@@ -39,6 +39,18 @@
             placeholder="销售员"
           ></select-user-remote>
         </el-form-item>
+        <el-form-item label="增加时间:" prop="addTime">
+          <jat-date-picker
+            width="100%"
+            clearable
+            type="datetime"
+            value-format="timestamp"
+            placeholder="请选择增加时间"
+            size="small"
+            v-model="addData.addTime"
+          ></jat-date-picker>
+        </el-form-item>
+     
         <el-form-item label="QQ:" prop="qq">
           <jat-input v-model="addData.qq" placeholder="请输入QQ"></jat-input>
         </el-form-item>
@@ -133,6 +145,7 @@ export default {
         wechat: "",
         channelId: "",
         promoterId: "",
+        addTime: ""
       },
       categoryOptions: [],
       promotionRule: {
@@ -141,6 +154,9 @@ export default {
         ],
         promoterId: [
           { required: true, message: "请选择销售员", trigger: "blur" },
+        ],
+        addTime: [
+          { required: true, message: "请选择增加时间", trigger: "blur" },
         ],
         phone: [
           {
@@ -205,6 +221,7 @@ export default {
       gender,
       name,
       phone,
+      addTime,
       qq,
       wechat,
       channelId,
@@ -224,6 +241,7 @@ export default {
         name,
         phone,
         age,
+        addTime,
         qq,
         wechat,
         channelId,
@@ -248,6 +266,7 @@ export default {
         wechat: "",
         channelId: "",
         promoterId: "",
+        addTime: ""
       };
       this.addModifyVisible = false;
     },
