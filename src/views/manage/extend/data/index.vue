@@ -4,6 +4,7 @@
     <jat-fillter
       :option="filterOptions"
       v-model="filterData"
+      ref="filter"
       @searchFilter="searchFilter"
       @clearFilter="clearFilter"
     ></jat-fillter>
@@ -38,8 +39,9 @@ import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 import addDialog from "./addDialog.vue";
 import { degreeOptions, genderOptions, getPromotionChannel } from "./const";
+import { listToTree } from '../../../../utils/tools';
 export default {
-  name: "adverstPage",
+  name: "dataPage",
   components: { BasicTable, addDialog },
   data() {
     return {
@@ -75,6 +77,18 @@ export default {
             value: "createAdId",
           },
           {
+            type: "cascader",
+            label: "部门",
+            value: "departmentId",
+            ref: "departmentRef",
+            options: [],
+            props: {
+              value: "id",
+              label: "name",
+              multiple: true,
+            },
+          },
+          {
             type: "timeAll",
             label: ["添加开始时间", "添加结束时间"],
             value: "time",
@@ -88,6 +102,7 @@ export default {
         promoterId: "",
         createAdId: "",
         time: [],
+        departmentId:[]
       },
       table: {
         columns: [
@@ -106,11 +121,11 @@ export default {
             prop: "promoterName",
             label: "销售员",
           },
-		  {
-		    id: 13,
-		    prop: "createAdName",
-		    label: "推广员",		    
-		  },
+          {
+            id: 13,
+            prop: "createAdName",
+            label: "推广员",
+          },
           {
             id: 5,
             prop: "qq",
@@ -141,8 +156,8 @@ export default {
             prop: "degree",
             label: "学历",
             render: (row) => {
-              if(!row.degree){
-                return "未填写"
+              if (!row.degree) {
+                return "未填写";
               }
               return degreeOptions.find((item) => item.value === row.degree)[
                 "label"
@@ -159,7 +174,7 @@ export default {
             prop: "createTime",
             label: "添加时间",
             type: "date",
-          },		
+          },
         ],
         pageSize: 20,
         currentPage: 1,
@@ -212,46 +227,52 @@ export default {
             this.$refs.addDialog.open();
           },
         },
-
       ],
     };
   },
   created() {
     this.getList();
+    this.getDepartmentList();
     getPromotionChannel((res) => {
       console.log(res);
       this.filterOptions.column[1].options = res;
     });
   },
   methods: {
-    handleExport(){
-      this.$confirm('确定导出推广数据吗？导出的时候请等待页面下载自动开始，如果数据量大，可能会等待稍长时间，请不要关闭或者刷新页面', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$message.warning("请耐心等待，表格正在导出中......");
-        const { time, ...rest } =  this.filterData
-        request.post({
-          url: "/admin/adPromotionData/listExport",
-          params: {
-            startTime:time && time.length > 1 ? time[0] : "",
-            endTime: time && time.length > 1 ? time[1] : "",
-            ...rest
-          },
-          success: (res) => {
-            let downloadElement = document.createElement("a");
-            downloadElement.href = "https://" + res;
-            document.body.appendChild(downloadElement);
-            downloadElement.click(); //点击下载
-            document.body.removeChild(downloadElement); //下载完成移除元素
-            this.$message.success("导出成功");
-            this.searchFilter();
-          },
+    handleExport() {
+      this.$confirm(
+        "确定导出推广数据吗？导出的时候请等待页面下载自动开始，如果数据量大，可能会等待稍长时间，请不要关闭或者刷新页面",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }
+      )
+        .then(() => {
+          this.$message.warning("请耐心等待，表格正在导出中......");
+          const { time, ...rest } = this.filterData;
+          request.post({
+            url: "/admin/adPromotionData/listExport",
+            params: {
+              startTime: time && time.length > 1 ? time[0] : "",
+              endTime: time && time.length > 1 ? time[1] : "",
+              ...rest,
+            },
+            success: (res) => {
+              let downloadElement = document.createElement("a");
+              downloadElement.href = "https://" + res;
+              document.body.appendChild(downloadElement);
+              downloadElement.click(); //点击下载
+              document.body.removeChild(downloadElement); //下载完成移除元素
+              this.$message.success("导出成功");
+              this.searchFilter();
+            },
+          });
+        })
+        .catch(() => {
+          this.$message.info("已取消导出");
         });
-      }).catch(() => {
-        this.$message.info("已取消导出");
-      });
     },
     searchFilter() {
       this.table.currentPage = 1;
@@ -259,33 +280,55 @@ export default {
     },
     getList() {
       this.loading = true;
-      const { time, ...rest } =  this.filterData
+      const { time, ...rest } = this.filterData;
+      this.$nextTick(() => {
+        const department = this.$refs.filter.$refs.departmentRef[0]
+          .getCheckedNodes()
+          .map((item) => item.data.id);
+        request.post({
+          url: "/admin/adPromotionData/list",
+          params: {
+            pageNo: this.table.currentPage,
+            pageSize: this.table.pageSize,
+            startTime: time && time.length > 1 ? time[0] : "",
+            endTime: time && time.length > 1 ? time[1] : "",
+            ...rest,
+            departmentId:
+              department && department.length > 0
+                ? JSON.stringify(department)
+                : "",
+          },
+          success: (res) => {
+            this.table.data = res.list;
+            this.table.total = res.total;
+            this.loading = false;
+          },
+          catch: () => {
+            this.loading = false;
+          },
+          finally: () => {
+            this.loading = false;
+          },
+        });
+      });
+    },
+    getDepartmentList() {
       request.post({
-        url: "/admin/adPromotionData/list",
+        url: "/admin/adInfo/canChooseCanSeeDepartmentList",
         params: {
-          pageNo: this.table.currentPage,
-          pageSize: this.table.pageSize,
-          startTime:time && time.length > 1 ? time[0] : "",
-          endTime: time && time.length > 1 ? time[1] : "",
-          ...rest
+          ...this.addData,
+          id: sessionStorage.getItem("id"),
         },
         success: (res) => {
-          this.table.data = res.list;
-          this.table.total = res.total;
-          this.loading = false;
-        },
-        catch: () => {
-          this.loading = false;
-        },
-        finally: () => {
-          this.loading = false;
+          this.departmentList = res;
+          this.filterOptions.column[4].options = listToTree(res);
         },
       });
     },
     handleSuccess() {
       this.getList();
     },
-    handleLogicDelete(row){
+    handleLogicDelete(row) {
       this.$confirm("此操作将会逻辑删除该推广数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -344,6 +387,7 @@ export default {
         promoterId: "",
         createAdId: "",
         time: [],
+        departmentId: []
       };
       this.searchFilter();
     },
