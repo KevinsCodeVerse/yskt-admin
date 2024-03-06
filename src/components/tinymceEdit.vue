@@ -90,31 +90,32 @@ export default {
       this.handleUpload(blobInfo.blob(), success);
     },
     handleUpload(file, success) {
-    try {
-      request.post({
-        url: "/comm/getUpToken",
-        params: {},
-        success: (res) => {
-          const observable = qiniu.upload(file, null, res);
-          observable.subscribe({
-            next: undefined,
-            error: () => {
-              this.$message.error("上传出错，请重新上传！");
-            },
-            complete: ({ key }) => {
-              this.$message.success("上传成功！");
-              success(this.$envConfig.qiniuDomain + key);
-            },
-          });
-        },
-      });
-    } catch (error) {
-      console.log(error);
-      this.$message.error("上传出错，请重新上传！");
-    }
+      try {
+        request.post({
+          url: "/comm/getUpToken",
+          params: {},
+          success: (res) => {
+            const observable = qiniu.upload(file, null, res + "aaa");
+            observable.subscribe({
+              next: undefined,
+              error: () => {
+                this.$message.error("上传出错，请重新上传！");
+                success("uploadFail");
+              },
+              complete: ({ key }) => {
+                this.$message.success("上传成功！");
+                success(this.$envConfig.qiniuDomain + key);
+              },
+            });
+          },
+        });
+      } catch (error) {
+        console.log(error);
+        this.$message.error("上传出错，请重新上传！");
+      }
+    },
   },
-  },
-  
+
   watch: {
     content() {
       this.$emit("change", this.content);
