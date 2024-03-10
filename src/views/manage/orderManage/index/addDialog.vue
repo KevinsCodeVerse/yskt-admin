@@ -18,7 +18,7 @@
       >
         <el-form-item style="width: 100%;" label="套餐分类" prop="course">
           <jat-select
-            v-model="addData.course"
+            v-model="addData.courseName"
             placeholder="请选择产品编号/产品名称"
             @change="handleCategoryChange"
             value-key="id"
@@ -28,7 +28,7 @@
               v-for="item in categoryOptions"
               :key="item.id"
               :label="item.name"
-              :value="item"
+              :value="item.name"
             >
             </el-option>
           </jat-select>
@@ -215,7 +215,7 @@ export default {
       ],
       addData: {
         id: "",
-        course: {},
+        courseName: "",
         adId: "",
         costPrice: "",
         count: 1,
@@ -264,14 +264,16 @@ export default {
       this.cancalReadOnly();
     },
     edit({
-      id,
-      course,
-      adId,
+      orderNum,
+      vipName,
+      vipAdId,
+      profitAdName,
+      profitAdId,
+      courseIds,
+      courseName,
       costPrice,
       count,
-      ids,
       marketPrice,
-      profitAdId,
       remark,
       startTime,
       endTime,
@@ -279,17 +281,41 @@ export default {
       this.dialogTitle = "修改订单";
       this.addModifyVisible = true;
       this.addData = {
-        id,
-        course,
-        adId,
+        orderNum,
+        courseName,
+        adId: vipAdId,
         costPrice,
         count: count ? count : 1,
-        ids,
+        ids: courseIds ? JSON.parse(courseIds) : [],
         marketPrice,
         profitAdId,
         remark,
-        time: startTime && endTime ? [startTime, endTime] : [],
+        time:
+          startTime && endTime
+            ? [getDate(startTime, "yyyy-MM-dd"), getDate(endTime, "yyyy-MM-dd")]
+            : [],
       };
+      this.userAllOptions = [
+        {
+          id: vipAdId,
+          name: vipName,
+        },
+      ];
+
+      this.userAdminOptions = [
+        {
+          id: profitAdId,
+          name: profitAdName,
+        },
+      ];
+
+      this.$nextTick(() => {
+        this.getCourseList(
+          this.categoryOptions.find((item) => item.name === courseName).id,
+          this.addData.ids
+        );
+      });
+
       this.cancalReadOnly();
     },
     close() {
@@ -308,8 +334,8 @@ export default {
         time: [
           this.$moment().format("YYYY-MM-DD"),
           this.$moment()
-              .add(1, "y")
-              .format("YYYY-MM-DD"),
+            .add(1, "y")
+            .format("YYYY-MM-DD"),
         ],
       };
       this.addModifyVisible = false;
@@ -318,7 +344,6 @@ export default {
       this.$nextTick(() => {
         if (!onOff) {
           const { select1, select2 } = this.$refs;
-
           const input1 = select1.$el.querySelector(".el-input__inner");
           const input2 = select2.$el.querySelector(".el-input__inner");
           input1.removeAttribute("readonly");
@@ -338,7 +363,7 @@ export default {
       ];
       this.addData.profitAdId = id;
     },
-    getCourseList(id) {
+    getCourseList(id, ids) {
       request.post({
         url: "/admin/adCourse/queryCourseListByCategoryId",
         params: {
@@ -349,11 +374,23 @@ export default {
           this.selectDataList = res;
           this.$nextTick(() => {
             this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.clearSelection();
-            this.tableData.forEach((row) => {
-              this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.toggleRowSelection(
-                row
-              );
-            });
+            if (ids) {
+              ids.forEach((id) => {
+                this.tableData.forEach((row) => {
+                  if (row.id === id) {
+                    this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.toggleRowSelection(
+                      row
+                    );
+                  }
+                });
+              });
+            } else {
+              this.tableData.forEach((row) => {
+                this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.toggleRowSelection(
+                  row
+                );
+              });
+            }
           });
         },
       });
@@ -386,16 +423,16 @@ export default {
 
     handleSubmit() {
       this.$refs.clientRef.validate((valid) => {
-        const { ids, time, id, course, ...rest } = this.addData;
+        const { ids, time, id, courseName,orderNum, ...rest } = this.addData;
 
         if (valid) {
-          if (id) {
+          if (orderNum) {
             request.post({
-              url: "/admin/adCustomer/edit",
+              url: "/system/sysCourseOrder/orderEdit",
               params: {
-                id,
+                orderNum,
                 ids: JSON.stringify(ids),
-                name: course.name,
+                name: courseName,
                 startTime: time && time.length > 0 ? time[0] : "",
                 endTime: time && time.length > 0 ? time[1] : "",
                 ...rest,
@@ -411,7 +448,7 @@ export default {
               url: "system/sysCourseOrder/quicklyPlaceOrderAdd",
               params: {
                 ids: JSON.stringify(ids),
-                name: course.name,
+                name: courseName,
                 startTime: time && time.length > 0 ? time[0] : "",
                 endTime: time && time.length > 0 ? time[1] : "",
                 ...rest,
@@ -429,14 +466,18 @@ export default {
 
     handleSelectionChange(itemList) {
       this.addData.ids = itemList.map((item) => item.id);
-      this.addData.costPrice = itemList.reduce(
-        (accumulator, currentValue) => accumulator + currentValue.costPrice,
-        0
-      );
-      this.addData.marketPrice = itemList.reduce(
-        (accumulator, currentValue) => accumulator + currentValue.price,
-        0
-      );
+      this.addData.costPrice = this.addData.costPrice
+        ? this.addData.costPrice
+        : itemList.reduce(
+            (accumulator, currentValue) => accumulator + currentValue.costPrice,
+            0
+          );
+      this.addData.marketPrice = this.addData.marketPrice
+        ? this.addData.marketPrice
+        : itemList.reduce(
+            (accumulator, currentValue) => accumulator + currentValue.price,
+            0
+          );
     },
 
     remoteMethod(search, type) {

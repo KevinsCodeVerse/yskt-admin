@@ -56,7 +56,6 @@ export default {
         ],
       },
       categoryOptions: [],
-
       filterData: {
         departmentId: "",
         time: [

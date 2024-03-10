@@ -51,7 +51,7 @@ import addDialog from "./addDialog.vue";
 import {getDate} from "../../../../utils/tools";
 import CreateCollectionDialog from "./createCollectionDialog.vue";
 import orderDetail from "./orderDetail.vue";
-import {orderStatus} from "../../financeCenter/receivables/const";
+import { orderStatus } from "../../financeCenter/receivables/const";
 import openCourse from "./openCourse.vue";
 
 const openStatusOptions = [
@@ -281,7 +281,6 @@ export default {
             this.$refs.collectionDialog.open(row.orderNum);
           },
           show: (row) => {
-            // return row.openStatus === 1;
             return true;
           },
         },
@@ -311,7 +310,20 @@ export default {
           },
         },
         {
-          key: "detail",
+          key: "updateOrder",
+          title: "修改订单",
+          btnStyle: "yellow",
+          permission: "",
+          action: (o, row) => {
+            console.log(row);
+            this.$refs.addDialog.edit(row);
+          },
+          show: (row) => {
+            return true;
+          },
+        },
+        {
+          key: "cancelOrder",
           title: "取消订单",
           btnStyle: "red",
           permission: "system/sysCourseOrder/cancelOrder",
