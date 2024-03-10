@@ -11,7 +11,7 @@
     <!-- 顶部操作，描述 -->
     <div class="table-header" v-if="isShowTableHead">
       <div class="table-header-title">{{ tableTitle }}</div>
-      <span style="color: red;font-size: 10px;position: absolute;left: 100px;bottom: 15px">{{tableRemark}}</span>
+      <span style="color: red;font-size: 15px;position: absolute;left: 100px;bottom: 15px">{{tableRemark}}</span>
       <div class="table-header-operate">
         <HeaderOperate :operates="headerOperates" />
       </div>
@@ -107,6 +107,10 @@
             <span v-else-if="c.type === 'date'">
               {{ formdatetime(row[c.prop], c.formate) }}
             </span>
+            <div v-else-if="c.type === 'dateRed'" v-html="getRed(row[c.prop])">
+
+            </div>
+
             <span v-else-if="c.type === 'image'">
               <el-image
                 v-if="row[c.prop]"
@@ -263,6 +267,19 @@ export default {
     },
   },
   methods: {
+    getRed(data){
+      const date = new Date(data);
+      const today = new Date();
+      if (
+          date.getDate() === today.getDate() &&
+          date.getMonth() === today.getMonth() &&
+          date.getFullYear() === today.getFullYear()
+      ) {
+        return `<font style='color: red'>${this.formdatetime(data,"")}<font/>`;
+      } else {
+        return this.formdatetime(data,"");
+      }
+    },
     formdatetime(data, formate) {
       if (typeof data !== "undefined" && data !== null) {
         if (data.time) {

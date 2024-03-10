@@ -16,6 +16,7 @@
       :total="table.total"
       @current-page-change="currentPageChange"
       @size-page-change="sizePageChange"
+      :table-remark="totalData"
     >
     </BasicTable>
   </div>
@@ -32,7 +33,7 @@ export default {
     return {
       loading: false,
       categoryOptions: [],
-
+      totalData: "",
       filterOptions: {
         column: [
           {
@@ -129,8 +130,37 @@ export default {
     getPromotionChannel((res) => {
       this.filterOptions.column[0].options = res;
     });
+    this.getTotalData()
   },
   methods: {
+    getTotalData() {
+      const {
+        time,
+        rmTime,
+        ...rest
+      } = this.filterData
+      request.post({
+        url: "/admin/adPromotionData/promoteSalespersonStatisticsData",
+        params: {
+          pageNo: this.table.currentPage,
+          pageSize: this.table.pageSize,
+          startTime: time && time.length > 1 ? time[0] : "",
+          endTime: time && time.length > 1 ? time[1] : "",
+          rmStartTime: rmTime && rmTime.length > 1 ? rmTime[0] : "",
+          rmEndTime: rmTime && rmTime.length > 1 ? rmTime[1] : "",
+          ...rest
+        },
+        success: (res) => {
+          this.totalData = res;
+        },
+        catch: () => {
+          this.loading = false;
+        },
+        finally: () => {
+          this.loading = false;
+        },
+      });
+    },
     handleExport(){
       this.$confirm('确定导出推广销售员统计列表吗？导出的时候请等待页面下载自动开始，如果数据量大，可能会等待稍长时间，请不要关闭或者刷新页面', '提示', {
         confirmButtonText: '确定',
@@ -165,6 +195,7 @@ export default {
     searchFilter() {
       this.table.currentPage = 1;
       this.getList();
+      this.getTotalData()
     },
     getList() {
       this.loading = true;

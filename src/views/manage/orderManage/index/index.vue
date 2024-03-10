@@ -192,11 +192,29 @@ export default {
             width: "100px"
           },
           {
+            id: 20,
+            prop: "vipAccount",
+            label: "下单账号",
+            width: "100px"
+          },
+          {
+            id: 21,
+            prop: "vipPhone",
+            label: "下单手机号",
+            width: "120px"
+          },
+          {
             id: 9,
             prop: "profitAdName",
             label: "销售人员",
-            width: "80px"
+            width: "100px"
           },
+          // {
+          //   id: 25,
+          //   prop: "profitAdAccount",
+          //   label: "销售账号1",
+          //   width: "80px"
+          // },
           {
             id: 10,
             prop: "createAdName",
@@ -292,6 +310,18 @@ export default {
             // return row.openStatus === 1;
           },
         },
+        {
+          key: "detail",
+          title: "取消订单",
+          btnStyle: "red",
+          permission: "system/sysCourseOrder/cancelOrder",
+          action: (o, row) => {
+           this.cancelOrder(row.orderNum)
+          },
+          show: (row) => {
+            return row.status !== 7;
+          },
+        },
       ],
       headerOperates: [
         {
@@ -305,7 +335,7 @@ export default {
         {
           key: "export",
           name: "导出",
-          permission: "system/sysCourseOrder/quicklyPlaceOrderAdd",
+          permission: "system/sysCourseOrder/exportSalesData",
           action: () => {
             this.handleExport();
           },
@@ -317,6 +347,25 @@ export default {
     this.getList();
   },
   methods: {
+    cancelOrder(orderNum){
+      this.$confirm('确定取消订单吗?取消后该学员订单内的所有课程将都无法观看', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request.post({
+          url: "/system/sysCourseOrder/cancelOrder",
+          params: {
+            orderNum: orderNum
+          },
+          success: (res) => {
+            this.$message.success("操作成功");
+            this.searchFilter();
+          },
+        });
+      }).catch(() => {
+      });
+    },
     searchFilter() {
       this.$nextTick(() => {
         this.$refs.orderTable.$refs.basicTable.$refs.multipleTable.clearSelection();

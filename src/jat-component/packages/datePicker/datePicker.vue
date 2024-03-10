@@ -85,7 +85,7 @@ export default {
     /** 文本框是否可以输入 */
     editable: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     clearable: {
       type: Boolean,

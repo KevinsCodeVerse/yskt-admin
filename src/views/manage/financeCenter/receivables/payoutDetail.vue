@@ -132,20 +132,13 @@ export default {
             minWidth: "150px",
           },
           {
-            id: 3,
-            width: "220px",
-            prop: "time",
-            label: "开始/结束日期",
-            minWidth: "210px",
-            render: (row) => {
-              return row.startTime
-                  ? `${getDate(row.startTime, "yyyy-MM-dd")} 至 ${getDate(
-                      row.endTime,
-                      "yyyy-MM-dd"
-                  )}`
-                  : "";
-            },
+            id: 12,
+            prop: "collectionTime",
+            label: "收款时间",
+            width: "170px",
+            type: "date",
           },
+
           {
             id: 4,
             prop: "vipName",
@@ -167,6 +160,15 @@ export default {
             },
             colorRener: (row) => {
               return row.type == -1 ? "#C00063" : "";
+            },
+          },
+          {
+            id: 22,
+            prop: "remark",
+            label: "备注",
+            width: "120px",
+            render: (row) => {
+              return row.remark==="" ? "—" : row.remark;
             },
           },
           {
@@ -192,13 +194,7 @@ export default {
             label: "收款方式",
             minWidth: "120px",
           },
-          {
-            id: 7,
-            prop: "payTime",
-            label: "支付时间",
-            type: "date",
-            minWidth: "100px",
-          },
+
           {
             id: 8,
             prop: "profitAdName",
@@ -217,11 +213,26 @@ export default {
             label: "收款单位",
           },
           {
-            id: 12,
-            prop: "collectionTime",
-            label: "收款时间",
-            minWidth: "170px",
+            id: 7,
+            prop: "payTime",
+            label: "支付时间",
             type: "date",
+            minWidth: "100px",
+          },
+          {
+            id: 3,
+            width: "220px",
+            prop: "time",
+            label: "开始/结束日期",
+            minWidth: "210px",
+            render: (row) => {
+              return row.startTime
+                  ? `${getDate(row.startTime, "yyyy-MM-dd")} 至 ${getDate(
+                      row.endTime,
+                      "yyyy-MM-dd"
+                  )}`
+                  : "";
+            },
           },
 
           {

@@ -49,15 +49,18 @@
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            提交作业案例图
+            提交的作业
           </template>
+          <div  style="display:flex;gap: 20px">
           <el-image
-            :src="info.workUrl"
+              v-for="(item, index) in info.workUrl" :key="index"
+            :src="item"
             style="width: 100px;"
             fit="contain"
             :preview-src-list="[info.workUrl]"
             :lazy="true"
           ></el-image>
+          </div>
         </el-descriptions-item>
 
         <el-descriptions-item v-if="info.comment">

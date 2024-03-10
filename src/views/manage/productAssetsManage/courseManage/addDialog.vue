@@ -37,17 +37,17 @@
             </el-option>
           </jat-select>
         </el-form-item>
-        <el-form-item label="成本价:" prop="price">
+        <el-form-item label="成本价:" prop="costPrice">
           <jat-input
             v-input.float="2"
             v-model="addData.costPrice"
             placeholder="请输入成本价"
           ></jat-input>
         </el-form-item>
-        <el-form-item label="市场价:" prop="underlinedPrice">
+        <el-form-item label="市场价:" prop="price">
           <jat-input
             v-input.float="2"
-            v-model="addData.underlinedPrice"
+            v-model="addData.price"
             placeholder="请输入市场价"
           ></jat-input>
         </el-form-item>
@@ -403,6 +403,9 @@ export default {
         ],
         costPrice: [
           { required: true, message: "请输入成本价", trigger: "blur" },
+        ],
+        underlinedPrice: [
+          { required: true, message: "请输入市场价", trigger: "blur" },
         ],
         image: [{ required: true, message: "请上传封面", trigger: "blur" }],
         price: [{ required: true, message: "请输入价格", trigger: "blur" }],

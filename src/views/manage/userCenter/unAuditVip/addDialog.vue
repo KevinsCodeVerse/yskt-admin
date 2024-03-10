@@ -113,6 +113,7 @@ export default {
     return {
       addModifyVisible: false,
       dialogTitle: "",
+      accountVisible: false,
       addData: {
         roleIds: [],
         name: "",

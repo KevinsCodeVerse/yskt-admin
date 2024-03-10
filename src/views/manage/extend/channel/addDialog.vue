@@ -22,7 +22,7 @@
           ></jat-input>
         </el-form-item>
 
-        <el-form-item label="渠道管理员:" prop="adId">
+        <el-form-item label="渠道管理员:" prop="adId" label-width="100px">
           <el-select
             style="width: 100%;"
             size="small"
@@ -30,7 +30,7 @@
             v-model="addData.adId"
             filterable
             remote
-            placeholder="为空为当前登录账户"
+            placeholder="渠道管理员可以在渠道统计列表看到该渠道和该渠道的数据,其他人都无法看到"
             :remote-method="(query) => remoteMethod(query, 0)"
             :loading="remoteLoading"
           >
@@ -85,6 +85,7 @@ export default {
       categoryOptions: [],
       channelRules: {
         name: [{ required: true, message: "请输入渠道名称", trigger: "blur" }],
+        adId: [{ required: true, message: "请选择渠道管理员", trigger: "blur" }],
       },
     };
   },

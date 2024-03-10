@@ -142,7 +142,6 @@ export default {
           permission: "admin/adCourseWorkSubmit/auditWorkEdit",
           btnStyle: "yellow",
           action: (o, row) => {
-            console.log("aaa:",row)
             this.$refs.audit.open(row);
           }
         },
@@ -178,6 +177,13 @@ export default {
           },
           success: (res) => {
             this.table.data = res.list;
+            this.table.data.forEach(item => {
+              if (item.workUrl) {
+                let urlStr = item.workUrl.replace(/\\(.)/mg, "$1");
+                item.workUrl = JSON.parse(urlStr)
+              }
+            })
+            console.log("data:",this.table.data)
             this.table.total = res.total;
             this.loading = false;
           },

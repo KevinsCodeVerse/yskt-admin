@@ -47,7 +47,7 @@
       title="开播信息"
       :close-on-click-modal="false"
       :visible.sync="openLiveVisible"
-      width="30%"
+      width="50%"
       @close="handleClose"
     >
       <div class="tipInfo">
@@ -56,6 +56,8 @@
       <div class="account-box">
         <span>推流地址：{{ openLiveData.rtmpPublishUrl }}</span>
         <span>推流码：{{ openLiveData.code }}</span>
+        <span>pc端观看地址：{{ openLiveData.pcLive }}</span>
+        <span>移动端观看地址：{{ openLiveData.maLive }}</span>
       </div>
       <span slot="footer" class="dialog-footer">
 <!--        <jat-button-->

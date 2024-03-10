@@ -38,6 +38,7 @@
       :total="table.total"
       @current-page-change="currentPageChange"
       @size-page-change="sizePageChange"
+      :operates="operates"
     >
       <div slot="image" slot-scope="scope">
         <el-image
@@ -51,6 +52,32 @@
       </div>
     </BasicTable>
     <add-dialog @success="handleSuccess" ref="addDialog"></add-dialog>
+    <el-dialog
+        title="账号信息"
+        :close-on-click-modal="false"
+        :visible.sync="accountVisible"
+        width="30%"
+        @close="handleClose"
+    >
+      <div class="tipInfo">
+        同学这个是您的学习账号，你先收藏一下，方便后面听课
+      </div>
+      <div class="account-box">
+        <span id="account">账号：{{ accountInfo.account }}</span>
+        <span id="password">密码：{{ accountInfo.password }}</span>
+      </div>
+      <span slot="footer" class="dialog-footer">
+<!--        <jat-button-->
+        <!--          v-clipboard:copy="-->
+        <!--            '账号：' + accountInfo.account + '\n密码：' + accountInfo.password-->
+        <!--          "-->
+        <!--          v-clipboard:success="onCopy"-->
+        <!--          >一键复制</jat-button-->
+        <!--        >-->
+        <!--        <jat-button @click="copyContent()">一键复制</jat-button-->
+        <!--        >-->
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -71,6 +98,11 @@ export default {
       supervisorAdOptions: [],
       departmentList: [],
       remoteLoading: false,
+      accountVisible: false,
+      accountInfo: {
+        account: "",
+        password: "",
+      },
       loading: false,
       filterOptions: {
         column: [
@@ -200,9 +232,9 @@ export default {
           key: "edit",
           title: "审核",
           btnStyle: "yellow",
-          // permission: "admin/adInfo/auditVip",
+          permission: "admin/adInfo/auditVip",
           action: (o, row) => {
-            this.$refs.addDialog.edit(row);
+            this.handleAudit(row);
           },
         },
       ],
@@ -214,6 +246,39 @@ export default {
     this.getDepartmentList();
   },
   methods: {
+    handleClose() {
+      this.accountInfo = {
+        account: "",
+        password: "",
+      }
+    },
+    handleAudit(row) {
+      this.$confirm("确定审核通过吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+          .then(() => {
+            request.post({
+              url: "/admin/adInfo/auditVip",
+              params: {
+                id: row.id,
+              },
+              success: (res) => {
+                this.accountInfo = res;
+                this.accountVisible = true;
+                this.$message.success("审核通过，请将账号和密码发给学员");
+                this.getList();
+              },
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消操作",
+            });
+          });
+    },
     searchFilter() {
       this.table.currentPage = 1;
       this.getList();
@@ -319,6 +384,24 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.tipInfo {
+  font-size: 16px;
+  margin: 10px;
+  color: #f56c6c;
+}
+
+.account-box {
+  // text-align: center;
+  display: flex;
+  flex-direction: column;
+
+  span {
+    margin: 10px 20px;
+    font-size: 16px;
+  }
+
+  margin: auto;
+}
 .zt_colunms_box {
   &.zt1 {
     color: #0fba80;

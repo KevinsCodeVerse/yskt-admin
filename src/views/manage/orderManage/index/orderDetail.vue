@@ -21,6 +21,8 @@
       >
       <template slot="extra">
       <jat-button @click="handleUpdateTime">修改订单时间</jat-button>
+        <jat-button @click="stopCourse" type="success">停课</jat-button>
+        <jat-button @click="restoreCourse" type="warning">恢复课程</jat-button>
     </template>
         <el-descriptions-item
           v-for="(order, index) in orderList"
@@ -208,6 +210,58 @@ export default {
   },
 
   methods: {
+    stopCourse(){
+      this.$confirm(
+          "确定将订单:"+this.info.orderNum+"停课吗，这会导致该用户无法观看该订单内的所有课程",
+          "提示",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          }
+      )
+          .then(() => {
+            request.post({
+              url: "/system/sysVipOrderCourse/stopCourse",
+              params: {
+               orderNum:this.info.orderNum
+              },
+              success: (res) => {
+                this.$message.success("操作成功");
+              },
+            });
+          })
+          .catch((err) => {
+            console.log(err)
+            // this.$message.info("已取消导出");
+          });
+    },
+    restoreCourse(){
+      this.$confirm(
+          "确定恢复该订单:"+this.info.orderNum+"内的所有课程吗",
+          "提示",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          }
+      )
+          .then(() => {
+            request.post({
+              url: "/system/sysVipOrderCourse/restoreCourse",
+              params: {
+                orderNum:this.info.orderNum
+              },
+              success: (res) => {
+                this.$message.success("操作成功");
+              },
+            });
+          })
+          .catch((err) => {
+            console.log(err)
+            // this.$message.info("已取消导出");
+          });
+    },
     open(orderNum) {
       this.detailVisible = true;
       this.getDetailInfo(orderNum);

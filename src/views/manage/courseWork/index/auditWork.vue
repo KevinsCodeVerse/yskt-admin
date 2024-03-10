@@ -83,7 +83,7 @@ export default {
   methods: {
     open(row) {
       this.addData.sWorkId = row.sWorkId;
-      this.addData.url = row.workUrl.slice(1, -1).split(',');
+      this.addData.url = row.workUrl;
       this.addModifyVisible = true;
       console.log("addData", this.addData)
     },

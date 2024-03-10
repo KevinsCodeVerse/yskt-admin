@@ -2,29 +2,29 @@
 <template>
   <div class="middle-container" v-loading="loading">
     <jat-fillter
-      :option="filterOptions"
-      v-model="filterData"
-      ref="filter"
-      @searchFilter="searchFilter"
-      @clearFilter="clearFilter"
+        :option="filterOptions"
+        v-model="filterData"
+        ref="filter"
+        @searchFilter="searchFilter"
+        @clearFilter="clearFilter"
     ></jat-fillter>
     <BasicTable
-      :columns="table.columns"
-      :headerOperates="headerOperates"
-      :operates="operates"
-      :data="table.data"
-      :pageSize="table.pageSize"
-      :currentPage="table.currentPage"
-      :total="table.total"
-      @current-page-change="currentPageChange"
-      @size-page-change="sizePageChange"
+        :columns="table.columns"
+        :headerOperates="headerOperates"
+        :operates="operates"
+        :data="table.data"
+        :pageSize="table.pageSize"
+        :currentPage="table.currentPage"
+        :total="table.total"
+        @current-page-change="currentPageChange"
+        @size-page-change="sizePageChange"
     >
       <div slot="image" slot-scope="scope">
         <el-image
-          v-if="scope.row.image"
-          style="width: 50px"
-          :src="scope.row.image"
-          :preview-src-list="[scope.row.image]"
+            v-if="scope.row.image"
+            style="width: 50px"
+            :src="scope.row.image"
+            :preview-src-list="[scope.row.image]"
         >
         </el-image>
         <span v-else></span>
@@ -38,11 +38,12 @@
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 import addDialog from "./addDialog.vue";
-import { degreeOptions, genderOptions, getPromotionChannel } from "./const";
-import { listToTree } from '../../../../utils/tools';
+import {degreeOptions, genderOptions, getPromotionChannel} from "./const";
+import {listToTree} from '../../../../utils/tools';
+
 export default {
   name: "dataPage",
-  components: { BasicTable, addDialog },
+  components: {BasicTable, addDialog},
   data() {
     return {
       loading: false,
@@ -93,6 +94,11 @@ export default {
             label: ["添加开始时间", "添加结束时间"],
             value: "time",
           },
+          {
+            type: "timeAll",
+            label: ["创建开始时间", "创建结束时间"],
+            value: "createTime",
+          },
         ],
       },
 
@@ -102,7 +108,8 @@ export default {
         promoterId: "",
         createAdId: "",
         time: [],
-        departmentId:[]
+        createTime: [],
+        departmentId: []
       },
       table: {
         columns: [
@@ -110,31 +117,37 @@ export default {
             id: 2,
             prop: "name",
             label: "姓名",
+            width: "80px"
           },
           {
             id: 3,
             prop: "channelName",
             label: "推广渠道",
+            width: "100px"
           },
           {
             id: 4,
             prop: "promoterName",
             label: "销售员",
+            width: "80px"
           },
           {
             id: 13,
             prop: "createAdName",
             label: "推广员",
+            width: "80px"
           },
           {
             id: 5,
             prop: "qq",
             label: "QQ",
+            width: "100px"
           },
           {
             id: 6,
             prop: "wechat",
             label: "微信",
+            width: "100px"
           },
           {
             id: 7,
@@ -142,37 +155,47 @@ export default {
             label: "性别",
             render: (row) => {
               return genderOptions.find((item) => item.value === row.gender)[
-                "label"
-              ];
+                  "label"
+                  ];
             },
+            width: "80px"
           },
           {
             id: 8,
             prop: "phone",
             label: "电话号码",
+            width: "100px"
           },
           {
             id: 10,
             prop: "degree",
             label: "学历",
+            width: "80px",
             render: (row) => {
               if (!row.degree) {
                 return "未填写";
               }
               return degreeOptions.find((item) => item.value === row.degree)[
-                "label"
-              ];
+                  "label"
+                  ];
             },
           },
           {
             id: 11,
             prop: "age",
             label: "年龄",
+            width: "50px"
+          },
+          {
+            id: 16,
+            prop: "addTime",
+            label: "添加时间",
+            type: "dateRed",
           },
           {
             id: 12,
             prop: "createTime",
-            label: "添加时间",
+            label: "创建时间",
             type: "date",
           },
         ],
@@ -241,38 +264,42 @@ export default {
   methods: {
     handleExport() {
       this.$confirm(
-        "确定导出推广数据吗？导出的时候请等待页面下载自动开始，如果数据量大，可能会等待稍长时间，请不要关闭或者刷新页面",
-        "提示",
-        {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        }
+          "确定导出推广数据吗？导出的时候请等待页面下载自动开始，如果数据量大，可能会等待稍长时间，请不要关闭或者刷新页面",
+          "提示",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          }
       )
-        .then(() => {
-          this.$message.warning("请耐心等待，表格正在导出中......");
-          const { time, ...rest } = this.filterData;
-          request.post({
-            url: "/admin/adPromotionData/listExport",
-            params: {
-              startTime: time && time.length > 1 ? time[0] : "",
-              endTime: time && time.length > 1 ? time[1] : "",
-              ...rest,
-            },
-            success: (res) => {
-              let downloadElement = document.createElement("a");
-              downloadElement.href = "https://" + res;
-              document.body.appendChild(downloadElement);
-              downloadElement.click(); //点击下载
-              document.body.removeChild(downloadElement); //下载完成移除元素
-              this.$message.success("导出成功");
-              this.searchFilter();
-            },
+          .then(() => {
+            this.$message.warning("请耐心等待，表格正在导出1中......");
+            var that = this
+            const {time, createTime, ...rest} = this.filterData;
+            request.post({
+              url: "/admin/adPromotionData/listExport",
+              params: {
+                startTime: time && time.length > 1 ? time[0] : "",
+                endTime: time && time.length > 1 ? time[1] : "",
+                cSTime: createTime && createTime.length > 1 ? createTime[0] : "",
+                cETime: createTime && createTime.length > 1 ? createTime[1] : "",
+                ...rest,
+              },
+              success: (res) => {
+                let downloadElement = document.createElement("a");
+                downloadElement.href = "https://" + res;
+                document.body.appendChild(downloadElement);
+                downloadElement.click(); //点击下载
+                document.body.removeChild(downloadElement); //下载完成移除元素
+                that.$message.success("导出成功");
+                that.searchFilter();
+              },
+            });
+          })
+          .catch((err) => {
+            console.log(err)
+            // this.$message.info("已取消导出");
           });
-        })
-        .catch(() => {
-          this.$message.info("已取消导出");
-        });
     },
     searchFilter() {
       this.table.currentPage = 1;
@@ -280,11 +307,11 @@ export default {
     },
     getList() {
       this.loading = true;
-      const { time, ...rest } = this.filterData;
+      const {time, createTime, ...rest} = this.filterData;
       this.$nextTick(() => {
         const department = this.$refs.filter.$refs.departmentRef[0]
-          .getCheckedNodes()
-          .map((item) => item.data.id);
+            .getCheckedNodes()
+            .map((item) => item.data.id);
         request.post({
           url: "/admin/adPromotionData/list",
           params: {
@@ -292,11 +319,13 @@ export default {
             pageSize: this.table.pageSize,
             startTime: time && time.length > 1 ? time[0] : "",
             endTime: time && time.length > 1 ? time[1] : "",
+            cSTime: createTime && createTime.length > 1 ? createTime[0] : "",
+            cETime: createTime && createTime.length > 1 ? createTime[1] : "",
             ...rest,
             departmentId:
-              department && department.length > 0
-                ? JSON.stringify(department)
-                : "",
+                department && department.length > 0
+                    ? JSON.stringify(department)
+                    : "",
           },
           success: (res) => {
             this.table.data = res.list;
@@ -329,29 +358,29 @@ export default {
       this.getList();
     },
     handleLogicDelete(row) {
-      this.$confirm("此操作将会逻辑删除该推广数据, 是否继续?", "提示", {
+      this.$confirm("此操作将会删除该推广数据, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
-        .then(() => {
-          request.post({
-            url: "/admin/adPromotionData/logicRemove",
-            params: {
-              id: row.id,
-            },
-            success: (res) => {
-              this.$message.success(res);
-              this.getList();
-            },
+          .then(() => {
+            request.post({
+              url: "/admin/adPromotionData/logicRemove",
+              params: {
+                id: row.id,
+              },
+              success: (res) => {
+                this.$message.success(res);
+                this.getList();
+              },
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消删除",
+            });
           });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
     },
 
     handleDelete(row) {
@@ -360,24 +389,24 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       })
-        .then(() => {
-          request.post({
-            url: "/admin/adPromotionData/deleteList",
-            params: {
-              id: row.id,
-            },
-            success: (res) => {
-              this.$message.success(res);
-              this.getList();
-            },
+          .then(() => {
+            request.post({
+              url: "/admin/adPromotionData/deleteList",
+              params: {
+                id: row.id,
+              },
+              success: (res) => {
+                this.$message.success(res);
+                this.getList();
+              },
+            });
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消删除",
+            });
           });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
     },
 
     clearFilter() {
@@ -387,6 +416,7 @@ export default {
         promoterId: "",
         createAdId: "",
         time: [],
+        createTime: [],
         departmentId: []
       };
       this.searchFilter();
@@ -414,6 +444,7 @@ export default {
     // border: 1px solid rgba(108, 255, 40, 0.6);
     border-radius: 2px;
   }
+
   &.zt0 {
     color: #ff6600;
     display: inline-block;

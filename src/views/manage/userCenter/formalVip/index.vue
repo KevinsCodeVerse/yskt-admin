@@ -2,51 +2,51 @@
 <template>
   <div class="middle-container" v-loading="loading">
     <jat-fillter
-      :option="filterOptions"
-      v-model="filterData"
-      @searchFilter="searchFilter"
-      @clearFilter="clearFilter"
+        :option="filterOptions"
+        v-model="filterData"
+        @searchFilter="searchFilter"
+        @clearFilter="clearFilter"
     >
       <span slot="parentId">
         <el-select
-          style="width: 100%;"
-          v-model="filterData.parentId"
-          filterable
-          remote
-          size="small"
-          clearable
-          placeholder="添加人(可根据名称或手机号进行搜索)"
-          :remote-method="remoteMethod"
-          :loading="remoteLoading"
+            style="width: 100%;"
+            v-model="filterData.parentId"
+            filterable
+            remote
+            size="small"
+            clearable
+            placeholder="添加人(可根据名称或手机号进行搜索)"
+            :remote-method="remoteMethod"
+            :loading="remoteLoading"
         >
           <el-option
-            v-for="item in supervisorAdOptions"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
+              v-for="item in supervisorAdOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
           >
           </el-option>
         </el-select>
       </span>
     </jat-fillter>
     <BasicTable
-      :columns="table.columns"
-      :headerOperates="headerOperates"
-      :operates="operates"
-      operateWidth="120px"
-      :data="table.data"
-      :pageSize="table.pageSize"
-      :currentPage="table.currentPage"
-      :total="table.total"
-      @current-page-change="currentPageChange"
-      @size-page-change="sizePageChange"
+        :columns="table.columns"
+        :headerOperates="headerOperates"
+        :operates="operates"
+        operateWidth="120px"
+        :data="table.data"
+        :pageSize="table.pageSize"
+        :currentPage="table.currentPage"
+        :total="table.total"
+        @current-page-change="currentPageChange"
+        @size-page-change="sizePageChange"
     >
       <div slot="image" slot-scope="scope">
         <el-image
-          v-if="scope.row.image"
-          style="width: 50px"
-          :src="scope.row.image"
-          :preview-src-list="[scope.row.image]"
+            v-if="scope.row.image"
+            style="width: 50px"
+            :src="scope.row.image"
+            :preview-src-list="[scope.row.image]"
         >
         </el-image>
         <span v-else></span>
@@ -60,11 +60,11 @@
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 import addDialog from "./addDialog.vue";
-import { listToTree } from "../../../../utils/tools";
+import {listToTree} from "../../../../utils/tools";
 
 export default {
   name: "formalVipPage",
-  components: { BasicTable, addDialog },
+  components: {BasicTable, addDialog},
   data() {
     return {
       supervisorAdOptions: [],
@@ -145,10 +145,10 @@ export default {
         ],
       },
       statusDic: {
-        "0": { label: "正常", type: "success" },
-        "-1": { label: "冻结", type: "warning" },
-        "-2": { label: "禁用", type: "danger" },
-        "-3": { label: "未审核", type: "info" },
+        "0": {label: "正常", type: "success"},
+        "-1": {label: "冻结", type: "warning"},
+        "-2": {label: "禁用", type: "danger"},
+        "-3": {label: "未审核", type: "info"},
       },
 
       filterData: {
@@ -168,9 +168,24 @@ export default {
             label: "用户名",
           },
           {
+            id: 2,
+            prop: "studentNumber",
+            label: "学籍号",
+            render: (row) => {
+              console.log("学籍:", row)
+
+              return !row.studentNumber ? "未注册学籍" : row.studentNumber
+            },
+          },
+          {
             id: 3,
             prop: "name",
             label: "真实姓名",
+          },
+          {
+            id: 10,
+            prop: "profitName",
+            label: "所属销售员",
           },
           {
             id: 4,
@@ -218,7 +233,21 @@ export default {
           btnStyle: "yellow",
           action: (o, row) => {
             this.$refs.addDialog.edit(row);
+          }
+        },
+        {
+          key: "edit",
+          title: "生成学籍",
+          permission: "admin/adInfo/gtStNumber",
+          btnStyle: "green",
+          action: (o, row) => {
+            this.gtStNumber(row.id)
           },
+          show: (row) => {
+            if (!row.studentNumber) {
+              return true;
+            }
+          }
         },
         // {
         //   key: "detail",
@@ -246,12 +275,32 @@ export default {
     this.getDepartmentList();
   },
   methods: {
+    gtStNumber(id) {
+      this.$confirm('确定生成学籍号吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request.post({
+          url: "/admin/adInfo/gtStNumber",
+          params: {
+            id: id
+          },
+          success: (res) => {
+            this.$message.success("操作成功");
+            this.searchFilter();
+          },
+        });
+      }).catch(() => {
+      });
+
+    },
     searchFilter() {
       this.table.currentPage = 1;
       this.getList();
     },
     getList() {
-      const { registerTime, ...rest } = this.filterData;
+      const {registerTime, ...rest} = this.filterData;
       this.loading = true;
       request.post({
         url: "/admin/adInfo/vipList",
@@ -260,13 +309,13 @@ export default {
           pageSize: this.table.pageSize,
           ...rest,
           startTime:
-            registerTime && registerTime.length > 0 ? registerTime[0] : "",
+              registerTime && registerTime.length > 0 ? registerTime[0] : "",
           endTime:
-            registerTime && registerTime.length > 0
-              ? this.$moment(registerTime[1])
-                  .add(1, "days")
-                  .format("YYYY-MM-DD")
-              : "",
+              registerTime && registerTime.length > 0
+                  ? this.$moment(registerTime[1])
+                      .add(1, "days")
+                      .format("YYYY-MM-DD")
+                  : "",
         },
         success: (res) => {
           this.table.data = res.list;
@@ -349,6 +398,7 @@ export default {
     // border: 1px solid rgba(108, 255, 40, 0.6);
     border-radius: 2px;
   }
+
   &.zt0 {
     color: #ff6600;
     display: inline-block;

@@ -3,27 +3,27 @@
   <el-dialog title="章节列表" width="80%" :visible.sync="chaptersVisible">
     <div style="max-height: 500px;" v-loading="loading">
       <BasicTable
-        :columns="table.columns"
-        height="400px"
-        :operates="isWrite ? operates : undefined"
-        operateWidth="180px"
-        :hasCard="false"
-        :data="table.data"
-        :hasPage="false"
-        :hasSort="false"
-        row-key="id"
-        default-expand-all
-        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-        :headerOperates="isWrite ? headerOperates : undefined"
+          :columns="table.columns"
+          height="1000px"
+          :operates="isWrite ? operates : undefined"
+          operateWidth="180px"
+          :hasCard="false"
+          :data="table.data"
+          :hasPage="false"
+          :hasSort="false"
+          row-key="id"
+          default-expand-all
+          :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+          :headerOperates="isWrite ? headerOperates : undefined"
       >
       </BasicTable>
       <addChapters
-        @success="handleSuccess"
-        ref="addChatptersDialog"
+          @success="handleSuccess"
+          ref="addChatptersDialog"
       ></addChapters>
       <addParentChapter
-        @success="handleSuccess"
-        ref="addParentChatpterDialog"
+          @success="handleSuccess"
+          ref="addParentChatpterDialog"
       ></addParentChapter>
     </div>
   </el-dialog>
@@ -33,10 +33,11 @@
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 
-import { hasFreeOptions, positionptions, tagOptions } from "./const";
+import {hasFreeOptions, positionptions, tagOptions} from "./const";
 import uploadVideo from "./uploadVideo.vue";
 import addChapters from "./addChapters.vue";
 import addParentChapter from "./addParentChapter.vue";
+
 export default {
   props: {
     isWrite: {
@@ -45,7 +46,7 @@ export default {
     },
   },
   name: "chaptersPage",
-  components: { BasicTable, addChapters, uploadVideo, addParentChapter },
+  components: {BasicTable, addChapters, uploadVideo, addParentChapter},
   data() {
     return {
       loading: false,
@@ -152,9 +153,11 @@ export default {
       return this.$refs.addDialog ? this.$refs.addDialog.hasLiveOptions : [];
     },
   },
-  mounted() {},
+  mounted() {
+  },
 
-  created() {},
+  created() {
+  },
   methods: {
     open(row) {
       this.chaptersVisible = true;
@@ -168,7 +171,7 @@ export default {
     getList() {
       this.loading = true;
       request.post({
-        url: this.isWrite ? "/admin/adCourseChapters/list" : "/admin/adCourseChapters/courseList",
+        url: this.isWrite ? "/admin/adCourseChapters/courseList" : "/admin/adCourseChapters/list",
         params: {
           pageNo: this.table.currentPage,
           pageSize: this.table.pageSize,
@@ -232,27 +235,27 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       })
-        .then(() => {
-          request.post({
-            url: "/admin/adCourseChapters/remove",
-            params: {
-              id: row.id,
-            },
-            success: (res) => {
-              this.$message.success(res);
-              this.getList();
-            },
+          .then(() => {
+            request.post({
+              url: "/admin/adCourseChapters/remove",
+              params: {
+                id: row.id,
+              },
+              success: (res) => {
+                this.$message.success(res);
+                this.getList();
+              },
+            });
+          })
+          .catch(() => {
+            this.$message.info("已取消删除")
           });
-        })
-        .catch(() => {
-          this.$message.info("已取消删除")
-        });
     },
   },
 };
 </script>
 <style lang="scss" scoped>
-/deep/.el-table__row:not([class*='el-table__row--level-']) {
+/deep/ .el-table__row:not([class*='el-table__row--level-']) {
   td:first-child {
     padding-left: 24px;
   }
@@ -263,14 +266,17 @@ export default {
   margin: 10px;
   color: #f56c6c;
 }
+
 .account-box {
   // text-align: center;
   display: flex;
   flex-direction: column;
+
   span {
     margin: 10px 20px;
     font-size: 16px;
   }
+
   margin: auto;
 }
 </style>

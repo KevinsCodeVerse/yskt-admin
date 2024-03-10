@@ -304,7 +304,13 @@ export default {
         marketPrice: "",
         profitAdId: "",
         remark: "",
-        time: [],
+        // time: [],
+        time: [
+          this.$moment().format("YYYY-MM-DD"),
+          this.$moment()
+              .add(1, "y")
+              .format("YYYY-MM-DD"),
+        ],
       };
       this.addModifyVisible = false;
     },

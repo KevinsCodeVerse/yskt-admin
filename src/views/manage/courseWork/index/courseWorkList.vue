@@ -164,6 +164,7 @@
       },
   
       handleDelete(row) {
+        console.log("row:",row)
         this.$confirm("此操作将会删除该作业, 是否继续?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
@@ -173,7 +174,7 @@
             request.post({
               url: "/admin/adCourseWork/remove",
               params: {
-                id: row.id,
+                id: row.workId,
               },
               success: (res) => {
                 this.$message.success(res);

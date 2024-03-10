@@ -89,7 +89,7 @@ export default {
         {
           key: "edit",
           title: "布置作业",
-          permission: "admin/adCourseChapters/add",
+          permission: "admin/adCourseWork/add",
           btnStyle: "yellow",
           action: (o, row) => {
 
@@ -119,7 +119,7 @@ export default {
     getList() {
       this.loading = true;
       request.post({
-        url: "/admin/adCourseChapters/courseList",
+        url: "/admin/adCourseChapters/list",
         params: {
           ...this.filterData,
         },

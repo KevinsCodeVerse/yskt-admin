@@ -17,6 +17,7 @@
       :total="table.total"
       @current-page-change="currentPageChange"
       @size-page-change="sizePageChange"
+      :table-remark="totalData"
     >
     </BasicTable>
   </div>
@@ -34,6 +35,7 @@ export default {
   },
   data() {
     return {
+      totalData:"",
       loading: false,
       categoryOptions: [],
 
@@ -123,6 +125,7 @@ export default {
         currentPage: 1,
         data: [],
         total: 0,
+
       },
       operates: [],
       headerOperates: [
@@ -140,11 +143,40 @@ export default {
   created() {
     this.getList();
     this.getDepartmentList();
+    this.getTotalData()
     getPromotionChannel((res) => {
       this.filterOptions.column[0].options = res;
     });
   },
   methods: {
+    getTotalData() {
+      const {
+        time,
+        rmTime,
+        ...rest
+      } = this.filterData
+      request.post({
+        url: "/admin/adPromotionData/promoterStatisticsData",
+        params: {
+          pageNo: this.table.currentPage,
+          pageSize: this.table.pageSize,
+          startTime: time && time.length > 1 ? time[0] : "",
+          endTime: time && time.length > 1 ? time[1] : "",
+          rmStartTime: rmTime && rmTime.length > 1 ? rmTime[0] : "",
+          rmEndTime: rmTime && rmTime.length > 1 ? rmTime[1] : "",
+          ...rest
+        },
+        success: (res) => {
+          this.totalData = res;
+        },
+        catch: () => {
+          this.loading = false;
+        },
+        finally: () => {
+          this.loading = false;
+        },
+      });
+    },
     handleExport() {
       this.$confirm(
         "确定导出推广员统计列表吗？导出的时候请等待页面下载自动开始，如果数据量大，可能会等待稍长时间，请不要关闭或者刷新页面",
