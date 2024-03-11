@@ -196,6 +196,7 @@ export default {
       selectDataList: [],
       userAllOptions: [],
       categoryOptions: [],
+      isAutoCompute: true,
       columns: [
         {
           id: 1,
@@ -279,6 +280,7 @@ export default {
       endTime,
     }) {
       this.dialogTitle = "修改订单";
+      this.isAutoCompute = false
       this.addModifyVisible = true;
       this.addData = {
         orderNum,
@@ -375,9 +377,11 @@ export default {
           this.$nextTick(() => {
             this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.clearSelection();
             if (ids) {
+              
               ids.forEach((id) => {
                 this.tableData.forEach((row) => {
                   if (row.id === id) {
+                    this.isAutoCompute = false
                     this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.toggleRowSelection(
                       row
                     );
@@ -397,10 +401,10 @@ export default {
     },
 
     handleCategoryChange(val) {
-
       if (val) {
-
-        this.getCourseList(this.categoryOptions.find((item) => item.name === val).id);
+        this.getCourseList(
+          this.categoryOptions.find((item) => item.name === val).id
+        );
       }
     },
 
@@ -425,7 +429,7 @@ export default {
 
     handleSubmit() {
       this.$refs.clientRef.validate((valid) => {
-        const { ids, time, id, courseName,orderNum, ...rest } = this.addData;
+        const { ids, time, id, courseName, orderNum, ...rest } = this.addData;
 
         if (valid) {
           if (orderNum) {
@@ -468,18 +472,18 @@ export default {
 
     handleSelectionChange(itemList) {
       this.addData.ids = itemList.map((item) => item.id);
-      this.addData.costPrice = this.addData.costPrice
-        ? this.addData.costPrice
-        : itemList.reduce(
-            (accumulator, currentValue) => accumulator + currentValue.costPrice,
-            0
-          );
-      this.addData.marketPrice = this.addData.marketPrice
-        ? this.addData.marketPrice
-        : itemList.reduce(
-            (accumulator, currentValue) => accumulator + currentValue.price,
-            0
-          );
+      if(!this.isAutoCompute) {
+        this.isAutoCompute  = true;
+        return
+      }
+      this.addData.costPrice = itemList.reduce(
+        (accumulator, currentValue) => accumulator + currentValue.costPrice,
+        0
+      );
+      this.addData.marketPrice = itemList.reduce(
+        (accumulator, currentValue) => accumulator + currentValue.price,
+        0
+      );
     },
 
     remoteMethod(search, type) {
