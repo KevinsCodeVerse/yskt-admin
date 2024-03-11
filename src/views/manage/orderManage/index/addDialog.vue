@@ -397,8 +397,10 @@ export default {
     },
 
     handleCategoryChange(val) {
+
       if (val) {
-        this.getCourseList(val.id);
+
+        this.getCourseList(this.categoryOptions.find((item) => item.name === val).id);
       }
     },
 

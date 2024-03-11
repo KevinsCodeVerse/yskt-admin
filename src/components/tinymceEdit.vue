@@ -95,7 +95,7 @@ export default {
           url: "/comm/getUpToken",
           params: {},
           success: (res) => {
-            const observable = qiniu.upload(file, null, res + "aaa");
+            const observable = qiniu.upload(file, null, res);
             observable.subscribe({
               next: undefined,
               error: () => {
