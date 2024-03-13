@@ -80,7 +80,7 @@ export default {
           url: "/comm/getUpToken",
           params: {},
           success: (res) => {
-            const observable = qiniu.upload(file, file.name, res);
+            const observable = qiniu.upload(file, null, res);
             observable.subscribe({
               error: () => {
                 this.$message.error("上传出错，请重新上传！");
