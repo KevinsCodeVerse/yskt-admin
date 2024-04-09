@@ -54,6 +54,11 @@ export default {
             label: "推广渠道",
           },
           {
+            id: 6,
+            prop: "toDayCount",
+            label: "今日增加",
+          },
+          {
             id: 3,
             prop: "totalDataCount",
             label: "总数据",
@@ -68,11 +73,7 @@ export default {
             prop: "totalRemoveCount",
             label: "总删除",
           },
-          {
-            id: 6,
-            prop: "toDayCount",
-            label: "今日增加",
-          },
+
           {
             id: 7,
             prop: "removeCount",

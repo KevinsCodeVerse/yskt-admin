@@ -85,10 +85,10 @@
             </el-option>
           </jat-select>
         </el-form-item>
-        <el-form-item label="电话号码:" prop="phone">
+        <el-form-item label="备注:" prop="remark">
           <jat-input
-              v-model="addData.phone"
-              placeholder="请输入电话号码"
+              v-model="addData.remark"
+              placeholder="请输入备注"
           ></jat-input>
         </el-form-item>
         <el-form-item label="学历:" prop="degree">
@@ -147,7 +147,8 @@ export default {
         wechat: "",
         channelId: "",
         promoterId: "",
-        addTime: ""
+        addTime: "",
+        remark:""
       },
       categoryOptions: [],
       promotionRule: {

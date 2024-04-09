@@ -63,6 +63,10 @@ const openStatusOptions = [
     value: 1,
     label: "已开通",
   },
+  {
+    value: 2,
+    label: "已停课",
+  },
 ];
 export default {
   name: "orderPage",
@@ -236,7 +240,7 @@ export default {
             prop: "openStatus",
             label: "开通状态",
             render: (row) => {
-              return row.openStatus == 1 ? "已开通" : "未开通";
+              return row.openStatus === 1 ? "已开通" : row.openStatus === 0?"未开通":"已停课";
             },
             width: "80px"
           },
@@ -300,7 +304,7 @@ export default {
           key: "detail",
           title: "详情",
           btnStyle: "green",
-          // permission: "system/sysCourseOrder/detail",
+          permission: "system/sysVipOrderCourse/stopCourse",
           action: (o, row) => {
             this.$refs.detailRef.open(row.orderNum);
           },
@@ -313,7 +317,7 @@ export default {
           key: "updateOrder",
           title: "修改订单",
           btnStyle: "yellow",
-          permission: "",
+          permission: "system/sysCourseOrder/orderEdit",
           action: (o, row) => {
             console.log(row);
             this.$refs.addDialog.edit(row);
@@ -453,7 +457,7 @@ export default {
           },
           success: (res) => {
             let downloadElement = document.createElement("a");
-            downloadElement.href = "https://" + res;
+            downloadElement.href = "http://" + res;
             document.body.appendChild(downloadElement);
             downloadElement.click(); //点击下载
             document.body.removeChild(downloadElement); //下载完成移除元素

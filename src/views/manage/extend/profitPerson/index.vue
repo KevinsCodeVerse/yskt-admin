@@ -78,6 +78,11 @@ export default {
             label: "推广销售员",
           },
           {
+            id: 6,
+            prop: "toDayCount",
+            label: "今日增加",
+          },
+          {
             id: 3,
             prop: "totalDataCount",
             label: "总数据",
@@ -92,11 +97,7 @@ export default {
             prop: "totalRemoveCount",
             label: "总删除",
           },
-          {
-            id: 6,
-            prop: "toDayCount",
-            label: "今日增加",
-          },
+
           {
             id: 7,
             prop: "removeCount",
@@ -180,7 +181,7 @@ export default {
           },
           success: (res) => {
             let downloadElement = document.createElement("a");
-            downloadElement.href = "https://" + res;
+            downloadElement.href = "http://" + res;
             document.body.appendChild(downloadElement);
             downloadElement.click(); //点击下载
             document.body.removeChild(downloadElement); //下载完成移除元素

@@ -249,6 +249,15 @@ export default {
             this.$refs.addDialog.edit(row);
           },
         },
+        // {
+        //   key: "edit",
+        //   title: "交接订单",
+        //   btnStyle: "red",
+        //   // permission: "admin/adInfo/editAdmin",
+        //   action: (o, row) => {
+        //     this.$refs.addDialog.edit(row);
+        //   },
+        // },
         {
           key: "detail",
           title: "详情",
