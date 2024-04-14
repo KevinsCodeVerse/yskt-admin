@@ -105,7 +105,7 @@ export default {
 
           }
         ],
-        pageSize: 20,
+        pageSize: 100,
         currentPage: 1,
         data: [],
         total: 0,

@@ -18,6 +18,7 @@
       @current-page-change="currentPageChange"
       @size-page-change="sizePageChange"
       :table-remark="totalData"
+
     >
     </BasicTable>
   </div>
@@ -122,7 +123,7 @@ export default {
             label: "今日删除",
           },
         ],
-        pageSize: 20,
+        pageSize: 100,
         currentPage: 1,
         data: [],
         total: 0,
