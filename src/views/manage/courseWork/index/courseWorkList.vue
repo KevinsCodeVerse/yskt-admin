@@ -22,7 +22,7 @@
       <add-dialog @success="handleSuccess" ref="addDialog"></add-dialog>
     </div>
   </template>
-  
+
   <script>
   import BasicTable from "@/components/BasicTable/index.vue";
   import request from "../../../../utils/request";
@@ -38,13 +38,12 @@
           column: [
             {
               type: "input",
-              label: "课程名称",
+              label: "课程名称1",
               value: "courseName"
-             
             }
           ],
         },
-  
+
         filterData: {
           courseName: "",
         },
@@ -127,7 +126,7 @@
           },
         ],
         headerOperates: [
-        
+
         ],
       };
     },
@@ -158,11 +157,11 @@
           }
         });
       },
-      
+
       handleSuccess() {
         this.getList();
       },
-  
+
       handleDelete(row) {
         console.log("row:",row)
         this.$confirm("此操作将会删除该作业, 是否继续?", "提示", {
@@ -189,7 +188,7 @@
             });
           });
       },
-  
+
       clearFilter() {
         this.filterData = {
             courseName: "",
@@ -200,7 +199,7 @@
         this.table.currentPage = num;
         this.getList();
       },
-  
+
       sizePageChange(size) {
         this.table.currentPage = 1;
         this.table.pageSize = size;

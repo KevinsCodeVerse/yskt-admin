@@ -128,17 +128,17 @@ export default {
         data: [],
         total: 0,
       },
-      operates: [
-        {
-          key: "edit",
-          title: "审核",
-          btnStyle: "yellow",
-          permission: "admin/adInfo/auditVip",
-          action: (o, row) => {
-            this.handleAudit(row);
-          },
-        },
-      ],
+      // operates: [
+      //   {
+      //     key: "edit",
+      //     title: "审核",
+      //     btnStyle: "yellow",
+      //     permission: "admin/adInfo/auditVip",
+      //     action: (o, row) => {
+      //       this.handleAudit(row);
+      //     },
+      //   },
+      // ],
       headerOperates: [],
     };
   },

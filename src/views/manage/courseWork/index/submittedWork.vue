@@ -44,7 +44,12 @@ export default {
             type: "input",
             label: "课程名称",
             value: "courseName",
-          }
+          }, {
+            type: "user",
+            userType: 1,
+            label: "下单人",
+            value: "vipId",
+          },
         ],
       },
 
@@ -167,12 +172,14 @@ export default {
       this.getList();
     },
     getList() {
+      const {...rest} = this.filterData;
       (this.loading = true),
         request.post({
           url: "/admin/adCourseWorkSubmit/list",
           params: {
             pageNo: this.table.currentPage,
             pageSize: this.table.pageSize,
+            ...rest
             // ...this.filterData,
           },
           success: (res) => {

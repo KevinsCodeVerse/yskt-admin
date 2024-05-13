@@ -249,15 +249,20 @@ export default {
             this.$refs.addDialog.edit(row);
           },
         },
-        // {
-        //   key: "edit",
-        //   title: "交接订单",
-        //   btnStyle: "red",
-        //   // permission: "admin/adInfo/editAdmin",
-        //   action: (o, row) => {
-        //     this.$refs.addDialog.edit(row);
-        //   },
-        // },
+        {
+          key: "edit",
+          title: "订单交接",
+          permission: "admin/adInfo/handover",
+          btnStyle: "red",
+          action: (o, row) => {
+            this.gtStNumber(row.id)
+          },
+          show: (row) => {
+            if (!row.studentNumber) {
+              return true;
+            }
+          }
+        },
         {
           key: "detail",
           title: "详情",
