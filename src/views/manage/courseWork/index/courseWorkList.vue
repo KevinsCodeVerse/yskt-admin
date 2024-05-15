@@ -38,7 +38,7 @@
           column: [
             {
               type: "input",
-              label: "课程名称1",
+              label: "课程名称",
               value: "courseName"
             }
           ],
