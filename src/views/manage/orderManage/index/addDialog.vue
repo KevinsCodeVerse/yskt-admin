@@ -172,7 +172,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <jat-button plain @click="close">取 消</jat-button>
-        <jat-button @click="handleSubmit">确 定</jat-button>
+        <jat-button @click="handleSubmit" :disabled="btnFlag">确 定</jat-button>
       </span>
     </el-dialog>
   </div>
@@ -187,6 +187,7 @@ export default {
   components: { uploadFile, BasicTable },
   data() {
     return {
+      btnFlag:false,
       addModifyVisible: false,
       remoteLoading: false,
       dialogTitle: "",
@@ -428,10 +429,11 @@ export default {
     },
 
     handleSubmit() {
+
       this.$refs.clientRef.validate((valid) => {
         const { ids, time, id, courseName, orderNum, ...rest } = this.addData;
-
         if (valid) {
+          this.btnFlag=true
           if (orderNum) {
             request.post({
               url: "/system/sysCourseOrder/orderEdit",
@@ -447,6 +449,7 @@ export default {
                 this.$message.success(res);
                 this.close();
                 this.$emit("success");
+                this.btnFlag=false
               },
             });
           } else {
@@ -463,6 +466,7 @@ export default {
                 this.$message.success(res);
                 this.close();
                 this.$emit("success");
+                this.btnFlag=false
               },
             });
           }

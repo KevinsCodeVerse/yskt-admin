@@ -65,7 +65,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <jat-button plain @click="close">取 消</jat-button>
-        <jat-button @click="handleSubmit">确 定</jat-button>
+        <jat-button @click="handleSubmit" :disabled="btnFlag">确 定</jat-button>
       </span>
     </el-dialog>
   </div>
@@ -78,6 +78,7 @@ export default {
   components: { uploadImage },
   data() {
     return {
+      btnFlag:false,
       addModifyVisible: false,
       dialogTitle: "",
       vipName: "",
@@ -145,8 +146,10 @@ export default {
     },
 
     handleSubmit() {
+
       this.$refs.collectionRef.validate((valid) => {
         if (valid) {
+          this.btnFlag=true
           request.post({
             url: "/system/sysCourseOrderBills/add",
             params: this.addData,
@@ -154,6 +157,7 @@ export default {
               this.$message.success(res);
               this.close();
               this.$emit("success");
+              this.btnFlag=false
             },
           });
         }

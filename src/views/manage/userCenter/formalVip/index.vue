@@ -53,6 +53,40 @@
       </div>
     </BasicTable>
     <add-dialog @success="handleSuccess" ref="addDialog"></add-dialog>
+
+    <!--编辑销售员弹框-->
+    <el-dialog
+        title="修改会员所属销售员"
+        :visible.sync="JJDialogFlag"
+        width="30%"
+        @close="closeJJ">
+      <div style="margin-top: 10px">
+        <span>新销售账号：</span>
+        <el-select
+            v-model="JJFrom.newId"
+            filterable
+            remote
+            size="small"
+            clearable
+            placeholder="新销售账号"
+            :remote-method="remoteMethodV2"
+            :loading="remoteLoading"
+        >
+          <el-option
+              v-for="item in supervisorAdOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+          >
+          </el-option>
+        </el-select>
+      </div>
+      <div style="display: flex;justify-content: center;align-items: center;margin-top: 20px">
+        <el-button @click="JJDialogFlag = false">取 消</el-button>
+        <el-button type="primary" @click="handover">确 定</el-button>
+      </div>
+
+    </el-dialog>
   </div>
 </template>
 
@@ -67,6 +101,11 @@ export default {
   components: {BasicTable, addDialog},
   data() {
     return {
+      JJFrom: {
+        id: "",
+        newId: ""
+      },
+      JJDialogFlag: false,
       supervisorAdOptions: [],
       departmentList: [],
       remoteLoading: false,
@@ -232,7 +271,20 @@ export default {
           permission: "admin/adInfo/editVip",
           btnStyle: "yellow",
           action: (o, row) => {
+            console.log("row:",row)
             this.$refs.addDialog.edit(row);
+          }
+        },
+        {
+          key: "edit",
+          title: "修改所属销售",
+          permission: "admin/adInfo/editProfitAd",
+          btnStyle: "red",
+          action: (o, row) => {
+            console.log("row:",row)
+            this.JJDialogFlag=true
+            this.JJFrom.id=row.id
+            // this.$refs.addDialog.edit(row);
           }
         },
         {
@@ -275,6 +327,65 @@ export default {
     this.getDepartmentList();
   },
   methods: {
+    handover() {
+      console.log("JJFROM:", this.JJFrom)
+      if (!this.JJFrom.newId) {
+        this.$message.warning("请选择新销售账号")
+        return;
+      }
+      if (!this.JJFrom.id) {
+        this.$message.warning("旧销售不能为空")
+        return;
+      }
+      this.$confirm('确定编辑该会员的所属销售吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request.post({
+          url: "/admin/adInfo/editProfitAd",
+          params: {
+            id: this.JJFrom.id,
+            newId: this.JJFrom.newId
+          },
+          success: (res) => {
+            this.$message.success("编辑成功！")
+            this.JJDialogFlag=false
+            this.searchFilter()
+          },
+        });
+      }).catch(() => {
+
+      });
+    },
+    remoteMethodV2(search) {
+      if (!search) {
+        return;
+      }
+      var type = 0
+      this.remoteLoading = true;
+      request.post({
+        url: "/admin/adInfo/queryAdminByNameOrPhone",
+        params: {
+          search,
+          type
+        },
+        success: (res) => {
+          this.remoteLoading = false;
+          this.supervisorAdOptions = res;
+        },
+        catch: () => {
+          this.remoteLoading = false;
+        },
+      });
+    },
+    closeJJ() {
+      this.JJFrom = {
+        id: "",
+        newId: ""
+      }
+      this.supervisorAdOptions = []
+    },
     gtStNumber(id) {
       this.$confirm('确定生成学籍号吗？', '提示', {
         confirmButtonText: '确定',
