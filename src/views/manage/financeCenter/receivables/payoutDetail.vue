@@ -299,7 +299,8 @@ export default {
             this.handleCancle(row);
           },
           show: (row) => {
-            return row.status == 0;
+            // return row.status == 0;
+            return true;
           },
         },
         {
