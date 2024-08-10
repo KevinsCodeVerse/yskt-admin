@@ -2,41 +2,41 @@
 <template>
   <div>
     <el-dialog
-      :title="dialogTitle"
-      :close-on-click-modal="false"
-      :visible.sync="addModifyVisible"
-      width="50%"
-      @close="close"
+        :title="dialogTitle"
+        :close-on-click-modal="false"
+        :visible.sync="addModifyVisible"
+        width="50%"
+        @close="close"
     >
       <el-form
-        :model="addData"
-        :rules="promotionRule"
-        ref="promotionRef"
-        label-position="left"
-        label-width="90px"
+          :model="addData"
+          :rules="promotionRule"
+          ref="promotionRef"
+          label-position="left"
+          label-width="90px"
       >
         <el-form-item label="推广渠道:" prop="channelId">
           <jat-select
-            v-model="addData.channelId"
-            placeholder="请选择推广渠道"
-            clearable
+              v-model="addData.channelId"
+              placeholder="请选择推广渠道"
+              clearable
           >
             <el-option
-              v-for="item in channelIdOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
+                v-for="item in channelIdOptions"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
             >
             </el-option>
           </jat-select>
         </el-form-item>
         <el-form-item label="销售员:" prop="promoterId">
           <select-user-remote
-            width="100%"
-            v-model="addData.promoterId"
-            :type="0"
-            ref="selectUser"
-            placeholder="销售员"
+              width="100%"
+              v-model="addData.promoterId"
+              :type="0"
+              ref="selectUser"
+              placeholder="销售员"
           ></select-user-remote>
         </el-form-item>
         <el-form-item label="QQ:" prop="qq">
@@ -44,48 +44,48 @@
         </el-form-item>
         <el-form-item label="微信:" prop="wechat">
           <jat-input
-            v-model="addData.wechat"
-            placeholder="请输入微信"
+              v-model="addData.wechat"
+              placeholder="请输入微信"
           ></jat-input>
         </el-form-item>
         <el-form-item label="姓名:" prop="name">
           <jat-input
-            v-model="addData.name"
-            placeholder="请输入姓名"
+              v-model="addData.name"
+              placeholder="请输入姓名"
           ></jat-input>
         </el-form-item>
         <el-form-item label="性别:" prop="gender">
           <jat-select
-            v-model="addData.gender"
-            placeholder="请选择性别"
-            clearable
+              v-model="addData.gender"
+              placeholder="请选择性别"
+              clearable
           >
             <el-option
-              v-for="item in genderOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+                v-for="item in genderOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
             >
             </el-option>
           </jat-select>
         </el-form-item>
         <el-form-item label="电话号码:" prop="phone">
           <jat-input
-            v-model="addData.phone"
-            placeholder="请输入电话号码"
+              v-model="addData.phone"
+              placeholder="请输入电话号码"
           ></jat-input>
         </el-form-item>
         <el-form-item label="学历:" prop="degree">
           <jat-select
-            v-model="addData.degree"
-            placeholder="请选择学历"
-            clearable
+              v-model="addData.degree"
+              placeholder="请选择学历"
+              clearable
           >
             <el-option
-              v-for="item in degreeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+                v-for="item in degreeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
             >
             </el-option>
           </jat-select>
@@ -110,13 +110,14 @@
 import uploadImage from "@/components/uploadImage.vue";
 import request from "../../../../utils/request";
 import selectUserRemote from "../../../../components/selectUserRemote.vue";
-import { degreeOptions, genderOptions, getPromotionChannel } from "./const";
-import { validPhone } from "@/utils/validate.js";
+import {degreeOptions, genderOptions, getPromotionChannel} from "./const";
+import {validPhone} from "@/utils/validate.js";
 
 export default {
-  components: { uploadImage, selectUserRemote },
+  components: {uploadImage, selectUserRemote},
   data() {
     return {
+      btnFlag: true,
       addModifyVisible: false,
       dialogTitle: "",
       channelIdOptions: [],
@@ -137,10 +138,10 @@ export default {
       categoryOptions: [],
       promotionRule: {
         channelId: [
-          { required: true, message: "请选推广渠道", trigger: "blur" },
+          {required: true, message: "请选推广渠道", trigger: "blur"},
         ],
         promoterId: [
-          { required: true, message: "请选择销售员", trigger: "blur" },
+          {required: true, message: "请选择销售员", trigger: "blur"},
         ],
         phone: [
           {
@@ -185,7 +186,8 @@ export default {
     };
   },
 
-  mounted() {},
+  mounted() {
+  },
 
   methods: {
     open() {
@@ -196,19 +198,19 @@ export default {
       });
     },
     edit({
-      id: dataId,
-      age,
-      avatar,
-      degree,
-      gender,
-      name,
-      phone,
-      qq,
-      wechat,
-      channelId,
-      promoterId,
-      promoterName,
-    }) {
+           id: dataId,
+           age,
+           avatar,
+           degree,
+           gender,
+           name,
+           phone,
+           qq,
+           wechat,
+           channelId,
+           promoterId,
+           promoterName,
+         }) {
       this.dialogTitle = "编辑推广数据";
       this.addModifyVisible = true;
       getPromotionChannel((res) => {
@@ -229,7 +231,7 @@ export default {
       };
       this.$nextTick(() => {
         this.$refs.selectUser.userOptions = [
-          { name: promoterName, id: promoterId },
+          {name: promoterName, id: promoterId},
         ];
       });
     },
@@ -263,7 +265,7 @@ export default {
                 this.$message.success(res);
                 this.close();
                 this.$emit("success");
-              },
+              }
             });
           } else {
             request.post({
@@ -273,7 +275,8 @@ export default {
                 this.$message.success(res);
                 this.close();
                 this.$emit("success");
-              },
+              }
+
             });
           }
         }

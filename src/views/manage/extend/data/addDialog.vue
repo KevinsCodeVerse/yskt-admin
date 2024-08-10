@@ -112,7 +112,7 @@
           <upload-image v-model="addData.avatar"></upload-image>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
+      <span slot="footer" class="dialog-footer" v-show="btnFlag">
         <jat-button plain @click="close">取 消</jat-button>
         <jat-button @click="handleSubmit">确 定</jat-button>
       </span>
@@ -131,6 +131,7 @@ export default {
   components: {uploadImage, selectUserRemote},
   data() {
     return {
+      btnFlag:true,
       addModifyVisible: false,
       dialogTitle: "",
       channelIdOptions: [],
@@ -287,6 +288,7 @@ export default {
         this.addData.wechat=this.addData.wechat.trim()
         this.addData.name=this.addData.name.trim()
         if (valid) {
+          this.btnFlag = false
           if (this.addData.dataId) {
             request.post({
               url: "/admin/adPromotionData/edit",
@@ -298,6 +300,9 @@ export default {
                 this.close();
                 this.$emit("success");
               },
+              finally: (e) => {
+                this.btnFlag=true
+              }
             });
           } else {
             request.post({
@@ -308,6 +313,9 @@ export default {
                 this.close();
                 this.$emit("success");
               },
+              finally: (e) => {
+                this.btnFlag=true
+              }
             });
           }
         }

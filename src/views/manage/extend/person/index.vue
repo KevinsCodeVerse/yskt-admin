@@ -123,7 +123,7 @@ export default {
             label: "今日删除",
           },
         ],
-        pageSize: 100,
+        pageSize: 300,
         currentPage: 1,
         data: [],
         total: 0,
