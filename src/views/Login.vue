@@ -8,10 +8,10 @@
         >
           <el-image
             style="width: 55px; height: 55px"
-            :src="require('@/assets/svg/pf.png')"
+            :src="require('@/assets/svg/yskt.png')"
           >
           </el-image>
-          <span style="margin-left: 10px;">鹏飞课堂智能后台管理系统</span>
+          <span style="margin-left: 10px;">优师课堂智能后台</span>
         </div>
       </div>
     </div>

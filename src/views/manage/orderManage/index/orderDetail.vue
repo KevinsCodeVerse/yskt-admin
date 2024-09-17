@@ -133,6 +133,10 @@ export default {
           name: "预订人",
         },
         {
+          id: "orderTeacherList",
+          name: "直播讲师",
+        },
+        {
           id: "phone",
           name: "客户电话",
         },
@@ -307,6 +311,9 @@ export default {
         },
         success: (res) => {
           this.info = res.orderDetail;
+          if(res.orderTeacherList&&res.orderTeacherList.length>0){
+            this.info.orderTeacherList = res.orderTeacherList.map(teacher => teacher.teacherName).join('，');
+          }
           this.tableData = res.billsList;
           if (!this.info.remark) {
             this.info.remark = "暂无备注";

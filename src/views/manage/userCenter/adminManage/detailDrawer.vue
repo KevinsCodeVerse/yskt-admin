@@ -99,7 +99,7 @@ export default {
         createTime: 1703572925000,
         phone: "111",
         name: "111",
-        departments: "推广部,鹏飞课堂",
+        departments: "推广部,优师课堂",
         id: 7,
         account: "pfk7642",
         status: 0,

@@ -51,7 +51,7 @@
       @close="handleClose"
     >
       <div class="tipInfo">
-        您已开播成功了。请保存好推流地址和推流码！
+        您已开播成功了。请保存好推流地址和推流码！请注意：不同的订单会产生不同的推流地址，请开播的时候仔细分辨
       </div>
       <div class="account-box">
         <span>推流地址：{{ openLiveData.rtmpPublishUrl }}</span>
@@ -106,6 +106,11 @@ export default {
           },
           {
             type: "input",
+            label: "订单编号",
+            value: "orderNum",
+          },
+          {
+            type: "input",
             label: "课程名称",
             value: "name",
           },
@@ -143,7 +148,6 @@ export default {
           },
         ],
       },
-      remoteLoading: false,
       teacherOptions: [],
       filterData: {
         name: "",
@@ -160,6 +164,11 @@ export default {
             id: 1,
             prop: "number",
             label: "课程编号",
+          },
+          {
+            id:99,
+            prop: "orderNum",
+            label: "订单编号",
           },
           {
             id: 2,
@@ -231,11 +240,11 @@ export default {
               return item ? item.label : "";
             },
           },
-          {
-            id: 9,
-            prop: "teacherName",
-            label: "讲师",
-          },
+          // {
+          //   id: 9,
+          //   prop: "teacherName",
+          //   label: "讲师",
+          // },
           {
             id: 10,
             prop: "price",
@@ -427,6 +436,7 @@ export default {
             url: "/admin/adCourse/liveOpenAdd",
             params: {
               id: row.id,
+              orderNum:row.orderNum,
             },
             success: (res) => {
               this.openLiveData = res;
@@ -443,6 +453,7 @@ export default {
         });
     },
     handleCloseLive(row){
+      console.log('关播row',row);
       this.$confirm("确定要关闭该场直播, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -452,7 +463,8 @@ export default {
           request.post({
             url: "/admin/adCourse/closeLiveEdit",
             params: {
-              courseId: row.id,
+              // courseId: row.id,
+              orderNum: row.orderNum,
             },
             success: () => {
               this.getList();
@@ -515,6 +527,7 @@ export default {
 <style lang="scss" scoped>
 .tipInfo {
   font-size: 16px;
+  font-weight: bold;
   margin: 10px;
   color: #f56c6c;
 }

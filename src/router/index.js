@@ -107,7 +107,7 @@ router.beforeEach((to, form, next) => {
 	
 	// 路由变化修改title
 	if (to.meta.title) {
-		document.title = "鹏飞课堂-"+to.meta.title
+		document.title = "优师课堂-"+to.meta.title
 	}
 
 	// 退出登录

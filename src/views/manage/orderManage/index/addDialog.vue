@@ -1,4 +1,3 @@
-<!--  -->
 <template>
   <div>
     <el-dialog
@@ -33,6 +32,7 @@
             </el-option>
           </jat-select>
         </el-form-item>
+
         <el-form-item
           style="width: 100%; height: 330px; overflow: hidden;"
           label="课程套餐:"
@@ -76,6 +76,7 @@
             :data="tableData"
           ></BasicTable>
         </el-form-item>
+
         <el-form-item label="订单时间:" prop="time">
           <jat-date-picker
             width="100%"
@@ -86,6 +87,7 @@
             v-model="addData.time"
           ></jat-date-picker>
         </el-form-item>
+
         <el-form-item label="数量:" prop="count">
           <jat-input
             disabled
@@ -94,6 +96,7 @@
             placeholder="请输入数量"
           ></jat-input>
         </el-form-item>
+
         <el-form-item label="市场价:" prop="marketPrice">
           <jat-input
             v-input.float="2"
@@ -101,6 +104,7 @@
             placeholder="请输入市场价"
           ></jat-input>
         </el-form-item>
+
         <el-form-item label="成本价:" prop="costPrice">
           <jat-input
             v-input.float="2"
@@ -108,6 +112,8 @@
             placeholder="请输入成本价"
           ></jat-input>
         </el-form-item>
+
+        <!-- 下单者选择框 -->
         <el-form-item label="下单者:" prop="adId">
           <el-select
             style="width: 100%;"
@@ -132,29 +138,43 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="利润归属:" prop="profitAdId">
+
+        <!-- 可直播讲师选择框 -->
+        <el-form-item label="可直播讲师:" prop="teacherIds">
           <el-select
             style="width: 100%;"
             size="small"
             clearable
-            ref="select2"
+            ref="selectTeacher"
+            multiple
             @hook:mounted="cancalReadOnly"
             @visible-change="cancalReadOnly"
-            v-model="addData.profitAdId"
+            v-model="addData.teacherIds"
             filterable
             remote
-            placeholder="为空为当前登录账户"
-            :remote-method="(query) => remoteMethod(query, 0)"
+            placeholder="选择可直播讲师"
+            :remote-method="(query) => remoteMethod(query, '')"
             :loading="remoteLoading"
+            @change="updateSelectedTeachers"
           >
             <el-option
-              v-for="item in userAdminOptions"
+              v-for="item in userAllOptions"
               :key="item.id"
               :label="item.name"
               :value="item.id"
             >
             </el-option>
           </el-select>
+        </el-form-item>
+
+        <!-- 显示已选择的讲师 -->
+        <el-form-item label="已选择讲师:">
+          <div style="display: flex">
+          <div  v-for="teacher in selectedTeachers"
+               :key="teacher.id">
+            {{ teacher.name }}，
+          </div>
+          </div>
         </el-form-item>
 
         <el-form-item
@@ -170,6 +190,7 @@
           ></jat-input>
         </el-form-item>
       </el-form>
+
       <span slot="footer" class="dialog-footer">
         <jat-button plain @click="close">取 消</jat-button>
         <jat-button @click="handleSubmit" :disabled="btnFlag">确 定</jat-button>
@@ -179,15 +200,15 @@
 </template>
 
 <script>
-import uploadFile from "@/components/uploadFile.vue";
+import BasicTable from "@/components/BasicTable/index.vue";
 import request from "@/utils/request";
 import { getDate } from "@/utils/tools";
-import BasicTable from "@/components/BasicTable/index.vue";
+
 export default {
-  components: { uploadFile, BasicTable },
+  components: { BasicTable },
   data() {
     return {
-      btnFlag:false,
+      btnFlag: false,
       addModifyVisible: false,
       remoteLoading: false,
       dialogTitle: "",
@@ -195,8 +216,9 @@ export default {
       userAdminOptions: [],
       filterSelectData: [],
       selectDataList: [],
-      userAllOptions: [],
-      categoryOptions: [],
+      userAllOptions: [], // 下单者和讲师的共享数据
+      selectedTeachers: [], // 回显的讲师
+      categoryOptions: [], // 套餐分类
       isAutoCompute: true,
       columns: [
         {
@@ -219,20 +241,18 @@ export default {
         id: "",
         courseName: "",
         adId: "",
+        teacherIds: [], // 可直播讲师
         costPrice: "",
         count: 1,
-        ids: "",
+        ids: [],
         marketPrice: "",
         profitAdId: "",
         remark: "",
         time: [
           this.$moment().format("YYYY-MM-DD"),
-          this.$moment()
-            .add(1, "y")
-            .format("YYYY-MM-DD"),
+          this.$moment().add(1, "y").format("YYYY-MM-DD"),
         ],
       },
-
       clientRule: {
         name: [{ required: true, message: "请输入客户名称", trigger: "blur" }],
         costPrice: [
@@ -241,9 +261,7 @@ export default {
         adId: [{ required: true, message: "请输入下单者", trigger: "blur" }],
         count: [{ required: true, message: "请输入数量", trigger: "blur" }],
         time: [{ required: true, message: "请选择订单时间", trigger: "blur" }],
-        ids: [
-          { required: true, message: "请输入选择套餐课程", trigger: "blur" },
-        ],
+        ids: [{ required: true, message: "请选择套餐课程", trigger: "blur" }],
         marketPrice: [
           { required: true, message: "请输入市场价", trigger: "blur" },
         ],
@@ -266,22 +284,23 @@ export default {
       this.cancalReadOnly();
     },
     edit({
-      orderNum,
-      vipName,
-      vipAdId,
-      profitAdName,
-      profitAdId,
-      courseIds,
-      courseName,
-      costPrice,
-      count,
-      marketPrice,
-      remark,
-      startTime,
-      endTime,
-    }) {
+           orderNum,
+           vipName,
+           vipAdId,
+           profitAdName,
+           profitAdId,
+           courseIds,
+           courseName,
+           costPrice,
+           count,
+           marketPrice,
+           remark,
+           startTime,
+           endTime,
+           teacherIds,
+         }) {
       this.dialogTitle = "修改订单";
-      this.isAutoCompute = false
+      this.isAutoCompute = false;
       this.addModifyVisible = true;
       this.addData = {
         orderNum,
@@ -293,6 +312,7 @@ export default {
         marketPrice,
         profitAdId,
         remark,
+        teacherIds: teacherIds || [],
         time:
           startTime && endTime
             ? [getDate(startTime, "yyyy-MM-dd"), getDate(endTime, "yyyy-MM-dd")]
@@ -319,6 +339,7 @@ export default {
         );
       });
 
+      this.updateSelectedTeachers(); // 更新选中的讲师
       this.cancalReadOnly();
     },
     close() {
@@ -329,26 +350,29 @@ export default {
         adId: "",
         costPrice: "",
         count: 1,
-        ids: "",
+        ids: [],
         marketPrice: "",
         profitAdId: "",
         remark: "",
-        // time: [],
+        teacherIds: [],
         time: [
           this.$moment().format("YYYY-MM-DD"),
-          this.$moment()
-            .add(1, "y")
-            .format("YYYY-MM-DD"),
+          this.$moment().add(1, "y").format("YYYY-MM-DD"),
         ],
       };
       this.addModifyVisible = false;
     },
+    updateSelectedTeachers() {
+      this.selectedTeachers = this.userAllOptions.filter((teacher) =>
+        this.addData.teacherIds.includes(teacher.id)
+      );
+    },
     cancalReadOnly(onOff) {
       this.$nextTick(() => {
         if (!onOff) {
-          const { select1, select2 } = this.$refs;
+          const { select1, selectTeacher } = this.$refs;
           const input1 = select1.$el.querySelector(".el-input__inner");
-          const input2 = select2.$el.querySelector(".el-input__inner");
+          const input2 = selectTeacher.$el.querySelector(".el-input__inner");
           input1.removeAttribute("readonly");
           input2.removeAttribute("readonly");
         }
@@ -367,6 +391,7 @@ export default {
       this.addData.profitAdId = id;
     },
     getCourseList(id, ids) {
+      console.log('id',id);
       request.post({
         url: "/admin/adCourse/queryCourseListByCategoryId",
         params: {
@@ -378,11 +403,10 @@ export default {
           this.$nextTick(() => {
             this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.clearSelection();
             if (ids) {
-              
               ids.forEach((id) => {
                 this.tableData.forEach((row) => {
                   if (row.id === id) {
-                    this.isAutoCompute = false
+                    this.isAutoCompute = false;
                     this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.toggleRowSelection(
                       row
                     );
@@ -400,7 +424,6 @@ export default {
         },
       });
     },
-
     handleCategoryChange(val) {
       if (val) {
         this.getCourseList(
@@ -408,7 +431,6 @@ export default {
         );
       }
     },
-
     getCategoryList() {
       request.post({
         url: "system/sysCategory/listNoPage",
@@ -427,19 +449,19 @@ export default {
         this.tableData = this.selectDataList;
       }
     },
-
     handleSubmit() {
-
       this.$refs.clientRef.validate((valid) => {
-        const { ids, time, id, courseName, orderNum, ...rest } = this.addData;
+        const { ids,teacherIds, time, id, courseName, orderNum, ...rest } =
+          this.addData;
         if (valid) {
-          this.btnFlag=true
+          this.btnFlag = true;
           if (orderNum) {
             request.post({
               url: "/system/sysCourseOrder/orderEdit",
               params: {
                 orderNum,
                 ids: JSON.stringify(ids),
+                teacherIds:JSON.stringify(teacherIds),
                 name: courseName,
                 startTime: time && time.length > 0 ? time[0] : "",
                 endTime: time && time.length > 0 ? time[1] : "",
@@ -449,7 +471,10 @@ export default {
                 this.$message.success(res);
                 this.close();
                 this.$emit("success");
-                this.btnFlag=false
+                this.btnFlag = false;
+              },
+              catch: () => {
+                this.btnFlag = false;
               },
             });
           } else {
@@ -457,6 +482,7 @@ export default {
               url: "system/sysCourseOrder/quicklyPlaceOrderAdd",
               params: {
                 ids: JSON.stringify(ids),
+                teacherIds:JSON.stringify(teacherIds),
                 name: courseName,
                 startTime: time && time.length > 0 ? time[0] : "",
                 endTime: time && time.length > 0 ? time[1] : "",
@@ -466,19 +492,21 @@ export default {
                 this.$message.success(res);
                 this.close();
                 this.$emit("success");
-                this.btnFlag=false
+                this.btnFlag = false;
+              },
+              catch: () => {
+                this.btnFlag = false;
               },
             });
           }
         }
       });
     },
-
     handleSelectionChange(itemList) {
       this.addData.ids = itemList.map((item) => item.id);
-      if(!this.isAutoCompute) {
-        this.isAutoCompute  = true;
-        return
+      if (!this.isAutoCompute) {
+        this.isAutoCompute = true;
+        return;
       }
       this.addData.costPrice = itemList.reduce(
         (accumulator, currentValue) => accumulator + currentValue.costPrice,
@@ -489,7 +517,6 @@ export default {
         0
       );
     },
-
     remoteMethod(search, type) {
       if (!search) {
         return;
@@ -517,6 +544,7 @@ export default {
   },
 };
 </script>
+
 <style lang="scss" scoped>
 .el-form {
   display: flex;

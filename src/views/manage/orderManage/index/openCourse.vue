@@ -57,6 +57,7 @@
             style="width: 100%;"
             size="small"
             ref="selectOpenCourse"
+
             @hook:mounted="cancalReadOnly"
             @visible-change="cancalReadOnly"
             clearable
@@ -140,7 +141,7 @@ export default {
   mounted() {
     // this.getCurrentUser();
     this.getCategoryList();
-    
+
   },
 
   methods: {
@@ -246,7 +247,7 @@ export default {
               courseIds: JSON.stringify(ids),
               startTime: time && time.length > 0 ? time[0] : "",
               endTime: time && time.length > 0 ? time[1] : "",
-             
+
             },
             success: (res) => {
               this.$message.success(res);
@@ -302,6 +303,6 @@ export default {
     .el-form-item {
       width: 100% !important;
     }
-  
+
 }
 </style>

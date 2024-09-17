@@ -110,7 +110,6 @@
             <div v-else-if="c.type === 'dateRed'" v-html="getRed(row[c.prop])">
 
             </div>
-
             <span v-else-if="c.type === 'image'">
               <el-image
                 v-if="row[c.prop]"
@@ -122,9 +121,14 @@
               <span v-else></span>
             </span>
             <span v-else-if="c.type === 'video'">
-              <video v-if="row[c.prop]" :src="row[c.prop]" controls width="200">
-                <source :src="row[c.prop]" type="video/mp4" />
+
+              <video v-if="row[c.prop]" :src="row[c.prop]"
+                     :poster="row.image" controls
+                     preload="none"
+                     width="200">
+                <source :data-src="row[c.prop]" type="video/mp4" />
               </video>
+
             </span>
             <span
               v-else
@@ -159,11 +163,13 @@
         </el-table-column>
       </jat-table>
     </div>
-
+    <!--    layout="total,sizes, ->,  prev, pager, next, jumper"-->
     <jat-pagination
       v-if="hasPage"
-      style="margin-top: 10px"
-      layout="total,sizes, ->,  prev, pager, next, jumper"
+      style="margin-top: 10px;"
+      :layout="getWidth <= 479
+    ? 'total, prev, next, jumper'
+    : 'total, sizes, ->, prev, pager, next, jumper'"
       :total="total"
       @current-change="onCurrentChange"
       @size-change="onSizeChange"
@@ -177,6 +183,7 @@
 import { getDate } from "@/utils/tools";
 import HeaderOperate from "./HeaderOperate.vue";
 import ListOperate from "./ListOperate.vue";
+
 export default {
   name: "TaskTable",
   components: {
@@ -214,9 +221,9 @@ export default {
       type: String,
       default: "列表",
     },
-    tableRemark:{
+    tableRemark: {
       type: String,
-      default:"",
+      default: "",
     },
     selectType: {
       type: String,
@@ -267,17 +274,17 @@ export default {
     },
   },
   methods: {
-    getRed(data){
+    getRed(data) {
       const date = new Date(data);
       const today = new Date();
       if (
-          date.getDate() === today.getDate() &&
-          date.getMonth() === today.getMonth() &&
-          date.getFullYear() === today.getFullYear()
+        date.getDate() === today.getDate() &&
+        date.getMonth() === today.getMonth() &&
+        date.getFullYear() === today.getFullYear()
       ) {
-        return `<font style='color: red'>${this.formdatetime(data,"")}<font/>`;
+        return `<font style='color: red'>${this.formdatetime(data, "")}<font/>`;
       } else {
-        return this.formdatetime(data,"");
+        return this.formdatetime(data, "");
       }
     },
     formdatetime(data, formate) {
@@ -293,6 +300,24 @@ export default {
       } else {
         return "--";
       }
+    },
+    lazyLoadVideo(entries, observer) {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const video = entry.target;
+          video.src = video.dataset.src;
+          observer.unobserve(video);
+        }
+      });
+    },
+    initLazyLoad() {
+      const observer = new IntersectionObserver(this.lazyLoadVideo);
+      this.$nextTick(() => {
+        const videos = this.$el.querySelectorAll("video");
+        videos.forEach((video) => {
+          observer.observe(video);
+        });
+      });
     },
     onCurrentChange(curPage) {
       this.$emit("current-page-change", curPage);
@@ -312,18 +337,23 @@ export default {
     clearSingleSelection() {
       this.curRow = "";
     },
-    showOperates: function(val) {
+    showOperates(val) {
       if (Array.isArray(this.operates)) {
         return this.operates;
       }
       return this.operates(val);
     },
   },
-  watch: {},
+  mounted() {
+    this.initLazyLoad();
+  },
 };
 </script>
 
+
 <style lang="less" scoped>
+
+
 .table-header {
   width: 100%;
   height: 60px;
@@ -331,6 +361,7 @@ export default {
   align-items: center;
   justify-content: space-between;
   position: relative;
+
   .table-header-title {
     margin-left: 15px;
     font-family: PingFangSC-Medium;
@@ -340,6 +371,7 @@ export default {
     line-height: 28px;
     font-weight: bold;
     position: relative;
+
     &::before {
       content: "";
       position: absolute;
@@ -352,6 +384,7 @@ export default {
     }
   }
 }
+
 .data-content {
   flex: 1;
   height: 0px;
@@ -360,10 +393,12 @@ export default {
   //   display: none;
   // }
 }
+
 .basicTable {
   // width: 100%;
   height: 100%;
 }
+
 .main-container-no-card {
   border: none;
   box-shadow: none;

@@ -8,7 +8,7 @@ const proxyConfig = {
 	//开发环境
 	dev: {
 		// 服务url
-		serviceUrl: 'https://pengfkt.com/api/',
+		serviceUrl: 'http://youskt.cn/apiV2/',
 
 		// websocket url
 		wsUrl: '/ws/webSocketServer',

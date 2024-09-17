@@ -1,6 +1,6 @@
 <!-- 章节列表 -->
 <template>
-  <el-dialog title="布置作11业" width="60%" :visible.sync="chaptersVisible">
+  <el-dialog title="布置作业" width="60%" :visible.sync="chaptersVisible">
     <div style="max-height: 500px;" v-loading="loading">
       <BasicTable
         :columns="table.columns"
@@ -43,7 +43,6 @@ export default {
       filterOptions: {
         column: [],
       },
-      remoteLoading: false,
       teacherOptions: [],
       filterData: {
         id: "",

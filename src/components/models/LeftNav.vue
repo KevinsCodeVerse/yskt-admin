@@ -6,8 +6,9 @@
 			:background-color="nBackground" :text-color="nColor" :active-text-color="nActiveColor" :collapse="!$store.state.navOpen" router
 			:default-openeds="openeds">
 				<el-menu-item index="-1" disabled>
-					<img src="@/assets/svg/pfunText.png" alt="" height="20px" style="margin-right: 10px;">
-					<span slot="title">鹏飞智能后台管理系统</span>
+					<img src="@/assets/svg/ysText.png" alt="" height="20px"
+               style="margin-right: 10px;">
+					<span slot="title">优师课堂智能后台</span>
 				</el-menu-item>
 				<el-scrollbar style="height: 100%; width: 100%;">
 					<el-submenu :index='index.toString()' v-for="(item, index) in menuList" :key="index" :class="!$store.state.navOpen ? 'isCollapse':''">
