@@ -1,7 +1,7 @@
 <template>
   <div class="jat-pagination">
     <el-pagination
-      :layout="layout"
+      :layout="paginationLayout"
       :background="background"
       :page-size="pageSize"
       :page-sizes="[10, 20, 30, 40, 50]"
@@ -55,11 +55,49 @@ export default {
     background: Boolean
   },
   data() {
-    return {}
+    return {
+      isMobile: this.checkIfMobile(),
+    }
   },
-  components: {},
-  mounted() {},
+  computed: {
+    getWidth() {
+      return window.innerWidth;
+    },
+    // 动态分页布局
+    paginationLayout() {
+      // 如果是移动端设备，返回简化的分页布局
+      if (this.isMobile) {
+        return 'total, prev, next, jumper';
+      }
+      // PC端设备使用默认分页布局
+      return 'total, sizes, ->, prev, pager, next, jumper';
+    },
+  },
+  mounted() {
+    window.addEventListener("resize", this.handleResize);
+    window.addEventListener("orientationchange", this.handleOrientationChange); // 监听横竖屏切换
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize);
+    window.removeEventListener("orientationchange", this.handleOrientationChange); // 移除监听器
+  },
   methods: {
+    checkIfMobile() {
+      return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    },
+    handleResize() {
+      this.isMobile = this.checkIfMobile();
+      this.windowWidth = window.innerWidth;
+      this.windowHeight = window.innerHeight;
+      // window.location.reload();
+    },
+    handleOrientationChange() {
+      this.isMobile = this.checkIfMobile();
+      this.windowWidth = window.innerWidth;
+      this.windowHeight = window.innerHeight;
+
+      // window.location.reload();
+    },
     handleSizeChange(item) {
       this.$emit("size-change", item) // pageSize 改变时会触发
     },

@@ -63,6 +63,9 @@
         <el-form-item label="QQ:" prop="qq">
           <jat-input v-model="addData.qq" placeholder="请输入QQ"></jat-input>
         </el-form-item>
+        <el-form-item label="钉钉:" prop="qq">
+          <jat-input v-model="addData.ding" placeholder="请输入钉钉号"></jat-input>
+        </el-form-item>
         <el-form-item label="微信:" prop="wechat">
           <jat-input
               v-model="addData.wechat"
@@ -145,6 +148,7 @@ export default {
         name: "",
         phone: "",
         qq: "",
+        ding:"",
         wechat: "",
         channelId: "",
         promoterId: "",
@@ -180,26 +184,19 @@ export default {
         ],
         qq: [
           {
-            validator: (rule, value, callback) => {
-              if (!value && !this.addData.wechat) {
-                callback(new Error("QQ和微信二选一,其中一个必填"));
-              } else {
-                this.$refs.promotionRef.validateField("wechat");
-                callback();
-              }
-            },
+            validator: this.validateAtLeastOne,  // 公共验证方法
             trigger: "blur",
           },
         ],
         wechat: [
           {
-            validator: (rule, value, callback) => {
-              if (!value && !this.addData.qq) {
-                callback(new Error("QQ和微信二选一,其中一个必填"));
-              } else {
-                callback();
-              }
-            },
+            validator: this.validateAtLeastOne,  // 公共验证方法
+            trigger: "blur",
+          },
+        ],
+        ding: [
+          {
+            validator: this.validateAtLeastOne,  // 公共验证方法
             trigger: "blur",
           },
         ],
@@ -211,6 +208,14 @@ export default {
   },
 
   methods: {
+    // 公共验证方法：确保QQ、微信、钉钉至少填写一个
+    validateAtLeastOne(rule, value, callback) {
+      if (!this.addData.qq && !this.addData.wechat && !this.addData.ding) {
+        callback(new Error("QQ、微信或钉钉三选一,其中一个必填"));
+      } else {
+        callback();
+      }
+    },
     shijian() {
 
 
@@ -233,6 +238,7 @@ export default {
            phone,
            addTime,
            qq,
+            ding,
            wechat,
            channelId,
            promoterId,
@@ -253,6 +259,7 @@ export default {
         age,
         addTime,
         qq,
+        ding,
         wechat,
         channelId,
         promoterId,
@@ -273,6 +280,7 @@ export default {
         name: "",
         phone: "",
         qq: "",
+        ding:"",
         wechat: "",
         channelId: "",
         promoterId: "",
@@ -285,6 +293,7 @@ export default {
       this.$refs.promotionRef.validate((valid) => {
         console.log(valid, "valid");
         this.addData.qq=this.addData.qq.trim()
+        this.addData.ding=this.addData.ding.trim()
         this.addData.wechat=this.addData.wechat.trim()
         this.addData.name=this.addData.name.trim()
         if (valid) {

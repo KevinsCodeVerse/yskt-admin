@@ -38,7 +38,7 @@
           v-if="selectType === 'single'"
           width="60px"
           label="选择"
-          :fixed="getWidth > 479 ? 'left' : false"
+          :fixed="!isMobile ? 'left' : false"
           :key="new Date().getTime()"
         >
           <template slot-scope="scope">
@@ -57,14 +57,14 @@
           :selectable="selectable"
           :reserve-selection="reserveSelection"
           width="60px"
-          :fixed="getWidth > 479 ? 'left' : false"
+          :fixed="!isMobile ? 'left' : false"
         />
         <template v-if="hasPage">
           <el-table-column
             v-if="hasSort"
             type="index"
             label="序号"
-            :fixed="getWidth > 479 ? 'left' : false"
+
             align="center"
           >
             <template slot-scope="scope">
@@ -79,7 +79,7 @@
             v-if="hasSort"
             type="index"
             label="序号"
-            :fixed="getWidth > 479 ? 'left' : false"
+
           />
         </template>
 
@@ -155,7 +155,7 @@
           v-if="operates"
           label="操作"
           :min-width="operateWidth"
-          :fixed="getWidth > 479 ? 'right' : false"
+          :fixed="!isMobile ? 'right' : false"
         >
           <template slot-scope="scope">
             <ListOperate :operates="showOperates(scope)" :curRow="scope.row" />
@@ -167,9 +167,7 @@
     <jat-pagination
       v-if="hasPage"
       style="margin-top: 10px;"
-      :layout="getWidth <= 479
-    ? 'total, prev, next, jumper'
-    : 'total, sizes, ->, prev, pager, next, jumper'"
+      :layout="paginationLayout"
       :total="total"
       @current-change="onCurrentChange"
       @size-change="onSizeChange"
@@ -266,14 +264,34 @@ export default {
   data() {
     return {
       curRow: "",
+      windowWidth: window.innerWidth,  // 增加windowWidth状态
+      isMobile: this.checkIfMobile(), // 初始化时检查是否为移动设备
     };
   },
   computed: {
     getWidth() {
       return window.innerWidth;
     },
+    paginationLayout() {
+      // 如果是移动端设备，返回简化的分页布局
+      if (this.isMobile) {
+        return 'total, prev, next, jumper';
+      }
+      // PC端设备使用默认分页布局
+      return 'total, sizes, ->, prev, pager, next, jumper';
+    },
   },
   methods: {
+    // 检查是否为移动设备
+    checkIfMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    },
+    handleResize() {
+      this.isMobile = this.checkIfMobile(); // 窗口大小改变时重新检查
+    },
+    handleOrientationChange() {
+      this.isMobile = this.checkIfMobile(); // 横竖屏切换时重新检查
+    },
     getRed(data) {
       const date = new Date(data);
       const today = new Date();
@@ -345,7 +363,13 @@ export default {
     },
   },
   mounted() {
+    window.addEventListener("resize", this.handleResize);
+    window.addEventListener("orientationchange", this.handleOrientationChange); // 监听横竖屏切换
     this.initLazyLoad();
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize);
+    window.removeEventListener("orientationchange", this.handleOrientationChange); // 移除监听器
   },
 };
 </script>
@@ -387,7 +411,7 @@ export default {
 
 .data-content {
   flex: 1;
-  height: 0px;
+  height: auto; /* 确保有足够的空间容纳表格 */
   position: relative;
   // .jat_table {
   //   display: none;
@@ -396,11 +420,41 @@ export default {
 
 .basicTable {
   // width: 100%;
+  width: 100%;
   height: 100%;
+  overflow-x: auto;  /* 启用横向滚动 */
+  overflow-y: auto;
 }
 
 .main-container-no-card {
   border: none;
   box-shadow: none;
 }
+///* 针对竖屏的样式 */
+//@media only screen and (orientation: portrait) {
+//  .basicTable {
+//    width: 100%;
+//  }
+//
+//  .table-header-title {
+//    font-size: 16px; /* 小屏幕竖屏的字体大小 */
+//  }
+//}
+//
+///* 针对横屏的样式 */
+//@media only screen and (orientation: landscape) {
+//  .basicTable {
+//    width: 100%;
+//    overflow-x: auto; /* 横屏时横向滚动 */
+//  }
+//
+//  .table-header-title {
+//    font-size: 14px; /* 横屏字体大小 */
+//  }
+//
+//  .data-content {
+//    padding: 10px; /* 横屏时适当增加内边距 */
+//  }
+//}
+
 </style>

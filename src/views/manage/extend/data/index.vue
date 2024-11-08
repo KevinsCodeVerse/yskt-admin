@@ -144,6 +144,12 @@ export default {
             width: "100px"
           },
           {
+            id: 22,
+            prop: "ding",
+            label: "钉钉",
+            width: "100px"
+          },
+          {
             id: 6,
             prop: "wechat",
             label: "微信",
@@ -287,7 +293,7 @@ export default {
               },
               success: (res) => {
                 let downloadElement = document.createElement("a");
-                downloadElement.href = "http://" + res;
+                downloadElement.href = "https://" + res;
                 document.body.appendChild(downloadElement);
                 downloadElement.click(); //点击下载
                 document.body.removeChild(downloadElement); //下载完成移除元素

@@ -34,15 +34,15 @@
         </el-form-item>
 
         <el-form-item
-          style="width: 100%; height: 330px; overflow: hidden;"
+          style="width: 100%; overflow: hidden;"
           label="课程套餐:"
           class="filter-form-item"
           prop="ids"
         >
           <div class="filter-table">
             <jat-select
-              class="filterBox"
-              style="width: 80%;"
+
+              style="width: 100%;"
               v-model="filterSelectData"
               value-key="id"
               multiple
@@ -60,6 +60,8 @@
               </el-option>
             </jat-select>
           </div>
+        </el-form-item>
+        <el-form-item  style="width: 100%; overflow: hidden;">
           <BasicTable
             v-model="addData.ids"
             height="300px"
@@ -138,9 +140,35 @@
             </el-option>
           </el-select>
         </el-form-item>
-
+        <el-form-item label="利润归属:" prop="profitAdId">
+          <el-select
+            style="width: 100%;"
+            size="small"
+            clearable
+            ref="select2"
+            @hook:mounted="cancalReadOnly"
+            @visible-change="cancalReadOnly"
+            v-model="addData.profitAdId"
+            filterable
+            remote
+            placeholder="为空为当前登录账户"
+            :remote-method="(query) => remoteMethod(query, 0)"
+            :loading="remoteLoading"
+          >
+            <el-option
+              v-for="item in userAdminOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
         <!-- 可直播讲师选择框 -->
-        <el-form-item label="可直播讲师:" prop="teacherIds">
+        <el-form-item  prop="teacherIds">
+          <template #label>
+            可直播讲师 <span style="color: red;">（可不填，不选择讲师，会默认使用课程讲师）</span>:
+          </template>
           <el-select
             style="width: 100%;"
             size="small"
@@ -281,6 +309,7 @@ export default {
     open() {
       this.dialogTitle = "增加订单";
       this.addModifyVisible = true;
+      this.btnFlag = false;
       this.cancalReadOnly();
     },
     edit({
@@ -382,6 +411,7 @@ export default {
       const id = sessionStorage.getItem("id")
         ? parseInt(sessionStorage.getItem("id"))
         : "";
+      console.log('getCurrentUser id',id);
       this.userAdminOptions = [
         {
           id,
@@ -451,7 +481,8 @@ export default {
     },
     handleSubmit() {
       this.$refs.clientRef.validate((valid) => {
-        const { ids,teacherIds, time, id, courseName, orderNum, ...rest } =
+        const { ids,teacherIds, time, id, courseName, orderNum,
+      ...rest } =
           this.addData;
         if (valid) {
           this.btnFlag = true;
@@ -476,6 +507,9 @@ export default {
               catch: () => {
                 this.btnFlag = false;
               },
+              finally: () => {
+                this.btnFlag = false;  // 确保按钮状态复原
+              },
             });
           } else {
             request.post({
@@ -497,6 +531,10 @@ export default {
               catch: () => {
                 this.btnFlag = false;
               },
+              finally: () => {
+                this.btnFlag = false;  // 确保按钮状态复原
+              },
+
             });
           }
         }
@@ -539,6 +577,7 @@ export default {
         catch: () => {
           this.remoteLoading = false;
         },
+
       });
     },
   },
@@ -546,6 +585,64 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.el-dialog {
+  // 设置最大宽度，防止在较大屏幕上过宽
+  max-width: 100% !important;
+  width: 90%;
+
+  // 在大屏幕上居中对齐
+  .el-dialog__body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.el-form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  .el-form-item {
+    width: 48%; // 在较大屏幕上每个表单项占50%的宽度
+  }
+
+  .filter-form-item {
+    position: relative;
+    width: 100%;
+
+    /deep/ .el-form-item__content {
+      position: unset;
+    }
+
+    .filterBox {
+      top: -5px;
+      left: 90px;
+      position: absolute;
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .el-form {
+    // 小屏幕时表单项占100%宽度
+    .el-form-item {
+      width: 100% !important;
+    }
+  }
+}
+
+.dialog-footer {
+  // 调整底部按钮的布局
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px;
+
+  .el-button {
+    margin-left: 10px;
+  }
+}
+
 .el-form {
   display: flex;
   flex-wrap: wrap;

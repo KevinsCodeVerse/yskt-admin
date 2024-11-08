@@ -72,6 +72,40 @@
 <!--        >-->
       </span>
     </el-dialog>
+    <el-dialog
+      title="直播审查"
+      :close-on-click-modal="false"
+      :visible.sync="openCheckLiveVisible"
+      width="80%"
+      class="checkLive-dialog"
+      @close="handleCheckLiveClose"
+    >
+
+        <div class="tipInfo" >
+          <!-- 生成多个“观看直播”按钮，横向排列 -->
+          <div class="button-row">
+            <el-button
+              v-for="teacher in currentTeachers"
+              :key="teacher.id"
+              @click="watchLive(teacher)"
+              type="primary"
+              class="live-button"
+              size="mini"
+            >
+              观看{{ teacher.name }}的直播
+            </el-button>
+          </div>
+        </div>
+
+        <!-- 视频播放区域 -->
+        <div class="video-container" >
+          <div id="videoPlayer" class="video-player"></div>
+        </div>
+
+        <span slot="footer" class="dialog-footer">
+      </span>
+
+    </el-dialog>
     <chapters :isWrite="false" ref="chapters"></chapters>
     <workChapters ref="workChaptersRef"></workChapters>
   </div>
@@ -81,11 +115,15 @@
 import BasicTable from "@/components/BasicTable/index.vue";
 import request from "../../../../utils/request";
 import addDialog from "./addDialog.vue";
-
+import rsa from "@/utils/rsa";
 import { hasFreeOptions, positionptions, tagOptions } from "./const";
 import uploadVideo from "./uploadVideo.vue";
 import chapters from './chapters.vue';
 import workChapters from './workChapters.vue';
+import "mui-player/dist/mui-player.min.css";
+import MuiPlayer from "mui-player";
+import Hls from "hls.js";
+import MuiPlayerDesktopPlugin from "mui-player-desktop-plugin";
 export default {
   name: "myCoursePage",
   components: { BasicTable, addDialog, uploadVideo, chapters, workChapters },
@@ -94,6 +132,8 @@ export default {
       loading: false,
       remoteLoading: false,
       openLiveVisible: false,
+      openCheckLiveVisible:false,
+      currentTeachers: [],
       openLiveData: {},
       supervisorAdOptions: [],
       categoryOptions: [],
@@ -298,6 +338,19 @@ export default {
           },
         },
         {
+          key: "checkLive",
+          title: "直播巡查",
+          btnStyle: "red",
+          permission: "",
+          action: (o, row) => {
+            console.log('row',row);
+            this.handleCheckLive(row);
+          },
+          show: (row) => {
+            return row.hasLive === 0 && row.liveStatus === 1;
+          },
+        },
+        {
           key: "edit",
           title: "上传回放",
           btnStyle: "yellow",
@@ -372,6 +425,49 @@ export default {
     this.getList();
   },
   methods: {
+    // initVideo 和 hanleVideoError 是示例用法
+    initVideo(url, live = true, image, name) {
+      if (image){
+        this.chapterImage=image
+      }
+      this.player = new MuiPlayer({
+        container: "#videoPlayer",
+        title: name || "",
+        src: url,
+        live: live,
+        autoplay: live,
+        lang: "zh-cn",
+        volume: 0.6,
+        poster: this.chapterImage,
+        muted: false,
+        height:'100%',
+        preload: "auto",
+        parse: {
+          type: live ? "hls" : "mp4",
+          loader: live ? Hls : "",
+        },
+        plugins: [
+          new MuiPlayerDesktopPlugin({
+            contextmenu: [],
+            customSetting: [],
+          }),
+        ],
+      });
+      this.player.on("error", (e) => {
+        this.hanleVideoError(e);
+      });
+    },
+    hanleVideoError() {
+      this.emptyVisible = true;
+      if (this.info.adCourse.hasLive === 1) {
+        this.emptyMessage = "视频出错啦~，请重新加载！";
+      } else {
+        this.emptyMessage = "当前暂无直播";
+      }
+    },
+
+
+
     searchFilter() {
       this.table.currentPage = 1;
       this.getList();
@@ -424,6 +520,9 @@ export default {
     handleClose() {
       this.openLiveData = {};
     },
+    handleCheckLiveClose(){
+      this.openCheckLiveVisible=false
+    },
 
     handleOpenLive(row) {
       this.$confirm("确定要开播此课程, 是否继续?", "提示", {
@@ -451,6 +550,17 @@ export default {
             message: "已取消开播",
           });
         });
+    },
+    //直播巡查
+    handleCheckLive(row) {
+      // 设置当前讲师数组
+      this.currentTeachers = row.liveTeracher;
+      this.openCheckLiveVisible = true;
+    },
+    // 观看讲师的直播
+    watchLive(teacher) {
+      const url = rsa.decryptByPublicKey(teacher.tLive);  // 解密直播地址
+      this.initVideo(url);  // 播放视频
     },
     handleCloseLive(row){
       console.log('关播row',row);
@@ -524,7 +634,45 @@ export default {
   },
 };
 </script>
+<style>
+.checkLive-dialog .el-dialog{
+  height: 90%;overflow: auto;
+}
+.checkLive-dialog .el-dialog__body{
+  height: 100% !important;
+  max-height: 850px;
+  overflow: auto;
+}
+</style>
 <style lang="scss" scoped>
+.button-row {
+  display: flex;
+  justify-content: center;  /* 按钮居中对齐 */
+  flex-wrap: wrap;  /* 如果按钮太多，自动换行 */
+  gap: 10px;  /* 按钮之间的间距 */
+}
+
+.live-button {
+  min-width: 120px;  /* 统一按钮最小宽度 */
+  text-align: center;  /* 按钮文字居中 */
+}
+.custom-dialog {
+  height: 80% !important;  /* 强制设置弹窗的高度为80% */
+  max-height: 80% !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.video-container {
+  margin-top: 20px;
+  height: 100%;  /* 播放器高度充满可用空间 */
+}
+
+.video-player {
+  width: 100%;
+  height: 100%;  /* 播放器高度为剩余的部分 */
+  background-color: #000;
+}
 .tipInfo {
   font-size: 16px;
   font-weight: bold;

@@ -1,5 +1,6 @@
 <template>
-	<el-header>
+	<el-header :style="!isMobile ? { height: '105px !important' } : { height:
+	'auto !important' }">
 		<div class="flex-box header_top">
 			<div style="display: flex; align-items: center;" :style="getWidth()">
 				<div class="flexible_model">
@@ -24,7 +25,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="header_bottom" :style="getWidth()">
+		<div v-if="!isMobile" class="header_bottom" :style="getWidth()">
 			<el-tabs v-model="tabsValue" :closable="tabs.length > 1" @tab-remove="removeTab" type="card"
 				@tab-click="tabClick" v-if="tabs.length">
 				<el-tab-pane :label="item.label" :name="item.path" v-for="item in tabs" :key="item.path">
@@ -53,6 +54,7 @@
 				breadcrumbs: [],
 				tabs: [],
 				tabsValue: '',
+        isMobile: this.checkIfMobile(),
 			};
 		},
 		computed: {
@@ -68,6 +70,8 @@
 		},
 
 		mounted() {
+      window.addEventListener("resize", this.handleResize);
+      window.addEventListener("orientationchange", this.handleOrientationChange); // 监听横竖屏切换
 			this.$pubsub.subscribe('breadcrumb', (msg, value) => {
 				this.breadcrumbs = value
 			})
@@ -79,6 +83,18 @@
 		},
 
 		methods: {
+      checkIfMobile() {
+        return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      },
+      handleResize() {
+        this.isMobile = this.checkIfMobile();
+        // window.location.reload();
+      },
+      handleOrientationChange() {
+        this.isMobile = this.checkIfMobile();
+
+        // window.location.reload();
+      },
 			getName() {
 				// this.$request.post({
 				// 	url: "merchant/merchantInfo/getName",
@@ -99,7 +115,6 @@
 					widthStr = this.$store.state.navOpen ? 'width:calc(100vw - 200px);margin-left:200px;' :
 						'width:calc(100vw - 64px);margin-left:64px;';
 				}
-
 				return widthStr;
 			},
 
@@ -159,6 +174,8 @@
 
 		beforeDestroy() {
 			this.$pubsub.unsubscribe('breadcrumb', 'addTabs')
+      window.removeEventListener("resize", this.handleResize);
+      window.removeEventListener("orientationchange", this.handleOrientationChange); // 移除监听器
 		}
 
 	}

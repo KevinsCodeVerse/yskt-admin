@@ -36,7 +36,7 @@ function setupSvg(config) {
   
 module.exports = {
 	// 公共路径(必须有的)
-	publicPath: "./",
+	publicPath: "/",
 	// 输出文件目录
 	outputDir: "youskt_backend",
 	// 静态资源存放的文件夹(相对于ouputDir)
@@ -58,12 +58,8 @@ module.exports = {
 			// 接口代理
 			"/api": {
 				// target: "http://127.0.0.1:9000/", // 目标代理接口地址
-				// target: "http://156.236.66.97:6444/api/",
-				// target: "http://192.168.1.38:9013/", // 本地目标代理接口地址
-				// target: "http://www.pengfkt.com/apiV2/", // 线上目标代理接口地址
-				// target: "http://www.pengfkt.com/apiV2/", // 线上目标代理接口地址
-				target: 'http://youskt.cn/apiV2/',
-				// target: ' http://6gssif.natappfree.cc',
+				target: 'https://youskt.cn/apiV2/',
+				// target: 'http://e44pdz.natappfree.cc',
 				secure: false,
 				changeOrigin: true, // 开启代理，在本地创建一个虚拟服务端
 				// ws: true, // 是否启用websockets 代理
