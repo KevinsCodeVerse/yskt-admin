@@ -41,11 +41,11 @@
         >
           <div class="filter-table">
             <jat-select
-
               style="width: 100%;"
               v-model="filterSelectData"
               value-key="id"
               multiple
+              :multiple-limit="addData.courseName=='直播课程'?1:999"
               placeholder="根据课程名称进行搜索"
               @change="handleFilterChange"
               clearable
@@ -236,6 +236,7 @@ export default {
   components: { BasicTable },
   data() {
     return {
+      isShow:false,
       btnFlag: false,
       addModifyVisible: false,
       remoteLoading: false,
@@ -421,7 +422,8 @@ export default {
       this.addData.profitAdId = id;
     },
     getCourseList(id, ids) {
-      console.log('id',id);
+
+
       request.post({
         url: "/admin/adCourse/queryCourseListByCategoryId",
         params: {
@@ -430,35 +432,56 @@ export default {
         success: (res) => {
           this.tableData = res;
           this.selectDataList = res;
-          this.$nextTick(() => {
-            this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.clearSelection();
-            if (ids) {
-              ids.forEach((id) => {
-                this.tableData.forEach((row) => {
-                  if (row.id === id) {
-                    this.isAutoCompute = false;
+          // if(this.isShow == false){
+            this.$nextTick(() => {
+              this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.clearSelection();
+              if (ids) {
+                ids.forEach((id) => {
+                  this.tableData.forEach((row) => {
+                    if (row.id === id) {
+                      this.isAutoCompute = false;
+                      this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.toggleRowSelection(
+                        row
+                      );
+                    }
+                  });
+                });
+              } else {
+                if(this.isShow===true){
+                  this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.toggleRowSelection(
+                    this.tableData[0]
+                  );
+                } else{
+                  this.tableData.forEach((row) => {
+                    console.log('row',row);
+                    console.log('id',id);
                     this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.toggleRowSelection(
                       row
                     );
-                  }
-                });
-              });
-            } else {
-              this.tableData.forEach((row) => {
-                this.$refs.courseTableRef.$refs.basicTable.$refs.multipleTable.toggleRowSelection(
-                  row
-                );
-              });
-            }
-          });
+                  });
+                }
+
+              }
+            });
+          // }
+
         },
       });
     },
     handleCategoryChange(val) {
       if (val) {
+        // this.filterSelectData=[]
         this.getCourseList(
           this.categoryOptions.find((item) => item.name === val).id
         );
+        if(val=='直播课程'){
+            this.addData.ids=[]
+            this.tableData=[]
+            this.filterSelectData=[]
+             this.isShow = true
+        } else{
+          this.isShow = false
+        }
       }
     },
     getCategoryList() {

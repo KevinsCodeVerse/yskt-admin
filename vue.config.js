@@ -36,7 +36,7 @@ function setupSvg(config) {
   
 module.exports = {
 	// 公共路径(必须有的)
-	publicPath: "/",
+	publicPath: "./",
 	// 输出文件目录
 	outputDir: "youskt_backend",
 	// 静态资源存放的文件夹(相对于ouputDir)

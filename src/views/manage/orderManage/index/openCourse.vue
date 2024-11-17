@@ -6,7 +6,7 @@
       :close-on-click-modal="false"
       :visible.sync="addModifyVisible"
       width="70%"
-      @close="close"
+      @close="close" run
     >
       <el-form
         :model="addData"

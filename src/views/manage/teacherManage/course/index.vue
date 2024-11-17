@@ -144,11 +144,11 @@ export default {
             label: "课程编号",
             value: "number",
           },
-          {
-            type: "input",
-            label: "订单编号",
-            value: "orderNum",
-          },
+          // {
+          //   type: "input",
+          //   label: "订单编号",
+          //   value: "orderNum",
+          // },
           {
             type: "input",
             label: "课程名称",
@@ -205,11 +205,11 @@ export default {
             prop: "number",
             label: "课程编号",
           },
-          {
-            id:99,
-            prop: "orderNum",
-            label: "订单编号",
-          },
+          // {
+          //   id:99,
+          //   prop: "orderNum",
+          //   label: "订单编号",
+          // },
           {
             id: 2,
             prop: "name",
